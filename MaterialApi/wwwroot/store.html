@@ -1,0 +1,584 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>BDL Stores</title>
+
+    <link rel="stylesheet"
+          href="/css/site.css">
+
+    <link rel="stylesheet"
+          href="/css/store.css">
+    <link rel="stylesheet" href="/css/common-layout.css">
+</head>
+<body data-page-title="Stores">
+
+    <!-- COMMON HEADER -->
+    <div id="header-container"></div>
+
+    <!-- APPLICATION -->
+    <div class="application">
+
+        <!-- COMMON SIDEBAR -->
+        <div id="sidebar-container"></div>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <!-- BREADCRUMB -->
+            <div class="breadcrumb">
+                <span>Stores</span>
+            </div>
+
+            <!-- PAGE HEADING -->
+            <div class="page-heading">
+
+                <div>
+                    <h1>Store</h1>
+                </div>
+
+                <div class="operation-active">
+                    <span class="active-dot"></span>
+                    Stores
+                </div>
+
+            </div>
+            <!-- =================================================
+                 STEP 01 - QR SCAN
+                 ================================================= -->
+
+            <section class="operation-panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <div class="panel-title">
+                            QR Identification
+                        </div>
+
+                        <div class="panel-description">
+                            Scan the material QR code to identify
+                            the material and receipt.
+                        </div>
+
+                    </div>
+
+
+                    <div class="step-number">
+                        01
+                    </div>
+
+                </div>
+
+
+                <div class="scanner-content">
+
+                    <label class="input-label"
+                           for="consumptionQrInput">
+
+                        MATERIAL QR
+
+                    </label>
+
+
+                    <div class="scan-row">
+
+                        <div class="scan-input-container">
+
+                            <div class="scan-icon">
+                                ▦
+                            </div>
+
+
+                            <input id="consumptionQrInput"
+                                   type="text"
+                                   autocomplete="off"
+                                   spellcheck="false"
+                                   placeholder="Scan material QR...">
+
+
+                            <button id="consumptionQrClear"
+                                    class="input-clear"
+                                    type="button">
+
+                                ×
+
+                            </button>
+
+                        </div>
+
+
+                        <button id="consumptionQrRead"
+                                class="validate-button"
+                                type="button">
+
+                            <span class="validate-icon">
+                                ✓
+                            </span>
+
+                            READ QR
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="scanner-instruction">
+
+                        <span class="info-icon">
+                            i
+                        </span>
+
+                        <span>
+                            Scan the QR code containing PO, SO,
+                            material identifier, material name and GRN.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div id="qrMessage"
+                     class="consumption-message hidden">
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 STEP 02 - QR DATA
+                 ================================================= -->
+
+            <section id="qrResultPanel"
+                     class="operation-panel hidden">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <div class="panel-title">
+                            QR Information
+                        </div>
+
+                        <div class="panel-description">
+                            Information identified from the QR code.
+                        </div>
+
+                    </div>
+
+
+                    <div class="step-number">
+                        02
+                    </div>
+
+                </div>
+
+
+                <div class="consumption-detail-grid">
+
+
+                    <!-- PO -->
+
+                    <div class="consumption-detail">
+
+                        <span>
+                            PURCHASE ORDER
+                        </span>
+
+                        <strong id="qrPo">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <!-- SO -->
+
+                    <div class="consumption-detail">
+
+                        <span>
+                            SALES ORDER
+                        </span>
+
+                        <strong id="qrSo">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <!-- MATERIAL ID -->
+
+                    <div class="consumption-detail">
+
+                        <span>
+                            MATERIAL IDENTIFIER
+                        </span>
+
+                        <strong id="qrId">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <!-- GRN -->
+
+                    <div class="consumption-detail">
+
+                        <span>
+                            GRN
+                        </span>
+
+                        <strong id="qrGrn">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <!-- MATERIAL NAME -->
+
+                    <div class="consumption-detail consumption-detail-wide">
+
+                        <span>
+                            MATERIAL NAME
+                        </span>
+
+                        <div id="qrMaterialName"
+                             class="material-name-value">
+
+                            -
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="receive-actions">
+
+                    <button id="confirmConsumption"
+                            class="validate-button"
+                            type="button"
+                            disabled>
+
+                        <span class="validate-icon">
+                            ✓
+                        </span>
+
+                        CONFIRM
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 STEP 03 - EXCEL RECORD
+                 ================================================= -->
+
+            <section id="materialResultPanel"
+                     class="operation-panel hidden">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <div class="panel-title">
+                            Consumption Record
+                        </div>
+
+                        <div class="panel-description">
+                            Related record fetched from Consumption.xlsx.
+                        </div>
+
+                    </div>
+
+
+                    <div class="step-number">
+                        03
+                    </div>
+
+                </div>
+
+
+                <div class="consumption-detail-grid">
+
+
+                    <!-- PO -->
+
+                    <div class="consumption-detail">
+
+                        <span>
+                            PURCHASE ORDER
+                        </span>
+
+                        <strong id="materialPo">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <!-- SO -->
+
+                    <div class="consumption-detail">
+
+                        <span>
+                            SALES ORDER
+                        </span>
+
+                        <strong id="materialSo">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <!-- MATERIAL ID -->
+
+                    <div class="consumption-detail">
+
+                        <span>
+                            MATERIAL IDENTIFIER
+                        </span>
+
+                        <strong id="materialId">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <!-- GRN -->
+
+                    <div class="consumption-detail">
+
+                        <span>
+                            GRN
+                        </span>
+
+                        <strong id="materialGrn">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <!-- MATERIAL NAME -->
+
+                    <div class="consumption-detail consumption-detail-wide">
+
+                        <span>
+                            MATERIAL NAME
+                        </span>
+
+                        <div id="materialName"
+                             class="material-name-value">
+
+                            -
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- UOM -->
+
+                    <div class="consumption-detail">
+
+                        <span>
+                            UNIT OF MEASURE
+                        </span>
+
+                        <strong id="materialUom">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <!-- STATUS -->
+
+                    <div class="consumption-detail">
+
+                        <span>
+                            STATUS
+                        </span>
+
+                        <strong id="materialStatus">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <!-- LAST UPDATED -->
+
+                    <div class="consumption-detail">
+
+                        <span>
+                            LAST UPDATED
+                        </span>
+
+                        <strong id="materialLastUpdated">
+                            -
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     QUANTITY INFORMATION
+                     ================================================= -->
+
+                <div class="quantity-summary">
+
+
+                    <div class="quantity-card">
+
+                        <span>
+                            RECEIVED
+                        </span>
+
+                        <strong id="receivedQuantity">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="quantity-card quantity-available">
+
+                        <span>
+                            AVAILABLE
+                        </span>
+
+                        <strong id="availableQuantity">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="quantity-card">
+
+                        <span>
+                            CONSUMED
+                        </span>
+
+                        <strong id="consumedQuantity">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 STEP 04
+
+                 NOT USED YET.
+                 Consumption logic will be added later.
+                 ================================================= -->
+
+            <section id="consumePanel"
+                     class="operation-panel hidden">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <div class="panel-title">
+                            Consumption Quantity
+                        </div>
+
+                        <div class="panel-description">
+                            Consumption functionality will be enabled
+                            in the next step.
+                        </div>
+
+                    </div>
+
+                    <div class="step-number">
+                        04
+                    </div>
+
+                </div>
+
+            </section>
+
+
+        </main>
+
+    </div>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+    <!-- =====================================================
+         CLOCK
+         ===================================================== -->
+
+    <script>
+
+        function updateClock() {
+
+            const clock =
+                document.getElementById("clock");
+
+            if (!clock) {
+                return;
+            }
+
+            const now =
+                new Date();
+
+            clock.textContent =
+                now.toLocaleString(
+                    "en-IN",
+                    {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit"
+                    }
+                );
+        }
+
+
+        updateClock();
+
+        setInterval(
+            updateClock,
+            1000
+        );
+
+    </script>
+
+
+    <script src="/js/consumption.js"></script>
+
+    <script src="/js/common-layout.js"></script>
+</body>
+
+</html>

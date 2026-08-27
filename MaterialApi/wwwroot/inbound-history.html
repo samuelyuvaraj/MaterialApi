@@ -1,0 +1,694 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>BDL MES - Inbound History</title>
+
+    <link rel="stylesheet"
+          href="/css/site.css">
+    <link rel="stylesheet"
+          href="/css/inbound-history.css">
+
+    <link rel="stylesheet" href="/css/common-layout.css">
+</head>
+
+
+<body data-page-title="Inbound History">
+
+
+    <!-- =========================================================
+         TOP HEADER
+         ========================================================= -->
+
+    <!-- =========================================================
+         APPLICATION
+         ========================================================= -->
+
+    
+<div id="header-container"></div>
+
+<div class="application">
+    <div id="sidebar-container"></div>
+
+    <!-- =====================================================
+             SIDEBAR
+             ===================================================== -->
+
+        <!-- =====================================================
+             MAIN CONTENT
+             ===================================================== -->
+
+        <main class="main-content">
+
+
+            <!-- Breadcrumb -->
+
+            <div class="breadcrumb">
+
+                <span>
+                    Navigation
+                </span>
+
+                <span class="breadcrumb-arrow">
+                    /
+                </span>
+
+                <strong>
+                    Inbound History
+                </strong>
+
+            </div>
+
+
+
+            <!-- Page Header -->
+
+            <div class="page-heading">
+
+
+                <div>
+
+                    <h1>
+                        Inbound History
+                    </h1>
+
+
+                    <p>
+                        View incoming material and goods receipt
+                        history.
+                    </p>
+</div>
+
+<div id="footer-container"></div>
+<div class="operation-active">
+
+                    <span class="active-dot"></span>
+
+                    INBOUND HISTORY
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SUMMARY
+                 ================================================= -->
+
+            <section class="operation-panel">
+
+
+                <div class="panel-header">
+
+
+                    <div>
+
+                        <div class="panel-title">
+                            Goods Receipt History
+                        </div>
+
+
+                        <div class="panel-description">
+
+                            Records retrieved from the inbound
+                            goods register.
+
+                        </div>
+
+                    </div>
+
+
+                    <div id="inboundRecordCount"
+                         class="result-status">
+
+                        0 RECORDS
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     TOOLBAR
+                     ================================================= -->
+
+                <div class="history-toolbar">
+
+
+                    <div class="history-search">
+
+
+                        <span class="history-search-icon">
+                            ⌕
+                        </span>
+
+
+                        <input id="inboundSearch"
+                               type="text"
+                               autocomplete="off"
+                               placeholder="Search receipt, PO, vendor, material...">
+
+
+                        <button id="clearInboundSearch"
+                                type="button">
+
+                            ×
+
+                        </button>
+
+
+                    </div>
+
+
+
+                    <button id="refreshInboundButton"
+                            class="validate-button"
+                            type="button">
+
+                        ↻ &nbsp; REFRESH
+
+                    </button>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     TABLE
+                     ================================================= -->
+
+                <div class="inbound-table-container">
+
+
+                    <table class="inbound-table"
+                           id="inboundTable">
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    RECEIPT ID
+                                </th>
+
+                                <th>
+                                    PO NUMBER
+                                </th>
+
+                                <th>
+                                    VENDOR
+                                </th>
+
+                                <th>
+                                    MATERIAL
+                                </th>
+
+                                <th>
+                                    QUANTITY
+                                </th>
+
+                                <th>
+                                    BATCH / LOT
+                                </th>
+
+                                <th>
+                                    RECEIPT DATE
+                                </th>
+
+                                <th>
+                                    ACTION
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="inboundTableBody">
+
+
+                            <tr>
+
+                                <td colspan="8"
+                                    class="table-loading">
+
+                                    Loading inbound records...
+
+                                </td>
+
+                            </tr>
+
+
+                        </tbody>
+
+
+                    </table>
+
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 EMPTY STATE
+                 ================================================= -->
+
+            <section id="inboundEmptyPanel"
+                     class="empty-state-panel hidden">
+
+
+                <div class="empty-state-icon">
+                    ▤
+                </div>
+
+
+                <div class="empty-state-title">
+
+                    No Inbound Records
+
+                </div>
+
+
+                <div class="empty-state-description">
+
+                    No goods receipt records match the
+                    current search.
+
+                </div>
+
+
+            </section>
+
+
+        </main>
+
+
+    </div>
+
+
+
+    <!-- =========================================================
+         RECEIPT DETAILS MODAL
+         ========================================================= -->
+
+    <div id="receiptModal"
+         class="receipt-modal hidden">
+
+
+        <div id="receiptModalOverlay"
+             class="receipt-modal-overlay">
+        </div>
+
+
+        <div class="receipt-modal-content">
+
+
+            <!-- Modal Header -->
+
+            <div class="receipt-modal-header">
+
+
+                <div>
+
+                    <div class="receipt-modal-title">
+                        Goods Receipt
+                    </div>
+
+
+                    <div class="receipt-modal-subtitle">
+
+                        Inbound material receipt details
+
+                    </div>
+
+                </div>
+
+
+                <button id="closeReceiptModal"
+                        class="modal-close"
+                        type="button">
+
+                    ×
+
+                </button>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 RECEIPT DETAILS
+                 ================================================= -->
+
+            <div class="receipt-details-layout">
+
+
+                <!-- Details -->
+
+                <div class="receipt-detail-fields">
+
+
+                    <div class="receipt-id-display">
+
+
+                        <span>
+                            RECEIPT ID
+                        </span>
+
+
+                        <strong id="detailReceiptId">
+
+                            GRN-000000
+
+                        </strong>
+
+
+                    </div>
+
+
+
+                    <div class="detail-grid">
+
+
+                        <div class="detail-field">
+
+                            <span>
+                                PO NUMBER
+                            </span>
+
+
+                            <strong id="detailPo">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="detail-field">
+
+                            <span>
+                                VENDOR CODE
+                            </span>
+
+
+                            <strong id="detailVendorCode">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="detail-field detail-wide">
+
+                            <span>
+                                VENDOR NAME
+                            </span>
+
+
+                            <strong id="detailVendorName">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="detail-field">
+
+                            <span>
+                                MATERIAL IDENTIFIER
+                            </span>
+
+
+                            <strong id="detailMaterialIdentifier">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="detail-field">
+
+                            <span>
+                                MATERIAL NAME
+                            </span>
+
+
+                            <strong id="detailMaterialName">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="detail-field">
+
+                            <span>
+                                QUANTITY
+                            </span>
+
+
+                            <strong id="detailQuantity">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="detail-field">
+
+                            <span>
+                                UNIT OF MEASURE
+                            </span>
+
+
+                            <strong id="detailUom">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="detail-field">
+
+                            <span>
+                                BATCH / LOT
+                            </span>
+
+
+                            <strong id="detailBatch">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="detail-field">
+
+                            <span>
+                                SUPPLIER INVOICE
+                            </span>
+
+
+                            <strong id="detailInvoice">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="detail-field">
+
+                            <span>
+                                RECEIPT DATE
+                            </span>
+
+
+                            <strong id="detailDate">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="detail-field detail-wide">
+
+                            <span>
+                                REMARKS
+                            </span>
+
+
+                            <strong id="detailRemarks"
+                                    class="detail-normal">
+
+                                -
+
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     QR CODE
+                     ================================================= -->
+
+                <div class="qr-panel">
+
+
+                    <div class="qr-title">
+                        RECEIPT QR CODE
+                    </div>
+
+
+                    <div id="qrLoading"
+                         class="qr-loading">
+
+                        Loading QR code...
+
+                    </div>
+
+
+                    <img id="receiptQrCode"
+                         class="receipt-qr hidden"
+                         alt="Goods Receipt QR Code">
+
+
+                    <div id="qrReceiptLabel"
+                         class="qr-receipt-label">
+
+                        GRN-000000
+
+                    </div>
+
+
+                    <div class="qr-description">
+
+                        Scan this QR code to identify
+                        the goods receipt.
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- Modal Footer -->
+
+            <div class="receipt-modal-footer">
+
+
+                <button id="printReceiptButton"
+                        class="clear-button"
+                        type="button">
+
+                    PRINT
+
+                </button>
+
+
+                <button id="closeReceiptButton"
+                        class="validate-button"
+                        type="button">
+
+                    CLOSE
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =========================================================
+         CLOCK
+         ========================================================= -->
+
+    <script>
+
+    function updateClock() {
+
+        const clock =
+            document.getElementById("clock");
+
+
+        if (!clock) {
+            return;
+        }
+
+
+        const now =
+            new Date();
+
+
+        clock.textContent =
+            now.toLocaleString(
+                "en-IN",
+                {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit"
+                    second: "2-digit"
+                }
+            );
+
+    }
+
+
+    updateClock();
+
+
+    setInterval(
+        updateClock,
+        1000
+    );
+
+    </script>
+
+
+
+    <!-- =========================================================
+         INBOUND HISTORY JS
+         ========================================================= -->
+
+    <script src="/js/inbound-history.js"></script>
+
+
+    <script src="/js/common-layout.js"></script>
+</body>
+
+</html>

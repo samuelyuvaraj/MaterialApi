@@ -1,0 +1,974 @@
+﻿/* =========================================================
+   BDL MES - MATERIAL CONSUMPTION
+   consumption.css
+
+   Layout:
+   ---------------------------------------------------------
+   QR IDENTIFICATION
+   01
+
+   MATERIAL INFORMATION
+   02
+
+   Row 1:
+   Purchase Order | Sales Order | Material ID | GRN | Confirm
+
+   Row 2:
+   Material Name | Unit | Status | Received | Available | Consumed
+
+   Additional consumption area follows below.
+   ========================================================= */
+
+
+/* =========================================================
+   PAGE / MODULE BASE
+   ========================================================= */
+
+.consumption-page {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+    /* =========================================================
+   COMMON BOX SIZING
+   ========================================================= */
+
+    .consumption-page *,
+    .consumption-page *::before,
+    .consumption-page *::after {
+        box-sizing: border-box;
+    }
+
+
+/* =========================================================
+   CONSUMPTION MESSAGE
+   ========================================================= */
+
+.consumption-message {
+    margin-top: 18px;
+    padding: 12px 16px;
+    border: 1px solid #d8dee6;
+    border-left: 3px solid #2f6fed;
+    background: #f7f9fb;
+    color: #333d48;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    box-sizing: border-box;
+}
+
+
+    .consumption-message.hidden {
+        display: none;
+    }
+
+
+    .consumption-message.error {
+        border-left-color: #c62828;
+        background: #fff6f6;
+        color: #a11a1a;
+    }
+
+
+    .consumption-message.success {
+        border-left-color: #2e7d32;
+        background: #f4faf5;
+        color: #246b29;
+    }
+
+
+/* =========================================================
+   QR IDENTIFICATION
+   ========================================================= */
+
+.consumption-qr-section {
+    width: 100%;
+    margin-bottom: 20px;
+    border: 1px solid #d8dee6;
+    background: #ffffff;
+}
+
+
+.consumption-qr-content {
+    display: flex;
+    width: 100%;
+}
+
+
+/* =========================================================
+   QR INTRO
+   ========================================================= */
+
+.consumption-qr-intro {
+    position: relative;
+    width: 260px;
+    min-width: 260px;
+    padding: 28px 20px;
+    border-right: 1px solid #d8dee6;
+    background: #ffffff;
+}
+
+
+.consumption-qr-intro-title {
+    margin-top: 48px;
+    color: #172333;
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+
+.consumption-qr-intro-description {
+    margin-top: 8px;
+    color: #657384;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+
+.consumption-step-number {
+    position: absolute;
+    top: 48px;
+    right: 20px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d2dbe4;
+    color: #5f6d7b;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   QR WORK AREA
+   ========================================================= */
+
+.consumption-qr-work {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 28px;
+    background: #ffffff;
+}
+
+
+/* =========================================================
+   QR INPUT ROW
+   ========================================================= */
+
+.consumption-qr-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    width: 100%;
+}
+
+
+/* =========================================================
+   QR INPUT
+   ========================================================= */
+
+.consumption-qr-input-wrapper {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+
+    .consumption-qr-input-wrapper label {
+        display: block;
+        margin-bottom: 8px;
+        color: #52606d;
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .7px;
+    }
+
+
+.consumption-qr-input {
+    width: 100%;
+    height: 48px;
+    padding: 0 42px 0 14px;
+    border: 1px solid #aeb9c5;
+    background: #ffffff;
+    color: #172333;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    outline: none;
+}
+
+
+    .consumption-qr-input:focus {
+        border-color: #2f6fed;
+    }
+
+
+.consumption-qr-clear {
+    position: absolute;
+    right: 10px;
+    bottom: 7px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: #7b8794;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+
+    .consumption-qr-clear:hover {
+        color: #172333;
+    }
+
+
+/* =========================================================
+   QR READ BUTTON
+   ========================================================= */
+
+.consumption-qr-read {
+    flex: 0 0 175px;
+    height: 48px;
+    border: none;
+    background: #009b9b;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .3px;
+    cursor: pointer;
+}
+
+
+    .consumption-qr-read:hover {
+        background: #008b8b;
+    }
+
+
+    .consumption-qr-read:disabled {
+        opacity: .55;
+        cursor: not-allowed;
+    }
+
+
+/* =========================================================
+   QR HELP TEXT
+   ========================================================= */
+
+.consumption-qr-help {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 10px;
+    color: #657384;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+}
+
+
+.consumption-qr-help-icon {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #bfc9d4;
+    border-radius: 50%;
+    color: #647386;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   MATERIAL INFORMATION - SECTION 02
+   ========================================================= */
+
+.consumption-information-section {
+    display: flex;
+    width: 100%;
+    margin-top: 20px;
+    border: 1px solid #d8dee6;
+    background: #ffffff;
+}
+
+
+/* =========================================================
+   SECTION 02 INTRO
+   ========================================================= */
+
+.section-intro {
+    position: relative;
+    width: 260px;
+    min-width: 260px;
+    padding: 28px 20px;
+    border-right: 1px solid #d8dee6;
+    background: #ffffff;
+}
+
+
+.section-title {
+    margin-top: 70px;
+    color: #172333;
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+
+.section-description {
+    margin-top: 8px;
+    color: #657384;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+
+.section-number {
+    position: absolute;
+    top: 72px;
+    right: 20px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d2dbe4;
+    color: #5f6d7b;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   SECTION 02 DATA AREA
+   ========================================================= */
+
+.material-information-content {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: calc(100% - 260px);
+    background: #ffffff;
+}
+
+
+/* =========================================================
+   TOP ROW
+   ========================================================= */
+
+.material-top-row {
+    display: grid;
+    grid-template-columns: minmax(180px, 1.35fr) minmax(170px, 1.25fr) minmax(170px, 1.1fr) minmax(135px, .8fr) 175px;
+    width: 100%;
+    border-bottom: 1px solid #d8dee6;
+}
+
+
+/* =========================================================
+   BOTTOM ROW
+   ========================================================= */
+
+.material-bottom-row {
+    display: grid;
+    grid-template-columns: minmax(180px, 1.5fr) minmax(75px, .6fr) minmax(120px, .9fr) minmax(110px, .8fr) minmax(110px, .8fr) minmax(110px, .8fr);
+    width: 100%;
+}
+
+
+/* =========================================================
+   MATERIAL FIELD
+   ========================================================= */
+
+.material-field {
+    min-width: 0;
+    padding: 18px 20px;
+    border-right: 1px solid #d8dee6;
+    background: #ffffff;
+}
+
+
+    .material-field:last-child {
+        border-right: none;
+    }
+
+
+    /* =========================================================
+   FIELD LABEL
+   ========================================================= */
+
+    .material-field span {
+        display: block;
+        margin-bottom: 8px;
+        color: #657384;
+        font-family: Arial, sans-serif;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .7px;
+        line-height: 1.3;
+    }
+
+
+    /* =========================================================
+   FIELD VALUE
+   ========================================================= */
+
+    .material-field strong {
+        display: block;
+        width: 100%;
+        color: #172333;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.45;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: normal;
+    }
+
+
+/* =========================================================
+   MATERIAL NAME
+   ========================================================= */
+
+.material-name strong {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   QUANTITY VALUES
+   ========================================================= */
+
+.quantity-field strong {
+    font-size: 22px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   AVAILABLE FIELD
+   ========================================================= */
+
+.available-field {
+    border-left: 2px solid #2f6fed;
+    background: #fafcff;
+}
+
+
+    .available-field strong {
+        color: #172333;
+    }
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+#infoStatus {
+    color: #246b29;
+}
+
+
+/* =========================================================
+   CONFIRM BUTTON
+   ========================================================= */
+
+.material-confirm {
+    display: flex;
+    min-width: 0;
+    align-items: stretch;
+}
+
+
+    .material-confirm .validate-button {
+        width: 100%;
+        min-height: 100%;
+        margin: 0;
+        border: none;
+        box-sizing: border-box;
+    }
+
+
+/* =========================================================
+   QUANTITY SUMMARY
+   =========================================================
+   Kept for compatibility with previous HTML/JS.
+   If the new Section 02 is used, these can remain hidden
+   or unused.
+   ========================================================= */
+
+.quantity-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(180px, 1fr));
+    gap: 16px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+
+.quantity-card {
+    min-width: 0;
+    min-height: 120px;
+    padding: 20px;
+    border: 1px solid #dfe3e8;
+    background: #ffffff;
+}
+
+
+    .quantity-card span {
+        display: block;
+        margin-bottom: 10px;
+        color: #657384;
+        font-family: Arial, sans-serif;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .7px;
+    }
+
+
+    .quantity-card strong {
+        display: block;
+        color: #172333;
+        font-family: Arial, sans-serif;
+        font-size: 28px;
+        font-weight: 700;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
+
+.quantity-available {
+    border-color: #2f6fed;
+    background: #fafcff;
+}
+
+
+/* =========================================================
+   CONSUMPTION RECORD
+   ========================================================= */
+
+.consumption-record {
+    width: 100%;
+    margin-top: 20px;
+    border: 1px solid #d8dee6;
+    background: #ffffff;
+}
+
+
+    .consumption-record.hidden {
+        display: none;
+    }
+
+
+/* =========================================================
+   RECORD HEADER
+   ========================================================= */
+
+.consumption-record-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 58px;
+    padding: 14px 20px;
+    border-bottom: 1px solid #d8dee6;
+    background: #f7f9fb;
+}
+
+
+    .consumption-record-header strong {
+        color: #172333;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+
+/* =========================================================
+   CONSUMPTION FORM
+   ========================================================= */
+
+.consumption-form {
+    width: 100%;
+    padding: 22px;
+    background: #ffffff;
+}
+
+
+.consumption-form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(200px, 1fr));
+    gap: 18px;
+    width: 100%;
+}
+
+
+/* =========================================================
+   FORM FIELD
+   ========================================================= */
+
+.consumption-form-field {
+    min-width: 0;
+}
+
+
+    .consumption-form-field label {
+        display: block;
+        margin-bottom: 7px;
+        color: #657384;
+        font-family: Arial, sans-serif;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .7px;
+    }
+
+
+    .consumption-form-field input,
+    .consumption-form-field select {
+        width: 100%;
+        height: 44px;
+        padding: 0 12px;
+        border: 1px solid #cfd6de;
+        background: #ffffff;
+        color: #172333;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        outline: none;
+    }
+
+
+        .consumption-form-field input:focus,
+        .consumption-form-field select:focus {
+            border-color: #2f6fed;
+        }
+
+
+/* =========================================================
+   CONSUMPTION ACTION ROW
+   ========================================================= */
+
+.consumption-action-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+
+/* =========================================================
+   GENERAL VALIDATE BUTTON
+   ========================================================= */
+
+.validate-button {
+    min-height: 44px;
+    padding: 0 24px;
+    border: none;
+    background: #009b9b;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .3px;
+    cursor: pointer;
+}
+
+
+    .validate-button:hover {
+        background: #008b8b;
+    }
+
+
+    .validate-button:disabled {
+        opacity: .5;
+        cursor: not-allowed;
+    }
+
+
+/* =========================================================
+   SECONDARY BUTTON
+   ========================================================= */
+
+.secondary-button {
+    min-height: 44px;
+    padding: 0 20px;
+    border: 1px solid #cfd6de;
+    background: #ffffff;
+    color: #394655;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+
+    .secondary-button:hover {
+        background: #f5f7f9;
+    }
+
+
+/* =========================================================
+   HIDDEN UTILITY
+   ========================================================= */
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================================================
+   LONG VALUES
+   ========================================================= */
+
+#infoPo,
+#infoSo,
+#infoMaterialId,
+#infoGrn {
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   PREVENT DATA FROM BEING SQUEEZED
+   ========================================================= */
+
+.material-information-content,
+.material-top-row,
+.material-bottom-row,
+.material-field,
+.material-confirm {
+    max-width: none;
+}
+
+
+/* =========================================================
+   LARGE SCREEN
+   ========================================================= */
+
+@media (min-width: 1400px) {
+
+    .section-intro,
+    .consumption-qr-intro {
+        width: 280px;
+        min-width: 280px;
+    }
+
+    .material-information-content {
+        width: calc(100% - 280px);
+    }
+
+    .material-field {
+        padding-left: 22px;
+        padding-right: 22px;
+    }
+}
+
+
+/* =========================================================
+   MEDIUM SCREEN
+   ========================================================= */
+
+@media (max-width: 1250px) {
+
+    .section-intro,
+    .consumption-qr-intro {
+        width: 220px;
+        min-width: 220px;
+    }
+
+    .material-information-content {
+        width: calc(100% - 220px);
+    }
+
+    .material-top-row {
+        grid-template-columns: minmax(145px, 1.2fr) minmax(140px, 1.1fr) minmax(135px, 1fr) minmax(105px, .8fr) 145px;
+    }
+
+    .material-bottom-row {
+        grid-template-columns: minmax(145px, 1.3fr) minmax(65px, .5fr) minmax(105px, .8fr) minmax(95px, .7fr) minmax(95px, .7fr) minmax(95px, .7fr);
+    }
+
+    .material-field {
+        padding: 16px 14px;
+    }
+
+        .material-field strong {
+            font-size: 13px;
+        }
+
+    .quantity-field strong {
+        font-size: 20px;
+    }
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+    .consumption-information-section {
+        flex-direction: column;
+    }
+
+    .section-intro {
+        width: 100%;
+        min-width: 0;
+        min-height: 130px;
+        border-right: none;
+        border-bottom: 1px solid #d8dee6;
+    }
+
+    .section-title {
+        margin-top: 0;
+    }
+
+    .section-number {
+        top: 25px;
+    }
+
+    .material-information-content {
+        width: 100%;
+    }
+
+    .material-top-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .material-bottom-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .material-confirm {
+        min-height: 60px;
+    }
+
+    .consumption-qr-content {
+        flex-direction: column;
+    }
+
+    .consumption-qr-intro {
+        width: 100%;
+        min-width: 0;
+        min-height: 130px;
+        border-right: none;
+        border-bottom: 1px solid #d8dee6;
+    }
+
+    .consumption-qr-intro-title {
+        margin-top: 0;
+    }
+
+    .consumption-qr-work {
+        width: 100%;
+    }
+
+    .consumption-form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+/* =========================================================
+   SMALL TABLET / MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .consumption-qr-work {
+        padding: 18px;
+    }
+
+    .consumption-qr-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .consumption-qr-read {
+        width: 100%;
+        flex: none;
+    }
+
+    .material-top-row,
+    .material-bottom-row {
+        grid-template-columns: 1fr;
+    }
+
+    .material-field {
+        border-right: none;
+        border-bottom: 1px solid #d8dee6;
+    }
+
+        .material-field:last-child {
+            border-bottom: none;
+        }
+
+    .material-confirm {
+        min-height: 55px;
+    }
+
+        .material-confirm .validate-button {
+            min-height: 55px;
+        }
+
+    .quantity-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .consumption-form {
+        padding: 16px;
+    }
+
+    .consumption-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .consumption-action-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+        .consumption-action-row button {
+            width: 100%;
+        }
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 450px) {
+
+    .section-intro,
+    .consumption-qr-intro {
+        padding: 20px 16px;
+    }
+
+    .section-title {
+        font-size: 18px;
+    }
+
+    .section-number {
+        right: 16px;
+    }
+
+    .material-field {
+        padding: 15px 16px;
+    }
+
+        .material-field strong {
+            font-size: 14px;
+        }
+
+    .quantity-field strong {
+        font-size: 20px;
+    }
+}

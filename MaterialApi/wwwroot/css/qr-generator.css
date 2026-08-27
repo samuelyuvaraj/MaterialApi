@@ -1,0 +1,339 @@
+﻿/* =========================================================
+   BDL MES - QR GENERATOR
+   Module-specific CSS
+   Existing site.css remains untouched
+   ========================================================= */
+
+
+.qr-generator-panel,
+.qr-result-panel {
+    margin-bottom: 20px;
+    border: 1px solid #d7dde4;
+    background: #ffffff;
+}
+
+
+.generator-header,
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 24px;
+    border-bottom: 1px solid #e1e5e9;
+}
+
+
+.generator-title {
+    color: #1e2732;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+
+.generator-description {
+    margin-top: 6px;
+    color: #68717d;
+    font-size: 13px;
+}
+
+
+.version-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 52px;
+    height: 32px;
+    border: 1px solid #2f6fed;
+    color: #2f6fed;
+    background: #f5f8ff;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+.generator-body {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    padding: 24px;
+}
+
+
+.generator-field {
+    min-width: 0;
+}
+
+
+.generator-field-wide {
+    grid-column: 1 / -1;
+}
+
+
+.generator-field label {
+    display: block;
+    margin-bottom: 8px;
+    color: #5d6875;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+}
+
+
+.generator-field input,
+.generator-field textarea {
+    box-sizing: border-box;
+    width: 100%;
+    border: 1px solid #bfc8d2;
+    background: #ffffff;
+    color: #1f2933;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+}
+
+
+.generator-field input {
+    height: 48px;
+    padding: 0 14px;
+}
+
+
+.generator-field textarea {
+    min-height: 110px;
+    padding: 12px 14px;
+    line-height: 1.5;
+    resize: vertical;
+    overflow-wrap: anywhere;
+}
+
+
+    .generator-field input:focus,
+    .generator-field textarea:focus {
+        border-color: #009b9b;
+        box-shadow: 0 0 0 2px rgba(0, 155, 155, 0.08);
+    }
+
+
+.field-hint {
+    margin-top: 6px;
+    color: #7a8490;
+    font-size: 11px;
+}
+
+
+.generator-actions {
+    display: flex;
+    gap: 12px;
+    padding: 0 24px 24px;
+}
+
+
+.secondary-button {
+    min-height: 46px;
+    padding: 0 22px;
+    border: 1px solid #bfc8d2;
+    background: #ffffff;
+    color: #34404c;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+
+    .secondary-button:hover {
+        background: #f5f7f9;
+    }
+
+
+.generator-message {
+    margin: 0 24px 24px;
+    padding: 12px 16px;
+    border: 1px solid #d8dee6;
+    border-left: 3px solid #2e7d32;
+    background: #f4faf5;
+    color: #246b29;
+    font-size: 13px;
+}
+
+
+    .generator-message.error {
+        border-left-color: #c62828;
+        background: #fff6f6;
+        color: #a11a1a;
+    }
+
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================================================
+   RESULT
+   ========================================================= */
+
+
+.qr-result-body {
+    display: grid;
+    grid-template-columns: 360px minmax(0, 1fr);
+    gap: 30px;
+    padding: 28px;
+}
+
+
+.qr-image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 360px;
+    border: 1px solid #dfe4e9;
+    background: #ffffff;
+}
+
+
+    .qr-image-container img {
+        display: block;
+        width: 320px;
+        height: 320px;
+        image-rendering: pixelated;
+    }
+
+
+.payload-container {
+    min-width: 0;
+}
+
+
+.payload-label {
+    margin-bottom: 8px;
+    color: #5d6875;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+}
+
+
+#qrPayload {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 150px;
+    padding: 14px;
+    border: 1px solid #d1d8df;
+    background: #f8fafb;
+    color: #27313b;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    resize: vertical;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+
+.result-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+
+@media print {
+
+    body * {
+        visibility: hidden;
+    }
+
+
+    .qr-result-panel,
+    .qr-result-panel * {
+        visibility: visible;
+    }
+
+
+    .qr-result-panel {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        border: none;
+    }
+
+
+    .result-actions,
+    .payload-container {
+        display: none;
+    }
+
+
+    .qr-result-body {
+        display: block;
+    }
+
+
+    .qr-image-container {
+        border: none;
+    }
+
+
+        .qr-image-container img {
+            width: 450px;
+            height: 450px;
+        }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+
+@media (max-width: 900px) {
+
+    .generator-body {
+        grid-template-columns: 1fr;
+    }
+
+
+    .generator-field-wide {
+        grid-column: auto;
+    }
+
+
+    .qr-result-body {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .generator-actions {
+        flex-direction: column;
+    }
+
+
+        .generator-actions button {
+            width: 100%;
+        }
+
+
+    .result-actions {
+        flex-direction: column;
+    }
+
+
+        .result-actions button {
+            width: 100%;
+        }
+
+
+    .qr-image-container img {
+        width: 280px;
+        height: 280px;
+    }
+}

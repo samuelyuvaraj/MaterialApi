@@ -1,0 +1,202 @@
+﻿/* =========================================================
+   MES - CONSUMPTION DATA
+   ========================================================= */
+
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+
+.data-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.data-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #dfe3e8;
+    background: #fff;
+}
+
+
+.consumption-table {
+    width: 100%;
+    min-width: 1100px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+
+    .consumption-table th {
+        padding: 12px 10px;
+        background: #f3f5f7;
+        border-right: 1px solid #dfe3e8;
+        border-bottom: 1px solid #cfd5dc;
+        color: #4d5661;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+
+    .consumption-table td {
+        padding: 11px 10px;
+        border-right: 1px solid #e5e8eb;
+        border-bottom: 1px solid #e5e8eb;
+        color: #303740;
+        font-size: 12px;
+        vertical-align: top;
+    }
+
+
+    .consumption-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+
+    /* =========================================================
+   COLUMN WIDTHS
+   ========================================================= */
+
+    .consumption-table th:nth-child(1),
+    .consumption-table td:nth-child(1) {
+        width: 110px;
+    }
+
+    .consumption-table th:nth-child(2),
+    .consumption-table td:nth-child(2) {
+        width: 110px;
+    }
+
+    .consumption-table th:nth-child(3),
+    .consumption-table td:nth-child(3) {
+        width: 110px;
+    }
+
+    .consumption-table .material-column,
+    .consumption-table td:nth-child(4) {
+        width: 300px;
+    }
+
+    .consumption-table th:nth-child(5),
+    .consumption-table td:nth-child(5) {
+        width: 120px;
+    }
+
+    .consumption-table th:nth-child(6),
+    .consumption-table td:nth-child(6) {
+        width: 70px;
+    }
+
+    .consumption-table th:nth-child(7),
+    .consumption-table td:nth-child(7) {
+        width: 90px;
+    }
+
+    .consumption-table th:nth-child(8),
+    .consumption-table td:nth-child(8) {
+        width: 90px;
+    }
+
+    .consumption-table th:nth-child(9),
+    .consumption-table td:nth-child(9) {
+        width: 90px;
+    }
+
+    .consumption-table th:nth-child(10),
+    .consumption-table td:nth-child(10) {
+        width: 130px;
+    }
+
+
+    /* =========================================================
+   LONG MATERIAL NAME
+   ========================================================= */
+
+    .consumption-table td:nth-child(4) {
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        line-height: 1.45;
+    }
+
+
+/* =========================================================
+   ACTION BUTTONS
+   ========================================================= */
+
+.table-action {
+    border: 1px solid #cfd5dc;
+    background: #fff;
+    padding: 6px 10px;
+    margin-right: 5px;
+    border-radius: 3px;
+    color: #3f4852;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+
+    .table-action:hover {
+        background: #f1f4f7;
+    }
+
+
+    .table-action.delete {
+        color: #a32929;
+    }
+
+
+/* =========================================================
+   EMPTY TABLE
+   ========================================================= */
+
+.empty-row td {
+    padding: 35px 20px;
+    text-align: center;
+    color: #7b848e;
+}
+
+
+/* =========================================================
+   EDITOR
+   ========================================================= */
+
+#dataMaterialName {
+    width: 100%;
+    resize: vertical;
+    box-sizing: border-box;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   HIDDEN
+   ========================================================= */
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .data-toolbar {
+        justify-content: flex-start;
+    }
+}

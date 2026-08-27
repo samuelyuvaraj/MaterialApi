@@ -1,0 +1,284 @@
+
+/* =========================================================
+   BDL MES COMMON LAYOUT
+   ========================================================= */
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Header/footer are fixed-height flex participants. */
+#header-container {
+    flex: 0 0 auto;
+    width: 100%;
+    z-index: 1000;
+}
+
+#footer-container {
+    flex: 0 0 auto;
+    width: 100%;
+    z-index: 1000;
+}
+
+/* Main area consumes everything between header and footer. */
+.application {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* The wrapper and sidebar stretch for every page, even short pages. */
+#sidebar-container {
+    flex: 0 0 260px;
+    width: 260px;
+    min-height: 0;
+    height: 100%;
+    display: flex;
+    align-items: stretch;
+}
+
+#sidebar-container .sidebar {
+    flex: 1 1 auto;
+    width: 260px;
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Only the main page area scrolls. */
+.application > .main-content,
+.main-content {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Bottom status stays at the bottom of a short sidebar too. */
+#sidebar-container .sidebar-bottom {
+    margin-top: auto;
+}
+
+/* IMPORTANT: sidebar headings must not have viewport min-height. */
+#sidebar-container .sidebar-title {
+    min-height: 0 !important;
+}
+
+/* Existing page styles sometimes give these wrappers their own height. */
+#sidebar-container,
+#sidebar-container * {
+    box-sizing: border-box;
+}
+
+/* Keep footer visible below application. */
+.bottom-bar {
+    flex: 0 0 auto;
+}
+/* =========================================================
+   TEMPORARY COLOR TEST
+   ========================================================= */
+
+body {
+    background: #eef1f4 !important;
+    color: #242a30 !important;
+}
+
+.top-header {
+    background: #ffffff !important;
+    color: #242a30 !important;
+}
+
+.application {
+    background: #eef1f4 !important;
+}
+
+#sidebar-container {
+    background: #252b31 !important;
+}
+
+    #sidebar-container .sidebar {
+        background: #252b31 !important;
+        color: #d1d7dd !important;
+    }
+
+    #sidebar-container .sidebar-title {
+        color: #87919b !important;
+    }
+
+    #sidebar-container .nav-item {
+        background: transparent !important;
+        color: #c6ccd2 !important;
+    }
+
+        #sidebar-container .nav-item.active {
+            background: #333b42 !important;
+            color: #ffffff !important;
+        }
+
+    #sidebar-container .nav-icon {
+        color: #b8c1ca !important;
+    }
+
+    #sidebar-container .sidebar-divider {
+        border-color: #3b444c !important;
+    }
+
+.main-content {
+    background: #eef1f4 !important;
+    color: #242a30 !important;
+}
+/* =========================================================
+   BDL MES COMMON HEADER
+   ========================================================= */
+
+#header-container {
+    width: 100%;
+    height: 70px;
+    flex: 0 0 70px;
+}
+
+    /* Main header - SINGLE HORIZONTAL ROW */
+    #header-container .top-header {
+        width: 100%;
+        height: 70px;
+        min-height: 70px;
+        display: grid;
+        grid-template-columns: 1fr auto auto auto;
+        align-items: center;
+        background: #ffffff;
+        color: #242a30;
+        border-bottom: 1px solid #d8dde2;
+        padding: 0 28px;
+    }
+
+    /* ---------------------------------------------------------
+   BRAND
+   --------------------------------------------------------- */
+
+    #header-container .brand-area {
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
+
+    #header-container .brand-logo {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #008f8f;
+        color: #ffffff;
+        font-size: 20px;
+        font-weight: 700;
+        margin-right: 14px;
+    }
+
+    #header-container .brand-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #17212b;
+        font-size: 20px;
+    }
+
+        #header-container .brand-title strong {
+            color: #17212b;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        #header-container .brand-title span {
+            color: #7a858f;
+            font-size: 20px;
+        }
+
+    /* ---------------------------------------------------------
+   RIGHT HEADER ITEMS
+   --------------------------------------------------------- */
+
+    #header-container .header-right {
+        display: contents;
+    }
+
+    /* SYSTEM READY */
+    #header-container .header-status {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        padding: 0 28px;
+        color: #26313a;
+        font-size: 13px;
+        font-weight: 600;
+        border-left: 1px solid #e0e4e8;
+    }
+
+    /* Green status dot */
+    #header-container .status-dot {
+        width: 9px;
+        height: 9px;
+        margin-right: 9px;
+        border-radius: 50%;
+        background: #22b573;
+    }
+
+    /* CLOCK */
+    #header-container .header-clock {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        padding: 0 28px;
+        color: #26313a;
+        font-size: 13px;
+        border-left: 1px solid #e0e4e8;
+    }
+
+    /* USER */
+    #header-container .header-user {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        padding-left: 28px;
+        color: #26313a;
+    }
+
+    /* Avatar */
+    #header-container .user-avatar {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        border-radius: 50%;
+        background: #e4f4f4;
+        color: #008f8f;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    /* User name */
+    #header-container .user-name {
+        color: #26313a;
+        font-size: 13px;
+        font-weight: 600;
+    }

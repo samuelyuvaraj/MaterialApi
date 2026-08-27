@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDL MES - IGQC</title>
+    <link rel="stylesheet" href="/css/site.css">
+    <link rel="stylesheet" href="/css/common-layout.css">
+    <link rel="stylesheet" href="/css/consumption.css">
+</head>
+<body data-page-title="IGQC">
+    <div id="header-container"></div>
+    <div class="application">
+        <div id="sidebar-container"></div>
+        <main class="main-content">
+            <div class="breadcrumb"><span>Quality</span><span class="breadcrumb-arrow">/</span><strong>IGQC</strong></div>
+            <div class="page-heading"><div><h1>Incoming Goods Quality Check</h1><p>Identify material and assign required testing.</p></div><div class="operation-active"><span class="active-dot"></span>IGQC</div></div>
+
+            <section class="operation-panel">
+                <div class="panel-header"><div><div class="panel-title">QR Identification</div><div class="panel-description">Scan the material QR code to identify the material and receipt.</div></div><div class="step-number">01</div></div>
+                <div class="scanner-content">
+                    <label class="input-label" for="consumptionQrInput">MATERIAL QR</label>
+                    <div class="scan-row"><div class="scan-input-container"><div class="scan-icon">▦</div><input id="consumptionQrInput" type="text" autocomplete="off" spellcheck="false" placeholder="Scan material QR..."><button id="consumptionQrClear" class="input-clear" type="button">×</button></div><button id="consumptionQrRead" class="validate-button" type="button"><span class="validate-icon">✓</span> READ QR</button></div>
+                    <div class="scanner-instruction"><span class="info-icon">i</span><span>Scan the R1 QR containing PO, SO, material identifier, material name and GRN.</span></div>
+                </div><div id="qrMessage" class="consumption-message hidden"></div>
+            </section>
+
+            <section class="consumption-information-section">
+
+                <div class="section-intro">
+                    <div class="section-title">
+                        Material Information
+                    </div>
+
+                    <div class="section-description">
+                        QR information and the related material quantity.
+                    </div>
+
+                    <div class="section-number">
+                        02
+                    </div>
+                </div>
+
+
+                <div class="material-information-content">
+
+                    <!-- ROW 1 -->
+                    <div class="material-top-row">
+
+                        <div class="material-field">
+                            <span>PURCHASE ORDER</span>
+                            <strong id="infoPo">-</strong>
+                        </div>
+
+                        <div class="material-field">
+                            <span>SALES ORDER</span>
+                            <strong id="infoSo">-</strong>
+                        </div>
+
+                        <div class="material-field">
+                            <span>MATERIAL IDENTIFIER</span>
+                            <strong id="infoMaterialId">-</strong>
+                        </div>
+
+                        <div class="material-field">
+                            <span>GRN</span>
+                            <strong id="infoGrn">-</strong>
+                        </div>
+
+                        <div class="material-confirm">
+                            <button id="confirmConsumption"
+                                    class="validate-button"
+                                    type="button">
+                                <span class="validate-icon">✓</span>
+                                CONFIRM
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                    <!-- ROW 2 -->
+                    <div class="material-bottom-row">
+
+                        <div class="material-field material-name">
+                            <span>MATERIAL NAME</span>
+                            <strong id="infoMaterialName">-</strong>
+                        </div>
+
+                        <div class="material-field">
+                            <span>UNIT</span>
+                            <strong id="infoUom">-</strong>
+                        </div>
+
+                        <div class="material-field">
+                            <span>STATUS</span>
+                            <strong id="infoStatus">-</strong>
+                        </div>
+
+                        <div class="material-field quantity-field">
+                            <span>RECEIVED</span>
+                            <strong id="infoReceived">-</strong>
+                        </div>
+
+                        <div class="material-field quantity-field available-field">
+                            <span>AVAILABLE</span>
+                            <strong id="infoAvailable">-</strong>
+                        </div>
+
+                        <div class="material-field quantity-field">
+                            <span>CONSUMED</span>
+                            <strong id="infoConsumed">-</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section id="testingAssignmentPanel" class="operation-panel hidden">
+                <div class="panel-header"><div><div class="panel-title">Testing Assignment</div><div class="panel-description">Select the testing laboratory, grade and quantity to send.</div></div><div class="step-number">03</div></div>
+                <div class="testing-form">
+                    <div class="testing-field"><label for="testingLab">TESTING LAB</label><select id="testingLab"><option value="">Select testing lab</option><option value="Chemical Testing">Chemical Testing</option><option value="Mechanical Testing">Mechanical Testing</option><option value="Dimensional Testing">Dimensional Testing</option></select></div>
+                    <div class="testing-field"><label for="testingGrade">TESTING GRADE</label><select id="testingGrade" disabled><option value="">Select testing lab first</option></select></div>
+                    <div class="testing-field"><label for="testingQuantity">QUANTITY TO SEND</label><div class="quantity-input-row"><input id="testingQuantity" type="number" min="0" step="0.01" placeholder="Enter quantity" disabled><span id="testingUom" class="quantity-uom">u</span></div><div id="testingQuantityHelp" class="field-hint">Available quantity: 0</div></div>
+                </div>
+                <div id="gradeDetails" class="grade-details hidden">
+                    <div class="grade-details-header"><div class="grade-details-title">Selected Grade</div><div id="gradeDetailsSubtitle" class="grade-details-subtitle">-</div></div><div class="grade-details-grid">
+                        <div class="grade-detail-card"><span>TESTING EQUIPMENT</span><div id="gradeEquipment" class="grade-equipment-list">-</div></div>
+                        <div class="grade-detail-card"><span>SAMPLE CONSUMED</span><strong id="gradeSampleConsumed">-</strong></div>
+                        <div class="grade-detail-card grade-detail-wide"><span>EXPECTED RESULT</span><strong id="gradeExpectedResult">-</strong></div>
+                    </div>
+                </div>
+                <div id="testingMessage" class="consumption-message hidden"></div>
+                <div class="testing-actions"><button id="assignTestingButton" class="validate-button" type="button" disabled><span class="validate-icon">✓</span> ASSIGN TESTING</button><button id="resetTestingButton" class="secondary-button" type="button">CLEAR</button></div>
+            </section>
+
+            <section id="testingResultPanel" class="operation-panel hidden">
+                <div class="panel-header"><div><div class="panel-title">Testing Assignment Created</div><div class="panel-description">The material testing assignment has been saved.</div></div><div class="step-number">04</div></div>
+                <div class="assignment-summary">
+                    <div class="assignment-summary-row"><span>PO</span><strong id="resultPo">-</strong></div><div class="assignment-summary-row"><span>SO</span><strong id="resultSo">-</strong></div><div class="assignment-summary-row"><span>GRN</span><strong id="resultGrn">-</strong></div><div class="assignment-summary-row"><span>MATERIAL IDENTIFIER</span><strong id="resultMaterialId">-</strong></div><div class="assignment-summary-row"><span>MATERIAL NAME</span><strong id="resultMaterialName">-</strong></div><div class="assignment-summary-row"><span>TESTING</span><strong id="resultTesting">-</strong></div><div class="assignment-summary-row"><span>GRADE</span><strong id="resultGrade">-</strong></div><div class="assignment-summary-row"><span>QUANTITY</span><strong id="resultQuantity">-</strong></div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <div id="footer-container"></div>
+    <script src="/js/consumptions.js"></script>
+    <script src="/js/common-layout.js"></script>
+</body>
+</html>

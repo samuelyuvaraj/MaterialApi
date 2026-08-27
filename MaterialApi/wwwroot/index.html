@@ -1,0 +1,601 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Material Consumption </title>
+
+    <link rel="stylesheet" href="/css/site.css">
+    <link rel="stylesheet" href="/css/common-layout.css">
+</head>
+
+<body>
+
+    <!-- =====================================================
+         TOP HEADER
+         ===================================================== -->
+
+    <!-- =====================================================
+         APPLICATION
+         ===================================================== -->
+
+    
+<div id="header-container"></div>
+
+<div class="application">
+    <div id="sidebar-container"></div>
+
+    <!-- =================================================
+             LEFT SIDEBAR
+             ================================================= -->
+
+        <!-- =================================================
+             MAIN CONTENT
+             ================================================= -->
+
+        <main class="main-content">
+
+
+            <!-- Breadcrumb -->
+
+            <div class="breadcrumb">
+
+                <span>
+                    Work Orders
+                </span>
+
+                <span class="breadcrumb-arrow">
+                    /
+                </span>
+
+                <span>
+                    WO-2026-00125
+                </span>
+
+                <span class="breadcrumb-arrow">
+                    /
+                </span>
+
+                <strong>
+                    OP20
+                </strong>
+
+                <span class="breadcrumb-arrow">
+                    /
+                </span>
+
+                <strong>
+                    Material Consumption
+                </strong>
+
+            </div>
+
+
+            <!-- Page heading -->
+
+            <div class="page-heading">
+
+                <div>
+
+                    <h1>
+                        Material Consumption
+                    </h1>
+
+                    <p>
+                        Identify and verify material for the current
+                        manufacturing operation.
+                    </p>
+</div>
+
+<div id="footer-container"></div>
+<div class="operation-active">
+
+                    <span class="active-dot"></span>
+
+                    OPERATION ACTIVE
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 OPERATION INFORMATION
+                 ================================================= -->
+
+            <section class="operation-panel">
+
+                <div class="operation-item">
+
+                    <span class="operation-label">
+                        WORK ORDER
+                    </span>
+
+                    <span class="operation-value">
+                        WO-2026-00125
+                    </span>
+
+                </div>
+
+
+                <div class="operation-item">
+
+                    <span class="operation-label">
+                        PRODUCT
+                    </span>
+
+                    <span class="operation-value">
+                         Assembly
+                    </span>
+
+                </div>
+
+
+                <div class="operation-item">
+
+                    <span class="operation-label">
+                        CURRENT OPERATION
+                    </span>
+
+                    <span class="operation-value">
+                        OP20 - Assembly
+                    </span>
+
+                </div>
+
+
+                <div class="operation-item last">
+
+                    <span class="operation-label">
+                        OPERATION STATUS
+                    </span>
+
+                    <span class="operation-value operation-green">
+                        Active
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 SCANNER PANEL
+                 ================================================= -->
+
+            <section class="panel scanner-panel">
+
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <div class="panel-title">
+                            Material Identification
+                        </div>
+
+                        <div class="panel-description">
+                            Scan the material barcode or enter the
+                            material unique identifier.
+                        </div>
+
+                    </div>
+
+
+                    <div class="step-number">
+                        01
+                    </div>
+
+                </div>
+
+
+                <div class="scanner-content">
+
+
+                    <label class="input-label"
+                           for="barcodeInput">
+
+                        MATERIAL UNIQUE IDENTIFIER
+
+                    </label>
+
+
+                    <div class="scan-row">
+
+
+                        <div class="scan-input-container">
+
+
+                            <div class="scan-icon">
+                                ▦
+                            </div>
+
+
+                            <input id="barcodeInput"
+                                   type="text"
+                                   autocomplete="off"
+                                   spellcheck="false"
+                                   placeholder="Scan material barcode..." />
+
+
+                            <button id="clearButton"
+                                    class="input-clear"
+                                    type="button">
+
+                                ×
+
+                            </button>
+
+                        </div>
+
+
+                        <button id="scanButton"
+                                class="validate-button"
+                                type="button">
+
+                            <span class="validate-icon">
+                                ✓
+                            </span>
+
+                            VALIDATE
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="scanner-instruction">
+
+                        <span class="info-icon">
+                            i
+                        </span>
+
+                        <span>
+                            Scan the unique identifier assigned to the
+                            material. The material information will be
+                            retrieved automatically.
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 RESULT PANEL
+                 ================================================= -->
+
+            <section id="resultPanel"
+                     class="panel result-panel hidden">
+
+
+                <div class="result-header">
+
+
+                    <div class="result-heading">
+
+
+                        <div id="resultIcon"
+                             class="result-icon">
+
+                            ✓
+
+                        </div>
+
+
+                        <div>
+
+                            <div id="resultTitle"
+                                 class="result-title">
+
+                                Material Found
+
+                            </div>
+
+
+                            <div id="resultMessage"
+                                 class="result-message">
+
+                                Material successfully identified.
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div id="resultStatus"
+                         class="result-status">
+
+                        AVAILABLE
+
+                    </div>
+
+                </div>
+
+
+                <!-- Material fields -->
+
+                <div class="material-section">
+
+
+                    <div class="material-section-title">
+
+                        MATERIAL INFORMATION
+
+                    </div>
+
+
+                    <div class="material-grid">
+
+
+                        <!-- Identifier -->
+
+                        <div class="material-field">
+
+                            <div class="field-label">
+                                IDENTIFIER
+                            </div>
+
+                            <div id="identifier"
+                                 class="field-value">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Revision -->
+
+                        <div class="material-field">
+
+                            <div class="field-label">
+                                REVISION
+                            </div>
+
+                            <div id="revision"
+                                 class="field-value">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Unique Identifier -->
+
+                        <div class="material-field field-wide">
+
+                            <div class="field-label">
+                                UNIQUE IDENTIFIER
+                            </div>
+
+                            <div id="uniqueIdentifier"
+                                 class="field-value monospace">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Name -->
+
+                        <div class="material-field">
+
+                            <div class="field-label">
+                                NAME
+                            </div>
+
+                            <div id="materialName"
+                                 class="field-value">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Material Class -->
+
+                        <div class="material-field">
+
+                            <div class="field-label">
+                                MATERIAL CLASS
+                            </div>
+
+                            <div id="materialClass"
+                                 class="field-value">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Unit -->
+
+                        <div class="material-field">
+
+                            <div class="field-label">
+                                UNIT OF MEASURE
+                            </div>
+
+                            <div id="unitOfMeasure"
+                                 class="field-value">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Logistic Class -->
+
+                        <div class="material-field">
+
+                            <div class="field-label">
+                                LOGISTIC CLASS
+                            </div>
+
+                            <div id="logisticClass"
+                                 class="field-value">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Description -->
+
+                        <div class="material-field description-field">
+
+                            <div class="field-label">
+                                DESCRIPTION
+                            </div>
+
+                            <div id="description"
+                                 class="field-value description-value">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- Physical properties -->
+
+                    <div class="physical-section">
+
+
+                        <div class="material-section-title">
+
+                            PHYSICAL PROPERTIES
+
+                        </div>
+
+
+                        <div class="physical-grid">
+
+
+                            <div class="physical-field">
+
+                                <div class="field-label">
+                                    VOLUME
+                                </div>
+
+                                <div class="physical-value">
+
+                                    <span id="volumeValue">
+                                        -
+                                    </span>
+
+                                    <span id="volumeUnit"
+                                          class="physical-unit">
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="physical-field">
+
+                                <div class="field-label">
+                                    WEIGHT
+                                </div>
+
+                                <div class="physical-value">
+
+                                    <span id="weightValue">
+                                        -
+                                    </span>
+
+                                    <span id="weightUnit"
+                                          class="physical-unit">
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 OPERATOR INSTRUCTION
+                 ================================================= -->
+
+            <section class="instruction-panel">
+
+
+                <div class="instruction-symbol">
+                    i
+                </div>
+
+
+                <div>
+
+                    <div class="instruction-title">
+                        Operator Instruction
+                    </div>
+
+
+                    <div class="instruction-text">
+
+                        Scan the material barcode and verify the
+                        material information before continuing
+                        with the operation.
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+        </main>
+
+    </div>
+
+
+    <!-- =====================================================
+         FOOTER STATUS BAR
+         ===================================================== -->
+
+    <script src="/js/app.js"></script>
+
+    <script src="/js/common-layout.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,175 @@
+﻿/* =========================================================
+   MES - MATERIAL CONSUMPTION
+   Module-specific CSS
+   Existing site.css remains untouched
+   ========================================================= */
+
+
+/* =========================================================
+   CONSUMPTION MESSAGE
+   ========================================================= */
+
+.consumption-message {
+    margin-top: 18px;
+    padding: 12px 16px;
+    border: 1px solid #d8dee6;
+    border-left: 3px solid #2f6fed;
+    background: #f7f9fb;
+    color: #333d48;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+    .consumption-message.error {
+        border-left-color: #c62828;
+        background: #fff6f6;
+        color: #a11a1a;
+    }
+
+    .consumption-message.success {
+        border-left-color: #2e7d32;
+        background: #f4faf5;
+        color: #246b29;
+    }
+
+
+/* =========================================================
+   QR / MATERIAL DETAILS
+   ========================================================= */
+
+.consumption-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+    border-top: 1px solid #e1e5e9;
+    border-left: 1px solid #e1e5e9;
+}
+
+
+.consumption-detail {
+    min-width: 0;
+    padding: 16px 18px;
+    border-right: 1px solid #e1e5e9;
+    border-bottom: 1px solid #e1e5e9;
+    background: #fff;
+}
+
+
+    .consumption-detail span {
+        display: block;
+        margin-bottom: 7px;
+        color: #68717d;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.6px;
+    }
+
+
+    .consumption-detail strong {
+        display: block;
+        color: #252b32;
+        font-size: 14px;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+
+.consumption-detail-wide {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   MATERIAL NAME
+   Supports long material names
+   ========================================================= */
+
+.material-name-value {
+    color: #252b32;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   QUANTITY SUMMARY
+   ========================================================= */
+
+.quantity-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 20px;
+}
+
+
+.quantity-card {
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid #dfe3e8;
+    background: #fafbfc;
+}
+
+
+    .quantity-card span {
+        display: block;
+        margin-bottom: 8px;
+        color: #68717d;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.6px;
+    }
+
+
+    .quantity-card strong {
+        display: block;
+        color: #252b32;
+        font-size: 26px;
+        font-weight: 700;
+    }
+
+
+.quantity-available {
+    border-color: #2f6fed;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .consumption-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .consumption-detail-wide {
+        grid-column: auto;
+    }
+
+    .quantity-summary {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 650px) {
+
+    .scan-row {
+        flex-direction: column;
+    }
+
+    .scan-input-container {
+        width: 100%;
+    }
+
+    .scan-row .validate-button {
+        width: 100%;
+    }
+}

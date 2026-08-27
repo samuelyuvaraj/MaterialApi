@@ -1,0 +1,266 @@
+﻿/* =========================================================
+ 
+   RECEIVE GOODS PAGE
+   ========================================================= */
+
+
+/* =========================================================
+   FORM GRID
+   ========================================================= */
+
+.receive-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 28px;
+    padding: 24px;
+}
+
+.receive-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.receive-field-wide {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   FORM LABELS
+   ========================================================= */
+
+.receive-field label {
+    color: #68737d;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.receive-field input,
+.receive-field textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #cfd5da;
+    border-radius: 3px;
+    background: #ffffff;
+    color: #252b31;
+    font-family: inherit;
+    font-size: 15px;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.receive-field input {
+    height: 46px;
+}
+
+.receive-field textarea {
+    min-height: 95px;
+    resize: vertical;
+}
+
+    .receive-field input::placeholder,
+    .receive-field textarea::placeholder {
+        color: #9aa3aa;
+    }
+
+    .receive-field input:focus,
+    .receive-field textarea:focus {
+        border-color: #1683c7;
+        box-shadow: 0 0 0 2px rgba(22, 131, 199, 0.12);
+    }
+
+
+/* =========================================================
+   OPERATION PANEL
+   ========================================================= */
+
+.operation-panel {
+    margin-bottom: 22px;
+    background: #ffffff;
+    border: 1px solid #d8dde1;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+    .operation-panel .panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 24px;
+        border-bottom: 1px solid #e1e5e8;
+        background: #fafbfc;
+    }
+
+.step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    box-sizing: border-box;
+    border: 1px solid #cfd5da;
+    border-radius: 3px;
+    color: #68737d;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   MATERIAL LOOKUP RESULT
+   ========================================================= */
+
+.receive-material-details {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    padding: 18px 24px 22px;
+    border-top: 1px solid #e1e5e8;
+}
+
+    .receive-material-details > div {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .receive-material-details span {
+        color: #7a858e;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .receive-material-details strong {
+        color: #252b31;
+        font-size: 15px;
+    }
+
+
+/* =========================================================
+   ERROR RESULT
+   ========================================================= */
+
+.result-panel.error .result-icon {
+    background: #c0392b;
+}
+
+
+/* =========================================================
+   ACTION AREA
+   ========================================================= */
+
+.receive-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 20px 24px;
+    border-top: 1px solid #e1e5e8;
+    background: #fafbfc;
+}
+
+
+/* =========================================================
+   CLEAR BUTTON
+   ========================================================= */
+
+.clear-button {
+    height: 44px;
+    padding: 0 22px;
+    border: 1px solid #c7cdd2;
+    border-radius: 3px;
+    background: #ffffff;
+    color: #4d5963;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+    .clear-button:hover {
+        background: #f2f4f5;
+        border-color: #b9c1c7;
+    }
+
+
+/* =========================================================
+   SUCCESS RECEIPT
+   ========================================================= */
+
+.receive-success-id {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px 24px;
+    padding: 16px 18px;
+    border: 1px solid #d8dde1;
+    border-radius: 3px;
+    background: #f8fafb;
+}
+
+    .receive-success-id span {
+        color: #77828b;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.6px;
+    }
+
+    .receive-success-id strong {
+        color: #1683c7;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+
+/* =========================================================
+   DISABLED BUTTON
+   ========================================================= */
+
+.receive-goods-page button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .receive-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .receive-field-wide {
+        grid-column: auto;
+    }
+
+    .receive-material-details {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .receive-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+        .receive-actions button {
+            width: 100%;
+        }
+}

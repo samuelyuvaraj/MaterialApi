@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>BDL MES - QR Generator</title>
+
+    <link rel="stylesheet" href="/css/site.css">
+    <link rel="stylesheet" href="/css/qr-generator.css">
+    <link rel="stylesheet" href="/css/common-layout.css">
+</head>
+
+<body data-page-title="QR Generator">
+
+    <!-- COMMON HEADER: loaded once by common-layout.js -->
+    <div id="header-container"></div>
+
+    <!-- APPLICATION -->
+    <div class="application">
+
+        <!-- COMMON SIDEBAR: loaded once by common-layout.js -->
+        <div id="sidebar-container"></div>
+
+        <!-- PAGE CONTENT -->
+        <main class="main-content">
+
+            <div class="breadcrumb">
+                <span>Tools</span>
+                <span class="breadcrumb-arrow">/</span>
+                <strong>QR Generator</strong>
+            </div>
+
+            <div class="page-heading">
+                <div>
+                    <h1>QR Generator</h1>
+                    <p>Generate material identification QR codes.</p>
+                </div>
+
+                <div class="operation-active">
+                    <span class="active-dot"></span>
+                    QR GENERATOR
+                </div>
+            </div>
+
+            <section class="qr-generator-panel">
+
+                <div class="generator-header">
+                    <div>
+                        <div class="generator-title">
+                            Material QR Information
+                        </div>
+
+                        <div class="generator-description">
+                            Enter the material information used
+                            to create the QR code.
+                        </div>
+                    </div>
+
+                    <div class="version-badge">R1</div>
+                </div>
+
+                <div class="generator-body">
+
+                    <div class="generator-field">
+                        <label for="qrPo">PURCHASE ORDER</label>
+                        <input id="qrPo"
+                               type="text"
+                               autocomplete="off"
+                               placeholder="Enter Purchase Order">
+                    </div>
+
+                    <div class="generator-field">
+                        <label for="qrSo">SALES ORDER</label>
+                        <input id="qrSo"
+                               type="text"
+                               autocomplete="off"
+                               placeholder="Enter Sales Order">
+                    </div>
+
+                    <div class="generator-field">
+                        <label for="qrId">MATERIAL IDENTIFIER</label>
+                        <input id="qrId"
+                               type="text"
+                               autocomplete="off"
+                               placeholder="Enter Material Identifier">
+                    </div>
+
+                    <div class="generator-field">
+                        <label for="qrGrn">GRN</label>
+                        <input id="qrGrn"
+                               type="text"
+                               autocomplete="off"
+                               placeholder="Enter GRN">
+                    </div>
+
+                    <div class="generator-field generator-field-wide">
+                        <label for="qrMaterialName">MATERIAL NAME</label>
+
+                        <textarea id="qrMaterialName"
+                                  rows="4"
+                                  maxlength="1000"
+                                  placeholder="Enter Material Name"></textarea>
+
+                        <div class="field-hint">
+                            Supports long material names.
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="generator-actions">
+
+                    <button id="generateQr"
+                            class="validate-button"
+                            type="button">
+                        <span class="validate-icon">✓</span>
+                        GENERATE QR
+                    </button>
+
+                    <button id="clearQr"
+                            class="secondary-button"
+                            type="button">
+                        CLEAR
+                    </button>
+
+                </div>
+
+                <div id="generatorMessage"
+                     class="generator-message hidden">
+                </div>
+
+            </section>
+
+            <section id="qrResult"
+                     class="qr-result-panel hidden">
+
+                <div class="result-header">
+                    <div>
+                        <div class="generator-title">
+                            Generated QR Code
+                        </div>
+
+                        <div class="generator-description">
+                            QR code contains the R1 material payload.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="qr-result-body">
+
+                    <div class="qr-image-container">
+                        <img id="qrImage"
+                             alt="Generated Material QR Code">
+                    </div>
+
+                    <div class="payload-container">
+
+                        <div class="payload-label">
+                            QR PAYLOAD
+                        </div>
+
+                        <textarea id="qrPayload"
+                                  readonly></textarea>
+
+                        <div class="result-actions">
+
+                            <button id="downloadQr"
+                                    class="validate-button"
+                                    type="button">
+                                DOWNLOAD QR
+                            </button>
+
+                            <button id="printQr"
+                                    class="validate-button"
+                                    type="button">
+                                PRINT QR
+                            </button>
+
+                            <button id="copyPayload"
+                                    class="secondary-button"
+                                    type="button">
+                                COPY PAYLOAD
+                            </button>
+
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- COMMON FOOTER MUST BE OUTSIDE .application -->
+    <div id="footer-container"></div>
+
+    <!-- PAGE SCRIPT -->
+    <script src="/js/qr-generator.js"></script>
+
+    <!-- COMMON LAYOUT SCRIPT: load exactly once -->
+    <script src="/js/common-layout.js"></script>
+
+</body>
+</html>

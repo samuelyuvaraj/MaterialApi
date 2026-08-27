@@ -1,0 +1,815 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>BDL MES - Receive Goods</title>
+
+    <link rel="stylesheet"
+          href="/css/site.css">
+    <link rel="stylesheet"
+          href="/css/receive-goods.css">
+
+    <link rel="stylesheet" href="/css/common-layout.css">
+</head>
+
+
+<body data-page-title="Receive Goods">
+
+
+    <!-- =========================================================
+         TOP HEADER
+         ========================================================= -->
+
+    <!-- =========================================================
+         APPLICATION
+         ========================================================= -->
+
+    
+<div id="header-container"></div>
+
+<div class="application">
+    <div id="sidebar-container"></div>
+
+    <!-- =====================================================
+             SIDEBAR
+             ===================================================== -->
+
+        <!-- =====================================================
+             MAIN CONTENT
+             ===================================================== -->
+
+        <main class="main-content">
+
+
+            <!-- Breadcrumb -->
+
+            <div class="breadcrumb">
+
+                <span>
+                    Operation
+                </span>
+
+                <span class="breadcrumb-arrow">
+                    /
+                </span>
+
+                <strong>
+                    Receive Goods
+                </strong>
+
+            </div>
+
+
+
+            <!-- Page Header -->
+
+            <div class="page-heading">
+
+
+                <div>
+
+                    <h1>
+                        Receive Goods
+                    </h1>
+
+
+                    <p>
+                        Record incoming material received
+                        from a supplier.
+                    </p>
+</div>
+
+<div id="footer-container"></div>
+<div class="operation-active">
+
+                    <span class="active-dot"></span>
+
+                    INBOUND RECEIVING
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 RECEIPT INFORMATION
+                 ================================================= -->
+
+            <section class="operation-panel">
+
+
+                <div class="panel-header">
+
+
+                    <div>
+
+                        <div class="panel-title">
+                            Receipt Information
+                        </div>
+
+
+                        <div class="panel-description">
+
+                            Enter the purchase order and
+                            supplier information.
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="step-number">
+                        01
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="receive-grid">
+
+
+                    <!-- PO -->
+
+                    <div class="receive-field">
+
+                        <label for="inboundPoNumber">
+
+                            PURCHASE ORDER *
+
+                        </label>
+
+
+                        <input id="inboundPoNumber"
+                               type="text"
+                               autocomplete="off"
+                               placeholder="Enter PO number">
+
+                    </div>
+
+
+
+                    <!-- Vendor Code -->
+
+                    <div class="receive-field">
+
+                        <label for="inboundVendorCode">
+
+                            VENDOR CODE
+
+                        </label>
+
+
+                        <input id="inboundVendorCode"
+                               type="text"
+                               autocomplete="off"
+                               placeholder="Enter vendor code">
+
+                    </div>
+
+
+
+                    <!-- Vendor Name -->
+
+                    <div class="receive-field receive-field-wide">
+
+                        <label for="inboundVendorName">
+
+                            VENDOR NAME *
+
+                        </label>
+
+
+                        <input id="inboundVendorName"
+                               type="text"
+                               autocomplete="off"
+                               placeholder="Enter vendor name">
+
+                    </div>
+
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 MATERIAL IDENTIFICATION
+                 ================================================= -->
+
+            <section class="operation-panel">
+
+
+                <div class="panel-header">
+
+
+                    <div>
+
+                        <div class="panel-title">
+                            Material Identification
+                        </div>
+
+
+                        <div class="panel-description">
+
+                            Scan or enter the material
+                            identifier.
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="step-number">
+                        02
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="scanner-content">
+
+
+                    <label class="input-label"
+                           for="inboundMaterialIdentifier">
+
+                        MATERIAL IDENTIFIER
+
+                    </label>
+
+
+                    <div class="scan-row">
+
+
+                        <div class="scan-input-container">
+
+
+                            <div class="scan-icon">
+                                ▦
+                            </div>
+
+
+                            <input id="inboundMaterialIdentifier"
+                                   type="text"
+                                   autocomplete="off"
+                                   spellcheck="false"
+                                   placeholder="Scan material identifier...">
+
+
+                            <button id="inboundMaterialClear"
+                                    class="input-clear"
+                                    type="button">
+
+                                ×
+
+                            </button>
+
+
+                        </div>
+
+
+
+                        <button id="inboundMaterialLookup"
+                                class="validate-button"
+                                type="button">
+
+
+                            <span class="validate-icon">
+                                ✓
+                            </span>
+
+
+                            LOOKUP
+
+
+                        </button>
+
+
+                    </div>
+
+
+
+                    <div class="scanner-instruction">
+
+
+                        <span class="info-icon">
+                            i
+                        </span>
+
+
+                        <span>
+
+                            Scan the material identifier to
+                            retrieve material master information.
+
+                        </span>
+
+
+                    </div>
+
+
+                </div>
+                <div class="receive-grid">
+
+                    <div class="receive-field receive-field-wide">
+
+                        <label for="inboundMaterialNameInput">
+                            MATERIAL NAME *
+                        </label>
+
+                        <input id="inboundMaterialNameInput"
+                               type="text"
+                               autocomplete="off"
+                               placeholder="Enter material name">
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Material Result -->
+
+                <div id="inboundMaterialResult"
+                     class="result-panel hidden">
+
+
+                    <div class="result-heading">
+
+
+                        <div id="inboundResultIcon"
+                             class="result-icon">
+
+                            ✓
+
+                        </div>
+
+
+                        <div>
+
+
+                            <div id="inboundMaterialName"
+                                 class="result-title">
+
+                                Material Found
+
+                            </div>
+
+
+                            <div id="inboundMaterialMessage"
+                                 class="result-message">
+
+                                Material successfully identified.
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div class="receive-material-details">
+                        <div>
+                            <span>
+                                MATERIAL NAME
+                            </span>
+
+                            <strong id="inboundResultMaterialName">
+                                -
+                            </strong>
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                IDENTIFIER
+                            </span>
+
+
+                            <strong id="inboundResultIdentifier">
+
+                                -
+
+                            </strong>
+
+                        </div>
+
+
+
+                        <div>
+
+                            <span>
+                                UNIT OF MEASURE
+                            </span>
+
+
+                            <strong id="inboundResultUom">
+
+                                -
+
+                            </strong>
+
+                        </div>
+
+
+
+                        <div>
+
+                            <span>
+                                MATERIAL CLASS
+                            </span>
+
+
+                            <strong id="inboundResultClass">
+
+                                -
+
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 QUANTITY & TRACKING
+                 ================================================= -->
+
+            <section class="operation-panel">
+
+
+                <div class="panel-header">
+
+
+                    <div>
+
+                        <div class="panel-title">
+                            Quantity & Tracking
+                        </div>
+
+
+                        <div class="panel-description">
+
+                            Enter received quantity and
+                            tracking information.
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="step-number">
+                        03
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="receive-grid">
+
+
+                    <!-- Quantity -->
+
+                    <div class="receive-field">
+
+                        <label for="inboundQuantity">
+
+                            QUANTITY *
+
+                        </label>
+
+
+                        <input id="inboundQuantity"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               placeholder="0">
+
+                    </div>
+
+
+
+                    <!-- UOM -->
+
+                    <div class="receive-field">
+
+                        <label for="inboundUom">
+
+                            UNIT OF MEASURE
+
+                        </label>
+
+
+                        <input id="inboundUom"
+                               type="text"
+                               autocomplete="off"
+                               placeholder="Enter unit of measure">
+
+                    </div>
+
+
+
+                    <!-- Batch -->
+
+                    <div class="receive-field">
+
+                        <label for="inboundBatch">
+
+                            BATCH / LOT NUMBER
+
+                        </label>
+
+
+                        <input id="inboundBatch"
+                               type="text"
+                               placeholder="Enter batch / lot">
+
+                    </div>
+
+
+
+                    <!-- Invoice -->
+
+                    <div class="receive-field">
+
+                        <label for="inboundInvoice">
+
+                            SUPPLIER INVOICE
+
+                        </label>
+
+
+                        <input id="inboundInvoice"
+                               type="text"
+                               placeholder="Enter invoice number">
+
+                    </div>
+
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 ADDITIONAL INFORMATION
+                 ================================================= -->
+
+            <section class="operation-panel">
+
+
+                <div class="panel-header">
+
+
+                    <div>
+
+                        <div class="panel-title">
+                            Additional Information
+                        </div>
+
+
+                        <div class="panel-description">
+
+                            Add optional receiving remarks.
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="step-number">
+                        04
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="receive-grid">
+
+
+                    <div class="receive-field receive-field-wide">
+
+
+                        <label for="inboundRemarks">
+
+                            REMARKS
+
+                        </label>
+
+
+                        <textarea id="inboundRemarks"
+                                  rows="4"
+                                  placeholder="Enter remarks if required..."></textarea>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- Actions -->
+
+                <div class="receive-actions">
+
+
+                    <button id="inboundClearButton"
+                            class="clear-button"
+                            type="button">
+
+                        CLEAR
+
+                    </button>
+
+
+                    <button id="inboundSaveButton"
+                            class="validate-button"
+                            type="button">
+
+                        <span class="validate-icon">
+                            ✓
+                        </span>
+
+                        CONFIRM & SAVE
+
+                    </button>
+
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 SUCCESS
+                 ================================================= -->
+
+            <section id="inboundSuccessPanel"
+                     class="result-panel hidden">
+
+
+                <div class="result-heading">
+
+
+                    <div class="result-icon">
+                        ✓
+                    </div>
+
+
+                    <div>
+
+                        <div class="result-title">
+                            Goods Receipt Created
+                        </div>
+
+
+                        <div class="result-message">
+
+                            Inbound goods were successfully
+                            recorded.
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="receive-success-id">
+
+
+                    <span>
+                        RECEIPT ID
+                    </span>
+
+
+                    <strong id="createdReceiptId">
+
+                        GRN-000000
+
+                    </strong>
+
+
+                </div>
+
+
+                <button id="viewCreatedReceipt"
+                        class="validate-button"
+                        type="button">
+
+                    VIEW RECEIPT
+
+                </button>
+
+
+            </section>
+
+
+        </main>
+
+
+    </div>
+
+
+
+    <!-- =========================================================
+         BOTTOM BAR
+         ========================================================= -->
+
+    <!-- =========================================================
+         CLOCK
+         ========================================================= -->
+
+    <script>
+
+    function updateClock() {
+
+        const clock =
+            document.getElementById("clock");
+
+
+        if (!clock) {
+            return;
+        }
+
+
+        const now =
+            new Date();
+
+
+        clock.textContent =
+            now.toLocaleString(
+                "en-IN",
+                {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit"
+                }
+            );
+
+    }
+
+
+    updateClock();
+
+
+    setInterval(
+        updateClock,
+        1000
+    );
+
+    </script>
+
+
+
+    <!-- =========================================================
+         RECEIVE GOODS JS
+         ========================================================= -->
+
+    <script src="/js/receive-goods.js"></script>
+
+
+    <script src="/js/common-layout.js"></script>
+</body>
+
+</html>
