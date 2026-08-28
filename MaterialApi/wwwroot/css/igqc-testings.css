@@ -1,0 +1,358 @@
+/* =========================================================
+   IGQC TESTING - PAGE SPECIFIC LAYOUT
+   Does not modify common-layout.css
+   ========================================================= */
+
+.igqc-testing-page {
+    box-sizing: border-box;
+    padding: 0 28px 40px;
+    width: 100%;
+    min-width: 0;
+}
+
+/* ---------- Material Information ---------- */
+
+.igqc-material-panel {
+    display: block !important;
+    width: 100% !important;
+    grid-template-columns: none !important;
+}
+
+.igqc-material-grid {
+    display: block !important;
+    width: 100% !important;
+}
+
+    .igqc-material-grid > .igqc-material-row {
+        width: 100% !important;
+        min-width: 100% !important;
+        display: grid !important;
+    }
+/*
+   Material information is exactly TWO rows.
+
+   Row 1:
+   PURCHASE ORDER | SALES ORDER | MATERIAL IDENTIFIER | GRN
+
+   Row 2:
+   MATERIAL NAME | UNIT | STATUS | RECEIVED | AVAILABLE | CONSUMED
+*/
+.igqc-material-row {
+    display: grid !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    box-sizing: border-box;
+}
+
+.igqc-material-row-top {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1.25fr) minmax(0, 1.5fr) minmax(0, 0.85fr);
+}
+
+.igqc-material-row-bottom {
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.65fr) minmax(0, 0.90fr) minmax(0, 0.90fr) minmax(0, 0.90fr) minmax(0, 0.90fr);
+    border-top: 1px solid #dfe5eb;
+}
+
+/*
+   IMPORTANT:
+   The actual HTML uses .igqc-material-cell.
+   Do not let common/global rules turn these cells into
+   narrow vertical content.
+*/
+.igqc-material-cell {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 74px;
+    box-sizing: border-box;
+    padding: 18px 24px;
+    border-right: 1px solid #dfe5eb;
+    border-bottom: 0;
+    overflow: hidden;
+}
+
+    .igqc-material-cell:last-child {
+        border-right: 0;
+    }
+
+    /* ---------- Material labels ---------- */
+
+    .igqc-material-cell .field-label {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 0 10px !important;
+        padding: 0 !important;
+        color: #5b6a80;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .35px;
+        white-space: nowrap !important;
+        overflow: visible !important;
+    }
+
+    /* ---------- Material values ---------- */
+
+    .igqc-material-cell strong {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        color: #172033;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.35;
+        /*
+       Keep PO/SO/ID/GRN on one line.
+       Do NOT allow the browser to break every character.
+    */
+        white-space: nowrap !important;
+        word-break: normal !important;
+        overflow-wrap: normal !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    /* Explicit protection for long identifiers */
+    .igqc-material-cell #po,
+    .igqc-material-cell #so,
+    .igqc-material-cell #materialId,
+    .igqc-material-cell #grn {
+        white-space: nowrap !important;
+        word-break: normal !important;
+        overflow-wrap: normal !important;
+    }
+
+/* ---------- Testing Assignment ---------- */
+/* UNCHANGED from the supplied file */
+
+.igqc-testing-assignment {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 36px;
+}
+
+.igqc-section-heading {
+    margin-bottom: 22px;
+}
+
+    .igqc-section-heading h2 {
+        margin: 0 0 6px;
+        color: #172033;
+        font-size: 22px;
+        font-weight: 700;
+    }
+
+    .igqc-section-heading p {
+        margin: 0;
+        color: #53627a;
+        font-size: 15px;
+    }
+
+.igqc-testing-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    gap: 22px 20px;
+    box-sizing: border-box;
+}
+
+.testing-card {
+    min-width: 0;
+    min-height: 188px;
+    box-sizing: border-box;
+    border: 1px solid #dfe5eb;
+    border-radius: 5px;
+    background: #fff;
+    padding: 26px 26px 24px;
+}
+
+.chemical-card {
+    border-color: #13aaa6;
+}
+
+.mechanical-card {
+    border-color: #2d7ff9;
+}
+
+.dimensional-card {
+    border-color: #8d5be8;
+}
+
+.testing-content {
+    width: 100%;
+}
+
+.testing-card h2 {
+    margin: 0 0 28px;
+    font-size: 20px;
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+.chemical-card h2 {
+    color: #069c99;
+}
+
+.mechanical-card h2 {
+    color: #2474dc;
+}
+
+.dimensional-card h2 {
+    color: #8150d6;
+}
+
+.testing-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 22px;
+    align-items: end;
+}
+
+    .testing-fields label {
+        display: block;
+        min-width: 0;
+    }
+
+        .testing-fields label > span {
+            display: block;
+            margin-bottom: 9px;
+            color: #5b6a80;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .35px;
+        }
+
+    .testing-fields select,
+    .testing-fields input {
+        width: 100%;
+        height: 46px;
+        box-sizing: border-box;
+        border: 1px solid #d8e0e8;
+        border-radius: 4px;
+        background: #fff;
+        color: #3d4b61;
+        padding: 0 14px;
+        font: inherit;
+        font-size: 14px;
+        outline: none;
+    }
+
+        .testing-fields select:focus,
+        .testing-fields input:focus {
+            border-color: #8ca6c5;
+        }
+
+.quantity-wrap {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+}
+
+    .quantity-wrap input {
+        padding-right: 48px;
+    }
+
+    .quantity-wrap b {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 42px;
+        height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #53627a;
+        font-size: 13px;
+        pointer-events: none;
+    }
+
+.grade-details {
+    margin-top: 10px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ---------- Buttons: right of dimensional card ---------- */
+
+.igqc-testing-actions {
+    min-width: 0;
+    min-height: 188px;
+    box-sizing: border-box;
+    border: 1px solid #dfe5eb;
+    border-radius: 5px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 22px;
+}
+
+    .igqc-testing-actions .validate-button,
+    .igqc-testing-actions .secondary-button {
+        width: 230px;
+        min-height: 48px;
+        box-sizing: border-box;
+    }
+
+    .igqc-testing-actions .message {
+        width: 100%;
+        text-align: center;
+    }
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1000px) {
+    .igqc-material-row-top {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .igqc-material-row-bottom {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .igqc-testing-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 650px) {
+    .igqc-testing-page {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .igqc-material-row-top,
+    .igqc-material-row-bottom {
+        grid-template-columns: 1fr;
+    }
+
+    .igqc-material-cell {
+        border-right: 0;
+        border-bottom: 1px solid #dfe5eb;
+    }
+
+        .igqc-material-cell:last-child {
+            border-bottom: 0;
+        }
+
+    .testing-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .igqc-testing-actions .validate-button,
+    .igqc-testing-actions .secondary-button {
+        width: 100%;
+    }
+}

@@ -1,16 +1,22 @@
-﻿/* =========================================================
-   BDL MES - IGQC / MATERIAL INFORMATION
-   consumption.js
-
-   FLOW:
-   1. Read R1 QR
-   2. Split QR data
-   3. Immediately display QR information
-   4. Confirm
-   5. Fetch related Consumption record
-   6. Display quantity information
-   7. Enable Testing Assignment
-   ========================================================= */
+﻿/*
+ * =========================================================
+ * BDL MES - IGQC / MATERIAL INFORMATION
+ * consumptions.js
+ *
+ * FLOW:
+ * 01. Read R1 QR
+ * 02. Display QR information
+ * 03. Confirm material
+ * 04. Fetch existing Consumption record
+ * 05. Display quantity information
+ * 06. Show ASSIGN TEST button
+ * 07. Carry record to igqc-testing.html
+ *
+ * IMPORTANT:
+ * No testing/grade logic belongs on this page.
+ * Testing is handled by igqc-testing.html.
+ * =========================================================
+ */
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -20,95 +26,63 @@ document.addEventListener("DOMContentLoaded", function () {
        ELEMENTS
        ===================================================== */
 
-    const qrInput = document.getElementById("consumptionQrInput");
-    const qrReadButton = document.getElementById("consumptionQrRead");
-    const qrClearButton = document.getElementById("consumptionQrClear");
-    const qrMessage = document.getElementById("qrMessage");
+    const qrInput =
+        document.getElementById("consumptionQrInput");
 
-    const confirmButton = document.getElementById("confirmConsumption");
+    const qrReadButton =
+        document.getElementById("consumptionQrRead");
 
-    /* Section 02 */
-    const infoPo = document.getElementById("infoPo");
-    const infoSo = document.getElementById("infoSo");
-    const infoMaterialId = document.getElementById("infoMaterialId");
-    const infoGrn = document.getElementById("infoGrn");
-    const infoMaterialName = document.getElementById("infoMaterialName");
-    const infoUom = document.getElementById("infoUom");
-    const infoStatus = document.getElementById("infoStatus");
-    const infoReceived = document.getElementById("infoReceived");
-    const infoAvailable = document.getElementById("infoAvailable");
-    const infoConsumed = document.getElementById("infoConsumed");
+    const qrClearButton =
+        document.getElementById("consumptionQrClear");
 
-    /* Testing */
-    const testingAssignmentPanel =
-        document.getElementById("testingAssignmentPanel");
+    const qrMessage =
+        document.getElementById("qrMessage");
 
-    const testingLab =
-        document.getElementById("testingLab");
+    const confirmButton =
+        document.getElementById("confirmConsumption");
 
-    const testingGrade =
-        document.getElementById("testingGrade");
 
-    const testingQuantity =
-        document.getElementById("testingQuantity");
+    /* =====================================================
+       MATERIAL INFORMATION
+       ===================================================== */
 
-    const testingUom =
-        document.getElementById("testingUom");
+    const infoPo =
+        document.getElementById("infoPo");
 
-    const testingQuantityHelp =
-        document.getElementById("testingQuantityHelp");
+    const infoSo =
+        document.getElementById("infoSo");
 
-    const gradeDetails =
-        document.getElementById("gradeDetails");
+    const infoMaterialId =
+        document.getElementById("infoMaterialId");
 
-    const gradeDetailsSubtitle =
-        document.getElementById("gradeDetailsSubtitle");
+    const infoGrn =
+        document.getElementById("infoGrn");
 
-    const gradeEquipment =
-        document.getElementById("gradeEquipment");
+    const infoMaterialName =
+        document.getElementById("infoMaterialName");
 
-    const gradeSampleConsumed =
-        document.getElementById("gradeSampleConsumed");
+    const infoUom =
+        document.getElementById("infoUom");
 
-    const gradeExpectedResult =
-        document.getElementById("gradeExpectedResult");
+    const infoStatus =
+        document.getElementById("infoStatus");
 
-    const testingMessage =
-        document.getElementById("testingMessage");
+    const infoReceived =
+        document.getElementById("infoReceived");
+
+    const infoAvailable =
+        document.getElementById("infoAvailable");
+
+    const infoConsumed =
+        document.getElementById("infoConsumed");
+
+
+    /* =====================================================
+       ASSIGN TEST BUTTON
+       ===================================================== */
 
     const assignTestingButton =
         document.getElementById("assignTestingButton");
-
-    const resetTestingButton =
-        document.getElementById("resetTestingButton");
-
-    /* Result */
-    const testingResultPanel =
-        document.getElementById("testingResultPanel");
-
-    const resultPo =
-        document.getElementById("resultPo");
-
-    const resultSo =
-        document.getElementById("resultSo");
-
-    const resultGrn =
-        document.getElementById("resultGrn");
-
-    const resultMaterialId =
-        document.getElementById("resultMaterialId");
-
-    const resultMaterialName =
-        document.getElementById("resultMaterialName");
-
-    const resultTesting =
-        document.getElementById("resultTesting");
-
-    const resultGrade =
-        document.getElementById("resultGrade");
-
-    const resultQuantity =
-        document.getElementById("resultQuantity");
 
 
     /* =====================================================
@@ -116,1003 +90,30 @@ document.addEventListener("DOMContentLoaded", function () {
        ===================================================== */
 
     let currentQrData = null;
+
     let currentConsumptionRecord = null;
 
-    let gradeData = {
-        "Chemical Testing": [
-            {
-                id: "CH-G01",
-                name: "Chemical Grade 1",
-                equipment: ["LECO"],
-                sampleConsumed: "Yes",
-                expectedResult: "As per material specification"
-            },
-            {
-                id: "CH-G02",
-                name: "Chemical Grade 2",
-                equipment: ["AAS"],
-                sampleConsumed: "No",
-                expectedResult: "As per material specification"
-            },
-            {
-                id: "CH-G03",
-                name: "Chemical Grade 3",
-                equipment: ["XRF Spectrometer"],
-                sampleConsumed: "No",
-                expectedResult: "As per material specification"
-            },
-            {
-                id: "CH-G04",
-                name: "Chemical Grade 4",
-                equipment: ["Optical Emission Spectrometer"],
-                sampleConsumed: "Yes",
-                expectedResult: "As per material specification"
-            },
-            {
-                id: "CH-G05",
-                name: "Chemical Grade 5",
-                equipment: [
-                    "LECO",
-                    "Optical Emission Spectrometer"
-                ],
-                sampleConsumed: "Yes",
-                expectedResult: "As per material specification"
-            },
-            {
-                id: "CH-G06",
-                name: "Chemical Grade 6",
-                equipment: [
-                    "LECO",
-                    "AAS"
-                ],
-                sampleConsumed: "Yes",
-                expectedResult: "As per material specification"
-            },
-            {
-                id: "CH-G07",
-                name: "Chemical Grade 7",
-                equipment: [
-                    "AAS",
-                    "XRF Spectrometer"
-                ],
-                sampleConsumed: "Yes",
-                expectedResult: "As per material specification"
-            }
-        ],
-
-        "Mechanical Testing": [
-            {
-                id: "ME-G01",
-                name: "Mechanical Grade 1",
-                equipment: ["600 kl UTM"],
-                sampleConsumed: "No",
-                expectedResult: "As per material specification"
-            },
-            {
-                id: "ME-G02",
-                name: "Mechanical Grade 2",
-                equipment: ["50 kl UTM"],
-                sampleConsumed: "No",
-                expectedResult: "As per material specification"
-            },
-            {
-                id: "ME-G03",
-                name: "Mechanical Grade 3",
-                equipment: [
-                    "Brinell Hardness machine(BHL)"
-                ],
-                sampleConsumed: "No",
-                expectedResult: "As per material specification"
-            },
-            {
-                id: "ME-G04",
-                name: "Mechanical Grade 4",
-                equipment: [
-                    "Vicker Harness machine(HV)"
-                ],
-                sampleConsumed: "No",
-                expectedResult: "As per material specification"
-            },
-            {
-                id: "ME-G05",
-                name: "Mechanical Grade 5",
-                equipment: [
-                    "Universal Testing Machine"
-                ],
-                sampleConsumed: "No",
-                expectedResult: "As per material specification"
-            },
-            {
-                id: "ME-G06",
-                name: "Mechanical Grade 6",
-                equipment: [
-                    "Rockellwell"
-                ],
-                sampleConsumed: "No",
-                expectedResult: "As per material specification"
-            }
-        ],
-
-        "Dimensional Testing": [
-            {
-                id: "DI-G01",
-                name: "Dimensional Grade 1",
-                equipment: ["Dimensional Inspection Equipment"],
-                sampleConsumed: "No",
-                expectedResult: "As per material specification"
-            }
-        ]
-    };
-
 
     /* =====================================================
-       STARTUP CHECK
+       SAFE TEXT SETTER
        ===================================================== */
 
-    console.log("QR input:", qrInput);
-    console.log("QR read button:", qrReadButton);
-    console.log("Confirm button:", confirmButton);
+    function setText(element, value) {
 
-    console.log("Section 02 elements:", {
-        infoPo,
-        infoSo,
-        infoMaterialId,
-        infoGrn,
-        infoMaterialName,
-        infoUom,
-        infoStatus,
-        infoReceived,
-        infoAvailable,
-        infoConsumed
-    });
-
-
-    /* =====================================================
-       BASIC VALIDATION
-       ===================================================== */
-
-    if (!qrInput) {
-        console.error("consumptionQrInput not found.");
-        return;
-    }
-
-    if (!qrReadButton) {
-        console.error("consumptionQrRead not found.");
-        return;
-    }
-
-    if (!confirmButton) {
-        console.error("confirmConsumption not found.");
-        return;
-    }
-
-
-    /* =====================================================
-       MESSAGE
-       ===================================================== */
-
-    function showMessage(message, type) {
-
-        if (!qrMessage) {
-            console.log(message);
+        if (!element) {
             return;
         }
-
-        qrMessage.textContent = message;
-
-        qrMessage.classList.remove(
-            "hidden",
-            "success",
-            "error"
-        );
-
-        if (type === "success") {
-            qrMessage.classList.add("success");
-        }
-
-        if (type === "error") {
-            qrMessage.classList.add("error");
-        }
-    }
-
-
-    function hideMessage() {
-
-        if (!qrMessage) {
-            return;
-        }
-
-        qrMessage.textContent = "";
-
-        qrMessage.classList.add("hidden");
-
-        qrMessage.classList.remove(
-            "success",
-            "error"
-        );
-    }
-
-
-    /* =====================================================
-       RESET SECTION 02
-       ===================================================== */
-
-    function resetMaterialInformation() {
-
-        if (infoPo) infoPo.textContent = "-";
-        if (infoSo) infoSo.textContent = "-";
-        if (infoMaterialId) infoMaterialId.textContent = "-";
-        if (infoGrn) infoGrn.textContent = "-";
-        if (infoMaterialName) infoMaterialName.textContent = "-";
-
-        if (infoUom) infoUom.textContent = "-";
-        if (infoStatus) infoStatus.textContent = "-";
-        if (infoReceived) infoReceived.textContent = "-";
-        if (infoAvailable) infoAvailable.textContent = "-";
-        if (infoConsumed) infoConsumed.textContent = "-";
-    }
-
-
-    /* =====================================================
-       PARSE R1 QR
-
-       Expected:
-
-       R1|PO|SO|ID|Material Name|GRN
-
-       Example:
-
-       R1|PO202608210000000001|
-       SO202608210000000001|
-       ID202608210001|
-       Titanium|
-       GRN-000001
-       ===================================================== */
-
-    function parseQrData(value) {
-
-        if (!value) {
-            throw new Error("QR data is empty.");
-        }
-
-        const cleanValue = value.trim();
-
-        const parts = cleanValue
-            .split("|")
-            .map(function (item) {
-                return item.trim();
-            });
-
-        console.log("QR parts:", parts);
-
-        if (parts.length < 6) {
-            throw new Error(
-                "Invalid QR format. Expected R1|PO|SO|ID|Material Name|GRN."
-            );
-        }
-
-        const version = parts[0];
 
         if (
-            version.toUpperCase() !== "R1" &&
-            version.toUpperCase() !== "V1"
+            value === null ||
+            value === undefined ||
+            value === ""
         ) {
-            throw new Error(
-                "Invalid QR version: " + version
-            );
-        }
-
-        const po = parts[1];
-        const so = parts[2];
-        const id = parts[3];
-        const materialName = parts[4];
-
-        /*
-         * Material name normally does not contain |.
-         * GRN is the last value so this also handles
-         * accidental extra separators safely.
-         */
-        const grn = parts[parts.length - 1];
-
-        if (!po || !so || !id || !materialName || !grn) {
-            throw new Error(
-                "QR contains incomplete material information."
-            );
-        }
-
-        return {
-            version: version,
-            po: po,
-            so: so,
-            id: id,
-            mn: materialName,
-            grn: grn
-        };
-    }
-
-
-    /* =====================================================
-       DISPLAY QR DATA IMMEDIATELY
-
-       IMPORTANT:
-       This happens after READ QR.
-
-       We do NOT wait for CONFIRM.
-       ===================================================== */
-
-    function displayQrInformation(data) {
-
-        console.log("Displaying QR information:", data);
-
-        if (infoPo) {
-            infoPo.textContent = data.po;
-        }
-
-        if (infoSo) {
-            infoSo.textContent = data.so;
-        }
-
-        if (infoMaterialId) {
-            infoMaterialId.textContent = data.id;
-        }
-
-        if (infoGrn) {
-            infoGrn.textContent = data.grn;
-        }
-
-        if (infoMaterialName) {
-            infoMaterialName.textContent = data.mn;
-        }
-
-        /*
-         * Quantity information has NOT been fetched yet.
-         * Keep it blank until CONFIRM.
-         */
-
-        if (infoUom) {
-            infoUom.textContent = "-";
-        }
-
-        if (infoStatus) {
-            infoStatus.textContent = "-";
-        }
-
-        if (infoReceived) {
-            infoReceived.textContent = "-";
-        }
-
-        if (infoAvailable) {
-            infoAvailable.textContent = "-";
-        }
-
-        if (infoConsumed) {
-            infoConsumed.textContent = "-";
-        }
-    }
-
-
-    /* =====================================================
-       READ QR
-       ===================================================== */
-
-    async function readQr() {
-
-        console.log("READ QR clicked.");
-
-        hideMessage();
-
-        const rawValue = qrInput.value.trim();
-
-        console.log("Raw QR:", rawValue);
-
-        if (!rawValue) {
-
-            showMessage(
-                "Please scan or enter the material QR.",
-                "error"
-            );
-
+            element.textContent = "-";
             return;
         }
 
-        try {
-
-            const parsed = parseQrData(rawValue);
-
-            console.log(
-                "QR successfully parsed:",
-                parsed
-            );
-
-            currentQrData = parsed;
-
-            currentConsumptionRecord = null;
-
-            /*
-             * THIS IS THE IMPORTANT PART:
-             * Populate Section 02 immediately.
-             */
-            displayQrInformation(parsed);
-
-            showMessage(
-                "QR code successfully identified.",
-                "success"
-            );
-
-            /*
-             * Confirm becomes available.
-             */
-            confirmButton.disabled = false;
-
-            /*
-             * Hide previous testing assignment.
-             */
-            if (testingAssignmentPanel) {
-                testingAssignmentPanel.classList.add("hidden");
-            }
-
-            if (testingResultPanel) {
-                testingResultPanel.classList.add("hidden");
-            }
-
-        } catch (error) {
-
-            console.error(
-                "QR parsing error:",
-                error
-            );
-
-            currentQrData = null;
-
-            resetMaterialInformation();
-
-            confirmButton.disabled = true;
-
-            showMessage(
-                error.message || "Invalid QR code.",
-                "error"
-            );
-        }
-    }
-
-
-    /* =====================================================
-       FETCH CONSUMPTION RECORD
-
-       This happens ONLY after CONFIRM.
-       ===================================================== */
-
-    async function confirmMaterial() {
-
-        console.log("=================================");
-        console.log("CONFIRM MATERIAL CLICKED");
-        console.log("=================================");
-
-        if (!currentQrData) {
-
-            showMessage(
-                "Please read the QR code first.",
-                "error"
-            );
-
-            return;
-        }
-
-        /*
-         * currentQrData contains:
-         *
-         * {
-         *   version: "R1",
-         *   po: "...",
-         *   so: "...",
-         *   id: "...",
-         *   mn: "...",
-         *   grn: "..."
-         * }
-         */
-
-        console.log(
-            "QR data already parsed:",
-            currentQrData
-        );
-
-        /*
-         * Send the four identifiers expected by
-         * the Consumption CONFIRM API.
-         */
-
-        const payload = {
-            po: String(currentQrData.po || "").trim(),
-            so: String(currentQrData.so || "").trim(),
-            id: String(currentQrData.id || "").trim(),
-            grn: String(currentQrData.grn || "").trim()
-        };
-
-        /*
-         * Validate before calling API.
-         */
-
-        if (!payload.po ||
-            !payload.so ||
-            !payload.id ||
-            !payload.grn) {
-
-            showMessage(
-                "QR data is incomplete. PO, SO, Material ID and GRN are required.",
-                "error"
-            );
-
-            return;
-        }
-
-        console.log(
-            "Consumption lookup payload:",
-            payload
-        );
-
-        confirmButton.disabled = true;
-
-        const originalText =
-            confirmButton.innerHTML;
-
-        confirmButton.innerHTML =
-            "LOADING...";
-
-        try {
-
-            showMessage(
-                "Fetching related consumption record..."
-            );
-
-            /*
-             * IMPORTANT:
-             *
-             * Use /confirm here.
-             *
-             * /scan expects QR-data style input.
-             * /confirm is the endpoint for finding
-             * the Consumption.xlsx record using:
-             *
-             * PO + SO + ID + GRN
-             */
-
-            const response =
-                await fetch(
-                    "/api/consumption/confirm",
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:
-                            JSON.stringify(payload)
-                    }
-                );
-
-            console.log(
-                "Consumption API status:",
-                response.status
-            );
-
-            const raw =
-                await response.text();
-
-            console.log(
-                "Consumption API raw response:",
-                raw
-            );
-
-            let data;
-
-            try {
-
-                data =
-                    raw
-                        ? JSON.parse(raw)
-                        : null;
-
-            } catch (jsonError) {
-
-                throw new Error(
-                    "Consumption API returned invalid JSON."
-                );
-            }
-
-            console.log(
-                "Consumption API response:",
-                data
-            );
-
-            /*
-             * HTTP error
-             */
-
-            if (!response.ok) {
-
-                throw new Error(
-                    data?.message ||
-                    data?.error ||
-                    "Failed to fetch consumption record."
-                );
-            }
-
-            /*
-             * Backend reported failure
-             */
-
-            if (
-                data &&
-                data.success === false
-            ) {
-
-                throw new Error(
-                    data.message ||
-                    "No related consumption record found."
-                );
-            }
-
-            /*
-             * Find the returned record.
-             *
-             * Expected backend response:
-             *
-             * {
-             *   success: true,
-             *   consumption: {...}
-             * }
-             */
-
-            let record =
-                data?.consumption ||
-                data?.record ||
-                data?.data;
-
-            /*
-             * Some APIs may return the record directly.
-             */
-
-            if (!record && data) {
-
-                if (
-                    data.poNumber ||
-                    data.PoNumber ||
-                    data.po
-                ) {
-
-                    record = data;
-                }
-            }
-
-            /*
-             * Array protection.
-             */
-
-            if (Array.isArray(record)) {
-
-                record =
-                    record.length > 0
-                        ? record[0]
-                        : null;
-            }
-
-            /*
-             * Nothing returned.
-             */
-
-            if (!record) {
-
-                throw new Error(
-                    data?.message ||
-                    "No related consumption record found."
-                );
-            }
-
-            /*
-             * Make sure this really is a
-             * Consumption.xlsx record.
-             */
-
-            const poNumber =
-                record.poNumber ??
-                record.PoNumber ??
-                record.po;
-
-            const soNumber =
-                record.soNumber ??
-                record.SoNumber ??
-                record.so;
-
-            const materialIdentifier =
-                record.materialIdentifier ??
-                record.MaterialIdentifier ??
-                record.id;
-
-            const receiptId =
-                record.receiptId ??
-                record.ReceiptId ??
-                record.grn;
-
-            if (
-                !poNumber ||
-                !soNumber ||
-                !materialIdentifier ||
-                !receiptId
-            ) {
-
-                console.error(
-                    "Invalid consumption record:",
-                    record
-                );
-
-                throw new Error(
-                    "Consumption API returned incomplete material data."
-                );
-            }
-
-            /*
-             * Store complete Excel record.
-             */
-
-            currentConsumptionRecord =
-                record;
-
-            console.log(
-                "================================="
-            );
-
-            console.log(
-                "CONSUMPTION RECORD FOUND"
-            );
-
-            console.log(
-                currentConsumptionRecord
-            );
-
-            console.log(
-                "================================="
-            );
-
-            /*
-             * DISPLAY COMPLETE CONSUMPTION DATA
-             */
-
-            displayConsumptionRecord(
-                currentConsumptionRecord
-            );
-
-            /*
-             * Make sure Material Information
-             * section is visible.
-             */
-
-            
-
-            /*
-             * Enable testing assignment.
-             */
-
-            showTestingAssignment();
-
-            /*
-             * Load grades after the material
-             * record is successfully found.
-             */
-
-            await loadGrades();
-
-            /*
-             * Update message.
-             */
-
-            showMessage(
-                "Consumption record successfully loaded.",
-                "success"
-            );
-
-            /*
-             * Move screen to material information.
-             */
-
-           
-
-        }
-        catch (error) {
-
-            console.error(
-                "================================="
-            );
-
-            console.error(
-                "CONSUMPTION FETCH ERROR"
-            );
-
-            console.error(
-                error
-            );
-
-            console.error(
-                "================================="
-            );
-
-            currentConsumptionRecord =
-                null;
-
-            /*
-             * Do not hide the QR information.
-             *
-             * The user should still be able
-             * to see what was scanned.
-             */
-
-            showMessage(
-                error.message ||
-                "Unable to fetch consumption record.",
-                "error"
-            );
-
-        }
-        finally {
-
-            confirmButton.disabled =
-                false;
-
-            confirmButton.innerHTML =
-                originalText;
-        }
-    }
-
-
-    /* =====================================================
-       DISPLAY CONSUMPTION RECORD
-       ===================================================== */
-
-    function displayConsumptionRecord(record) {
-
-        console.log(
-            "Displaying consumption record:",
-            record
-        );
-
-        /*
-         * Support C# JSON camelCase and PascalCase.
-         */
-
-        const po =
-            record.poNumber ??
-            record.PoNumber ??
-            record.po ??
-            "-";
-
-        const so =
-            record.soNumber ??
-            record.SoNumber ??
-            record.so ??
-            "-";
-
-        const materialId =
-            record.materialIdentifier ??
-            record.MaterialIdentifier ??
-            record.id ??
-            "-";
-
-        const grn =
-            record.receiptId ??
-            record.ReceiptId ??
-            record.grn ??
-            "-";
-
-        const materialName =
-            record.materialName ??
-            record.MaterialName ??
-            record.mn ??
-            "-";
-
-        const uom =
-            record.unitOfMeasure ??
-            record.UnitOfMeasure ??
-            record.uom ??
-            "-";
-
-        const status =
-            record.status ??
-            record.Status ??
-            "-";
-
-        const received =
-            record.receivedQuantity ??
-            record.ReceivedQuantity ??
-            0;
-
-        const available =
-            record.availableQuantity ??
-            record.AvailableQuantity ??
-            0;
-
-        const consumed =
-            record.consumedQuantity ??
-            record.ConsumedQuantity ??
-            0;
-
-
-        /*
-         * Keep Section 02 QR information synchronized
-         * with the actual Excel record.
-         */
-
-        if (infoPo) {
-            infoPo.textContent = po;
-        }
-
-        if (infoSo) {
-            infoSo.textContent = so;
-        }
-
-        if (infoMaterialId) {
-            infoMaterialId.textContent = materialId;
-        }
-
-        if (infoGrn) {
-            infoGrn.textContent = grn;
-        }
-
-        if (infoMaterialName) {
-            infoMaterialName.textContent = materialName;
-        }
-
-        if (infoUom) {
-            infoUom.textContent = uom;
-        }
-
-        if (infoStatus) {
-            infoStatus.textContent = status;
-        }
-
-        if (infoReceived) {
-            infoReceived.textContent = formatNumber(received);
-        }
-
-        if (infoAvailable) {
-            infoAvailable.textContent = formatNumber(available);
-        }
-
-        if (infoConsumed) {
-            infoConsumed.textContent = formatNumber(consumed);
-        }
-
-
-        /*
-         * Testing quantity uses the available quantity.
-         */
-
-        if (testingUom) {
-            testingUom.textContent = uom;
-        }
-
-        if (testingQuantityHelp) {
-
-            testingQuantityHelp.textContent =
-                "Available quantity: " +
-                formatNumber(available) +
-                " " +
-                uom;
-        }
-
-        if (testingQuantity) {
-
-            testingQuantity.max = available;
-
-            testingQuantity.value = "";
-
-            testingQuantity.disabled =
-                available <= 0;
-        }
-
-        console.log(
-            "Section 02 populated successfully."
-        );
+        element.textContent = String(value);
     }
 
 
@@ -1137,478 +138,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =====================================================
-       SHOW TESTING ASSIGNMENT
-       ===================================================== */
-
-    function showTestingAssignment() {
-
-        if (!testingAssignmentPanel) {
-            console.warn(
-                "testingAssignmentPanel not found."
-            );
-            return;
-        }
-
-        testingAssignmentPanel.classList.remove(
-            "hidden"
-        );
-
-        console.log(
-            "Testing Assignment displayed."
-        );
-    }
-
-
-    /* =====================================================
-       LOAD TESTING GRADES
-       ===================================================== */
-
-    function loadTestingGrades() {
-
-        if (!testingLab || !testingGrade) {
-            return;
-        }
-
-        const lab =
-            testingLab.value;
-
-        testingGrade.innerHTML = "";
-
-        const defaultOption =
-            document.createElement("option");
-
-        defaultOption.value = "";
-        defaultOption.textContent =
-            "Select testing grade";
-
-        testingGrade.appendChild(
-            defaultOption
-        );
-
-        testingGrade.disabled = true;
-
-        clearGradeDetails();
-
-        if (!lab) {
-
-            defaultOption.textContent =
-                "Select testing lab first";
-
-            return;
-        }
-
-        const grades =
-            gradeData[lab] || [];
-
-        console.log(
-            "Grades for",
-            lab,
-            grades
-        );
-
-        if (grades.length === 0) {
-
-            defaultOption.textContent =
-                "No grades available";
-
-            return;
-        }
-
-        grades.forEach(function (grade) {
-
-            const option =
-                document.createElement("option");
-
-            option.value = grade.id;
-
-            option.textContent =
-                grade.id +
-                " - " +
-                grade.name;
-
-            testingGrade.appendChild(
-                option
-            );
-        });
-
-        testingGrade.disabled = false;
-    }
-
-
-    /* =====================================================
-       DISPLAY GRADE DETAILS
-       ===================================================== */
-
-    function displayGradeDetails() {
-
-        if (!testingLab || !testingGrade) {
-            return;
-        }
-
-        const lab =
-            testingLab.value;
-
-        const gradeId =
-            testingGrade.value;
-
-        const grades =
-            gradeData[lab] || [];
-
-        const grade =
-            grades.find(function (item) {
-                return item.id === gradeId;
-            });
-
-        if (!grade) {
-
-            clearGradeDetails();
-
-            validateTestingForm();
-
-            return;
-        }
-
-        console.log(
-            "Selected grade:",
-            grade
-        );
-
-        if (gradeDetails) {
-            gradeDetails.classList.remove(
-                "hidden"
-            );
-        }
-
-        if (gradeDetailsSubtitle) {
-            gradeDetailsSubtitle.textContent =
-                grade.id +
-                " - " +
-                grade.name;
-        }
-
-        if (gradeEquipment) {
-
-            gradeEquipment.innerHTML = "";
-
-            grade.equipment.forEach(
-                function (equipment) {
-
-                    const item =
-                        document.createElement("div");
-
-                    item.textContent =
-                        equipment;
-
-                    gradeEquipment.appendChild(
-                        item
-                    );
-                }
-            );
-        }
-
-        if (gradeSampleConsumed) {
-            gradeSampleConsumed.textContent =
-                grade.sampleConsumed;
-        }
-
-        if (gradeExpectedResult) {
-            gradeExpectedResult.textContent =
-                grade.expectedResult;
-        }
-
-        validateTestingForm();
-    }
-
-
-    /* =====================================================
-       CLEAR GRADE DETAILS
-       ===================================================== */
-
-    function clearGradeDetails() {
-
-        if (gradeDetails) {
-            gradeDetails.classList.add(
-                "hidden"
-            );
-        }
-
-        if (gradeDetailsSubtitle) {
-            gradeDetailsSubtitle.textContent =
-                "-";
-        }
-
-        if (gradeEquipment) {
-            gradeEquipment.textContent =
-                "-";
-        }
-
-        if (gradeSampleConsumed) {
-            gradeSampleConsumed.textContent =
-                "-";
-        }
-
-        if (gradeExpectedResult) {
-            gradeExpectedResult.textContent =
-                "-";
-        }
-    }
-
-
-    /* =====================================================
-       VALIDATE TESTING FORM
-       ===================================================== */
-
-    function validateTestingForm() {
-
-        if (!assignTestingButton) {
-            return;
-        }
-
-        if (
-            !currentConsumptionRecord ||
-            !testingLab ||
-            !testingGrade ||
-            !testingQuantity
-        ) {
-
-            assignTestingButton.disabled =
-                true;
-
-            return;
-        }
-
-        const lab =
-            testingLab.value;
-
-        const grade =
-            testingGrade.value;
-
-        const quantity =
-            Number(testingQuantity.value);
-
-        const available =
-            Number(
-                currentConsumptionRecord.availableQuantity ??
-                currentConsumptionRecord.AvailableQuantity ??
-                0
-            );
-
-        const valid =
-            lab &&
-            grade &&
-            Number.isFinite(quantity) &&
-            quantity > 0 &&
-            quantity <= available;
-
-        assignTestingButton.disabled =
-            !valid;
-    }
-
-
-    /* =====================================================
-       ASSIGN TESTING
-       ===================================================== */
-
-    async function assignTesting() {
-
-        if (!currentConsumptionRecord) {
-            return;
-        }
-
-        const quantity =
-            Number(testingQuantity.value);
-
-        const available =
-            Number(
-                currentConsumptionRecord.availableQuantity ??
-                currentConsumptionRecord.AvailableQuantity ??
-                0
-            );
-
-        if (!testingLab.value) {
-
-            showTestingMessage(
-                "Please select testing lab.",
-                "error"
-            );
-
-            return;
-        }
-
-        if (!testingGrade.value) {
-
-            showTestingMessage(
-                "Please select testing grade.",
-                "error"
-            );
-
-            return;
-        }
-
-        if (
-            !Number.isFinite(quantity) ||
-            quantity <= 0
-        ) {
-
-            showTestingMessage(
-                "Please enter testing quantity.",
-                "error"
-            );
-
-            return;
-        }
-
-        if (quantity > available) {
-
-            showTestingMessage(
-                "Testing quantity cannot exceed available quantity.",
-                "error"
-            );
-
-            return;
-        }
-
-        const lab =
-            testingLab.value;
-
-        const gradeId =
-            testingGrade.value;
-
-        const grade =
-            (gradeData[lab] || []).find(
-                function (item) {
-                    return item.id === gradeId;
-                }
-            );
-
-        if (!grade) {
-            return;
-        }
-
-        /*
-         * For now this creates the assignment in the UI.
-         *
-         * Backend save API can be connected next.
-         */
-
-        if (resultPo) {
-            resultPo.textContent =
-                getRecordValue(
-                    currentConsumptionRecord,
-                    "poNumber",
-                    "PoNumber"
-                );
-        }
-
-        if (resultSo) {
-            resultSo.textContent =
-                getRecordValue(
-                    currentConsumptionRecord,
-                    "soNumber",
-                    "SoNumber"
-                );
-        }
-
-        if (resultGrn) {
-            resultGrn.textContent =
-                getRecordValue(
-                    currentConsumptionRecord,
-                    "receiptId",
-                    "ReceiptId"
-                );
-        }
-
-        if (resultMaterialId) {
-            resultMaterialId.textContent =
-                getRecordValue(
-                    currentConsumptionRecord,
-                    "materialIdentifier",
-                    "MaterialIdentifier"
-                );
-        }
-
-        if (resultMaterialName) {
-            resultMaterialName.textContent =
-                getRecordValue(
-                    currentConsumptionRecord,
-                    "materialName",
-                    "MaterialName"
-                );
-        }
-
-        if (resultTesting) {
-            resultTesting.textContent =
-                lab;
-        }
-
-        if (resultGrade) {
-            resultGrade.textContent =
-                grade.id +
-                " - " +
-                grade.name;
-        }
-
-        if (resultQuantity) {
-            resultQuantity.textContent =
-                quantity +
-                " " +
-                (
-                    currentConsumptionRecord.unitOfMeasure ??
-                    currentConsumptionRecord.UnitOfMeasure ??
-                    "-"
-                );
-        }
-
-        if (testingResultPanel) {
-            testingResultPanel.classList.remove(
-                "hidden"
-            );
-        }
-
-        showTestingMessage(
-            "Testing assignment created successfully.",
-            "success"
-        );
-
-        console.log(
-            "Testing assignment:",
-            {
-                po: getRecordValue(
-                    currentConsumptionRecord,
-                    "poNumber",
-                    "PoNumber"
-                ),
-                so: getRecordValue(
-                    currentConsumptionRecord,
-                    "soNumber",
-                    "SoNumber"
-                ),
-                grn: getRecordValue(
-                    currentConsumptionRecord,
-                    "receiptId",
-                    "ReceiptId"
-                ),
-                materialIdentifier:
-                    getRecordValue(
-                        currentConsumptionRecord,
-                        "materialIdentifier",
-                        "MaterialIdentifier"
-                    ),
-                materialName:
-                    getRecordValue(
-                        currentConsumptionRecord,
-                        "materialName",
-                        "MaterialName"
-                    ),
-                testingLab: lab,
-                grade: grade,
-                quantity: quantity
-            }
-        );
-    }
-
-
-    /* =====================================================
        RECORD VALUE HELPER
        ===================================================== */
 
@@ -1627,28 +156,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =====================================================
-       TESTING MESSAGE
+       MESSAGE
        ===================================================== */
 
-    function showTestingMessage(
+    function showMessage(
         message,
-        type
+        type = "success"
     ) {
 
-        if (!testingMessage) {
+        if (!qrMessage) {
             return;
         }
 
-        testingMessage.textContent =
+        qrMessage.textContent =
             message;
 
-        testingMessage.classList.remove(
+        qrMessage.classList.remove(
             "hidden",
             "success",
             "error"
         );
 
-        testingMessage.classList.add(
+        qrMessage.classList.add(
             type === "error"
                 ? "error"
                 : "success"
@@ -1656,61 +185,975 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
+    function hideMessage() {
+
+        if (!qrMessage) {
+            return;
+        }
+
+        qrMessage.textContent = "";
+
+        qrMessage.classList.add(
+            "hidden"
+        );
+
+        qrMessage.classList.remove(
+            "success",
+            "error"
+        );
+    }
+
+
     /* =====================================================
-       RESET TESTING
+       RESET MATERIAL INFORMATION
        ===================================================== */
 
-    function resetTesting() {
+    function resetMaterialInformation() {
 
-        currentConsumptionRecord = null;
+        setText(infoPo, "-");
+        setText(infoSo, "-");
+        setText(infoMaterialId, "-");
+        setText(infoGrn, "-");
+        setText(infoMaterialName, "-");
 
-        if (testingLab) {
-            testingLab.value = "";
-        }
+        setText(infoUom, "-");
+        setText(infoStatus, "-");
 
-        if (testingGrade) {
-
-            testingGrade.innerHTML =
-                "<option value=''>Select testing lab first</option>";
-
-            testingGrade.disabled = true;
-        }
-
-        if (testingQuantity) {
-            testingQuantity.value = "";
-            testingQuantity.disabled = true;
-        }
-
-        if (testingUom) {
-            testingUom.textContent = "-";
-        }
-
-        if (testingQuantityHelp) {
-            testingQuantityHelp.textContent =
-                "Available quantity: 0";
-        }
-
-        clearGradeDetails();
-
-        if (testingMessage) {
-
-            testingMessage.textContent = "";
-
-            testingMessage.classList.add(
-                "hidden"
-            );
-        }
-
-        if (testingResultPanel) {
-            testingResultPanel.classList.add(
-                "hidden"
-            );
-        }
+        setText(infoReceived, "-");
+        setText(infoAvailable, "-");
+        setText(infoConsumed, "-");
 
         if (assignTestingButton) {
+
             assignTestingButton.disabled =
                 true;
         }
+    }
+
+
+    /* =====================================================
+       PARSE QR
+       ===================================================== */
+
+    function parseQrData(rawValue) {
+
+        const parts =
+            rawValue
+                .trim()
+                .split("|");
+
+        if (parts.length < 6) {
+
+            throw new Error(
+                "Invalid QR format. Expected R1|PO|SO|ID|Material Name|GRN."
+            );
+        }
+
+        const version =
+            parts[0].trim();
+
+        if (
+            version.toUpperCase() !== "R1" &&
+            version.toUpperCase() !== "V1"
+        ) {
+
+            throw new Error(
+                "Invalid QR version: " +
+                version
+            );
+        }
+
+        const po =
+            parts[1].trim();
+
+        const so =
+            parts[2].trim();
+
+        const id =
+            parts[3].trim();
+
+        const materialName =
+            parts[4].trim();
+
+        const grn =
+            parts[parts.length - 1].trim();
+
+
+        if (!po) {
+            throw new Error(
+                "PO is missing from QR."
+            );
+        }
+
+        if (!so) {
+            throw new Error(
+                "SO is missing from QR."
+            );
+        }
+
+        if (!id) {
+            throw new Error(
+                "Material Identifier is missing from QR."
+            );
+        }
+
+        if (!materialName) {
+            throw new Error(
+                "Material Name is missing from QR."
+            );
+        }
+
+        if (!grn) {
+            throw new Error(
+                "GRN is missing from QR."
+            );
+        }
+
+
+        return {
+
+            version: version,
+
+            po: po,
+
+            so: so,
+
+            id: id,
+
+            mn: materialName,
+
+            grn: grn
+        };
+    }
+
+
+    /* =====================================================
+       DISPLAY QR INFORMATION
+       ===================================================== */
+
+    function displayQrInformation(data) {
+
+        console.log(
+            "Displaying QR information:",
+            data
+        );
+
+        setText(
+            infoPo,
+            data.po
+        );
+
+        setText(
+            infoSo,
+            data.so
+        );
+
+        setText(
+            infoMaterialId,
+            data.id
+        );
+
+        setText(
+            infoGrn,
+            data.grn
+        );
+
+        setText(
+            infoMaterialName,
+            data.mn
+        );
+
+        /*
+         * These values come from Consumption.xlsx
+         * only after CONFIRM.
+         */
+
+        setText(infoUom, "-");
+        setText(infoStatus, "-");
+
+        setText(infoReceived, "-");
+        setText(infoAvailable, "-");
+        setText(infoConsumed, "-");
+    }
+
+
+    /* =====================================================
+       DISPLAY CONSUMPTION RECORD
+       ===================================================== */
+
+    function displayConsumptionRecord(record) {
+
+        console.log(
+            "Displaying consumption record:",
+            record
+        );
+
+
+        const po =
+            getRecordValue(
+                record,
+                "poNumber",
+                "PoNumber"
+            );
+
+        const so =
+            getRecordValue(
+                record,
+                "soNumber",
+                "SoNumber"
+            );
+
+        const materialId =
+            getRecordValue(
+                record,
+                "materialIdentifier",
+                "MaterialIdentifier"
+            );
+
+        const grn =
+            getRecordValue(
+                record,
+                "receiptId",
+                "ReceiptId"
+            );
+
+        const materialName =
+            getRecordValue(
+                record,
+                "materialName",
+                "MaterialName"
+            );
+
+        const uom =
+            getRecordValue(
+                record,
+                "unitOfMeasure",
+                "UnitOfMeasure"
+            );
+
+        const status =
+            getRecordValue(
+                record,
+                "status",
+                "Status"
+            );
+
+        const received =
+            getRecordValue(
+                record,
+                "receivedQuantity",
+                "ReceivedQuantity"
+            );
+
+        const available =
+            getRecordValue(
+                record,
+                "availableQuantity",
+                "AvailableQuantity"
+            );
+
+        const consumed =
+            getRecordValue(
+                record,
+                "consumedQuantity",
+                "ConsumedQuantity"
+            );
+
+
+        setText(infoPo, po);
+
+        setText(infoSo, so);
+
+        setText(
+            infoMaterialId,
+            materialId
+        );
+
+        setText(infoGrn, grn);
+
+        setText(
+            infoMaterialName,
+            materialName
+        );
+
+        setText(
+            infoUom,
+            uom
+        );
+
+        setText(
+            infoStatus,
+            status
+        );
+
+        setText(
+            infoReceived,
+            formatNumber(received)
+        );
+
+        setText(
+            infoAvailable,
+            formatNumber(available)
+        );
+
+        setText(
+            infoConsumed,
+            formatNumber(consumed)
+        );
+
+
+        /*
+         * Consumption record is now ready.
+         */
+
+        currentConsumptionRecord =
+            record;
+
+
+        /*
+         * Enable ASSIGN TEST.
+         */
+
+        if (assignTestingButton) {
+
+            assignTestingButton.disabled =
+                false;
+
+            console.log(
+                "ASSIGN TEST button enabled."
+            );
+        }
+
+
+        console.log(
+            "Material Information populated successfully."
+        );
+    }
+
+
+    /* =====================================================
+       READ QR
+       ===================================================== */
+
+    async function readQr() {
+
+        console.log(
+            "READ QR clicked."
+        );
+
+        hideMessage();
+
+        const rawValue =
+            qrInput
+                ? qrInput.value.trim()
+                : "";
+
+
+        if (!rawValue) {
+
+            showMessage(
+                "Please scan or enter the material QR.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        try {
+
+            const parsed =
+                parseQrData(
+                    rawValue
+                );
+
+
+            console.log(
+                "QR successfully parsed:",
+                parsed
+            );
+
+
+            currentQrData =
+                parsed;
+
+            currentConsumptionRecord =
+                null;
+
+
+            /*
+             * Show QR information.
+             */
+
+            displayQrInformation(
+                parsed
+            );
+
+
+            /*
+             * Confirm is now available.
+             */
+
+            if (confirmButton) {
+
+                confirmButton.disabled =
+                    false;
+            }
+
+
+            /*
+             * Assign Test must remain
+             * disabled until Consumption
+             * record is confirmed.
+             */
+
+            if (assignTestingButton) {
+
+                assignTestingButton.disabled =
+                    true;
+            }
+
+
+            showMessage(
+                "QR code successfully identified.",
+                "success"
+            );
+
+
+        }
+        catch (error) {
+
+            console.error(
+                "QR parsing error:",
+                error
+            );
+
+            currentQrData =
+                null;
+
+            currentConsumptionRecord =
+                null;
+
+
+            resetMaterialInformation();
+
+
+            if (confirmButton) {
+
+                confirmButton.disabled =
+                    true;
+            }
+
+
+            showMessage(
+                error.message ||
+                "Invalid QR code.",
+                "error"
+            );
+        }
+    }
+
+
+    /* =====================================================
+       CONFIRM MATERIAL
+       ===================================================== */
+
+    async function confirmMaterial() {
+
+        console.log(
+            "================================="
+        );
+
+        console.log(
+            "CONFIRM MATERIAL CLICKED"
+        );
+
+        console.log(
+            "================================="
+        );
+
+
+        if (!currentQrData) {
+
+            showMessage(
+                "Please read the QR code first.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        /*
+         * KEEPING THE EXISTING API CONTRACT.
+         *
+         * DO NOT CHANGE THIS TO qrData.
+         */
+
+        const payload = {
+
+            po:
+                String(
+                    currentQrData.po || ""
+                ).trim(),
+
+            so:
+                String(
+                    currentQrData.so || ""
+                ).trim(),
+
+            id:
+                String(
+                    currentQrData.id || ""
+                ).trim(),
+
+            grn:
+                String(
+                    currentQrData.grn || ""
+                ).trim()
+        };
+
+
+        console.log(
+            "Fetching consumption record with:",
+            payload
+        );
+
+
+        if (confirmButton) {
+
+            confirmButton.disabled =
+                true;
+        }
+
+
+        const originalText =
+            confirmButton
+                ? confirmButton.innerHTML
+                : "";
+
+
+        if (confirmButton) {
+
+            confirmButton.innerHTML =
+                "LOADING...";
+        }
+
+
+        try {
+
+            /*
+             * EXISTING CONSUMPTION API.
+             *
+             * DO NOT CHANGE.
+             */
+
+            const response =
+                await fetch(
+                    "/api/consumption/confirm",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                payload
+                            )
+                    }
+                );
+
+
+            console.log(
+                "Consumption API status:",
+                response.status
+            );
+
+
+            const raw =
+                await response.text();
+
+
+            console.log(
+                "Consumption API raw response:",
+                raw
+            );
+
+
+            let data;
+
+
+            try {
+
+                data =
+                    raw
+                        ? JSON.parse(raw)
+                        : null;
+
+            }
+            catch (jsonError) {
+
+                throw new Error(
+                    "Consumption API returned invalid JSON."
+                );
+            }
+
+
+            console.log(
+                "Consumption API response:",
+                data
+            );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data?.message ||
+                    data?.error ||
+                    "Failed to fetch consumption record."
+                );
+            }
+
+
+            if (
+                data &&
+                data.success === false
+            ) {
+
+                throw new Error(
+                    data.message ||
+                    "No related consumption record found."
+                );
+            }
+
+
+            /*
+             * Existing API response:
+             *
+             * {
+             *   success: true,
+             *   consumption: {...}
+             * }
+             */
+
+            let record =
+                data?.consumption ||
+                data?.record ||
+                data?.data;
+
+
+            /*
+             * Support direct record response.
+             */
+
+            if (
+                !record &&
+                data
+            ) {
+
+                if (
+                    data.poNumber ||
+                    data.PoNumber ||
+                    data.po
+                ) {
+
+                    record =
+                        data;
+                }
+            }
+
+
+            /*
+             * Array protection.
+             */
+
+            if (
+                Array.isArray(record)
+            ) {
+
+                record =
+                    record.length > 0
+                        ? record[0]
+                        : null;
+            }
+
+
+            if (!record) {
+
+                throw new Error(
+                    data?.message ||
+                    "No related consumption record found."
+                );
+            }
+
+
+            /*
+             * Validate returned record.
+             */
+
+            const poNumber =
+                record.poNumber ??
+                record.PoNumber ??
+                record.po;
+
+            const soNumber =
+                record.soNumber ??
+                record.SoNumber ??
+                record.so;
+
+            const materialIdentifier =
+                record.materialIdentifier ??
+                record.MaterialIdentifier ??
+                record.id;
+
+            const receiptId =
+                record.receiptId ??
+                record.ReceiptId ??
+                record.grn;
+
+
+            if (
+                !poNumber ||
+                !soNumber ||
+                !materialIdentifier ||
+                !receiptId
+            ) {
+
+                console.error(
+                    "Invalid consumption record:",
+                    record
+                );
+
+                throw new Error(
+                    "Consumption API returned incomplete material data."
+                );
+            }
+
+
+            /*
+             * Store complete record.
+             */
+
+            currentConsumptionRecord =
+                record;
+
+
+            console.log(
+                "CONSUMPTION RECORD FOUND"
+            );
+
+            console.log(
+                currentConsumptionRecord
+            );
+
+
+            /*
+             * Display:
+             *
+             * PO
+             * SO
+             * Material ID
+             * GRN
+             * Material Name
+             * UOM
+             * Status
+             * Received
+             * Available
+             * Consumed
+             */
+
+            displayConsumptionRecord(
+                record
+            );
+
+
+            /*
+             * Enable ASSIGN TEST.
+             */
+
+            const assignButton = document.getElementById("assignTestingButton");
+
+            if (assignButton) {
+                assignButton.classList.remove("hidden");
+                assignButton.style.display = "inline-flex";
+                assignButton.disabled = false;
+
+                console.log("ASSIGN TEST button shown.");
+            } else {
+                console.error("assignTestingButton not found in HTML.");
+            }
+
+
+            showMessage(
+                "Consumption record successfully loaded.",
+                "success"
+            );
+
+
+        }
+        catch (error) {
+
+            console.error(
+                "Consumption fetch error:",
+                error
+            );
+
+
+            showMessage(
+                error.message ||
+                "Unable to fetch consumption record.",
+                "error"
+            );
+
+
+            if (assignTestingButton) {
+
+                assignTestingButton.disabled =
+                    true;
+            }
+        }
+        finally {
+
+            if (confirmButton) {
+
+                confirmButton.disabled =
+                    false;
+
+                confirmButton.innerHTML =
+                    originalText;
+            }
+        }
+    }
+
+
+    /* =====================================================
+       ASSIGN TEST
+       ===================================================== */
+
+    function assignTest() {
+
+        console.log(
+            "ASSIGN TEST clicked."
+        );
+
+
+        if (!currentConsumptionRecord) {
+
+            showMessage(
+                "Please confirm the material first.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        /*
+         * Carry the COMPLETE consumption record
+         * to the next page.
+         */
+
+        const transferData = {
+
+            po:
+                getRecordValue(
+                    currentConsumptionRecord,
+                    "poNumber",
+                    "PoNumber"
+                ),
+
+            so:
+                getRecordValue(
+                    currentConsumptionRecord,
+                    "soNumber",
+                    "SoNumber"
+                ),
+
+            materialIdentifier:
+                getRecordValue(
+                    currentConsumptionRecord,
+                    "materialIdentifier",
+                    "MaterialIdentifier"
+                ),
+
+            grn:
+                getRecordValue(
+                    currentConsumptionRecord,
+                    "receiptId",
+                    "ReceiptId"
+                ),
+
+            materialName:
+                getRecordValue(
+                    currentConsumptionRecord,
+                    "materialName",
+                    "MaterialName"
+                ),
+
+            unitOfMeasure:
+                getRecordValue(
+                    currentConsumptionRecord,
+                    "unitOfMeasure",
+                    "UnitOfMeasure"
+                ),
+
+            status:
+                getRecordValue(
+                    currentConsumptionRecord,
+                    "status",
+                    "Status"
+                ),
+
+            receivedQuantity:
+                getRecordValue(
+                    currentConsumptionRecord,
+                    "receivedQuantity",
+                    "ReceivedQuantity"
+                ),
+
+            availableQuantity:
+                getRecordValue(
+                    currentConsumptionRecord,
+                    "availableQuantity",
+                    "AvailableQuantity"
+                ),
+
+            consumedQuantity:
+                getRecordValue(
+                    currentConsumptionRecord,
+                    "consumedQuantity",
+                    "ConsumedQuantity"
+                )
+        };
+
+
+        /*
+         * Store for igqc-testing.html.
+         */
+
+        sessionStorage.setItem(
+            "igqcTestingMaterial",
+            JSON.stringify(
+                transferData
+            )
+        );
+
+
+        console.log(
+            "Data transferred to IGQC Testing:",
+            transferData
+        );
+
+
+        /*
+         * Navigate to testing page.
+         */
+
+        window.location.href =
+            "/igqc-testing.html";
     }
 
 
@@ -1720,23 +1163,41 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function clearAll() {
 
-        console.log("CLEAR clicked.");
+        console.log(
+            "CLEAR clicked."
+        );
 
-        qrInput.value = "";
 
-        currentQrData = null;
+        if (qrInput) {
 
-        currentConsumptionRecord = null;
+            qrInput.value = "";
+        }
+
+
+        currentQrData =
+            null;
+
+        currentConsumptionRecord =
+            null;
+
 
         resetMaterialInformation();
 
-        confirmButton.disabled = true;
+
+        if (confirmButton) {
+
+            confirmButton.disabled =
+                true;
+        }
+
 
         hideMessage();
 
-        resetTesting();
 
-        qrInput.focus();
+        if (qrInput) {
+
+            qrInput.focus();
+        }
     }
 
 
@@ -1744,16 +1205,22 @@ document.addEventListener("DOMContentLoaded", function () {
        EVENTS
        ===================================================== */
 
-    qrReadButton.addEventListener(
-        "click",
-        readQr
-    );
+    if (qrReadButton) {
+
+        qrReadButton.addEventListener(
+            "click",
+            readQr
+        );
+    }
 
 
-    confirmButton.addEventListener(
-        "click",
-        confirmMaterial
-    );
+    if (confirmButton) {
+
+        confirmButton.addEventListener(
+            "click",
+            confirmMaterial
+        );
+    }
 
 
     if (qrClearButton) {
@@ -1765,73 +1232,34 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    /*
-     * Scanner often sends ENTER after the QR payload.
-     */
-    qrInput.addEventListener(
-        "keydown",
-        function (event) {
-
-            if (event.key === "Enter") {
-
-                event.preventDefault();
-
-                readQr();
-            }
-        }
-    );
-
-
-    if (testingLab) {
-
-        testingLab.addEventListener(
-            "change",
-            function () {
-
-                loadTestingGrades();
-            }
-        );
-    }
-
-
-    if (testingGrade) {
-
-        testingGrade.addEventListener(
-            "change",
-            function () {
-
-                displayGradeDetails();
-            }
-        );
-    }
-
-
-    if (testingQuantity) {
-
-        testingQuantity.addEventListener(
-            "input",
-            function () {
-
-                validateTestingForm();
-            }
-        );
-    }
-
-
     if (assignTestingButton) {
 
         assignTestingButton.addEventListener(
             "click",
-            assignTesting
+            assignTest
         );
     }
 
 
-    if (resetTestingButton) {
+    /*
+     * Scanner often sends ENTER.
+     */
 
-        resetTestingButton.addEventListener(
-            "click",
-            resetTesting
+    if (qrInput) {
+
+        qrInput.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key === "Enter"
+                ) {
+
+                    event.preventDefault();
+
+                    readQr();
+                }
+            }
         );
     }
 
@@ -1842,11 +1270,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     resetMaterialInformation();
 
-    confirmButton.disabled = true;
 
-    resetTesting();
+    if (confirmButton) {
+
+        confirmButton.disabled =
+            true;
+    }
+
+
+    if (qrInput) {
+
+        qrInput.focus();
+    }
+
 
     console.log(
-        "IGQC module initialized successfully."
+        "IGQC consumption module initialized."
     );
 });

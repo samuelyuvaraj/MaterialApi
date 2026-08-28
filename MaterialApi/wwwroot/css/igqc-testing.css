@@ -1,0 +1,635 @@
+/* =========================================================
+   MATERIAL INFORMATION
+   Actual HTML class = igqc-material-cell
+   ========================================================= */
+
+.material-grid {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* ROW 1 */
+.material-row-top {
+    display: grid !important;
+    grid-template-columns: 2fr 2fr 2.4fr 1.2fr !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* ROW 2 */
+.material-row-bottom {
+    display: grid !important;
+    grid-template-columns: 2fr 1fr 1.2fr 1.2fr 1.2fr 1.2fr !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* ACTUAL CELL CLASS */
+.igqc-material-cell {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 20px 24px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    border-right: 1px solid #e1e6ec;
+    border-bottom: 1px solid #e1e6ec;
+    overflow: hidden !important;
+}
+
+.material-row-top .igqc-material-cell:last-child,
+.material-row-bottom .igqc-material-cell:last-child {
+    border-right: none;
+}
+
+.material-row-bottom .igqc-material-cell {
+    border-bottom: none;
+}
+
+/* LABEL */
+.igqc-material-cell .field-label {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 9px !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+}
+
+/* VALUE */
+.igqc-material-cell strong {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    line-height: 1.4 !important;
+}
+
+/* LONG VALUES */
+#po,
+#so,
+#materialId,
+#grn {
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+}
+
+/* TESTING ASSIGNMENT ----------------------------------------- */
+.operation-panel:has(.testing-assignment-grid) {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    overflow: visible;
+}
+
+    .operation-panel:has(.testing-assignment-grid) > .panel-header {
+        padding: 0 0 20px !important;
+        min-height: auto;
+        border: 0;
+        background: transparent;
+    }
+
+.testing-assignment-grid {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr) !important;
+    grid-template-rows: 188px 188px !important;
+    gap: 20px !important;
+    align-items: stretch !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* EXACT 2 x 2 layout:
+   Chemical     | Mechanical
+   Dimensional  | Actions
+*/
+.testing-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 188px !important;
+    min-height: 188px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    border: 1px solid #d9dfe7;
+    border-radius: 4px;
+    overflow: hidden !important;
+}
+
+    .testing-card:nth-child(1) {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+        border-color: #18aaa8;
+    }
+
+    .testing-card:nth-child(2) {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+        border-color: #357df0;
+    }
+
+    .testing-card:nth-child(3) {
+        grid-column: 1 !important;
+        grid-row: 2 !important;
+        border-color: #9957ee;
+    }
+
+.testing-content {
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    padding: 25px 26px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+}
+
+    .testing-content h2 {
+        margin: 0 0 25px !important;
+        padding: 0 !important;
+        font-size: 21px !important;
+        line-height: 1.2 !important;
+        font-weight: 700 !important;
+        white-space: nowrap !important;
+    }
+
+.testing-card:nth-child(1) h2 {
+    color: #079d9d;
+}
+
+.testing-card:nth-child(2) h2 {
+    color: #2677e9;
+}
+
+.testing-card:nth-child(3) h2 {
+    color: #8745dc;
+}
+
+.testing-fields {
+    width: 100% !important;
+    min-width: 0 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr) !important;
+    gap: 22px !important;
+    align-items: end !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+    .testing-fields > label {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+        .testing-fields > label > span {
+            display: block !important;
+            width: 100% !important;
+            margin: 0 0 9px !important;
+            padding: 0 !important;
+            font-size: 11px !important;
+            line-height: 1.2 !important;
+            font-weight: 700 !important;
+            white-space: nowrap !important;
+        }
+
+    .testing-fields select,
+    .testing-fields input {
+        width: 100% !important;
+        height: 48px !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 15px !important;
+        border: 1px solid #d6dde6 !important;
+        border-radius: 4px !important;
+        background: #fff !important;
+        font-size: 14px !important;
+        outline: none !important;
+    }
+
+    .testing-fields select {
+        cursor: pointer;
+    }
+
+    .testing-fields input {
+        line-height: normal !important;
+    }
+
+        .testing-fields input::placeholder {
+            opacity: 1;
+        }
+
+/* Quantity input with UOM ------------------------------------ */
+.quantity-wrap {
+    width: 100% !important;
+    height: 48px !important;
+    min-width: 0 !important;
+    display: flex !important;
+    align-items: stretch !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid #d6dde6 !important;
+    border-radius: 4px !important;
+    background: #fff !important;
+    overflow: hidden !important;
+}
+
+    .quantity-wrap input {
+        flex: 1 1 auto !important;
+        width: auto !important;
+        height: 46px !important;
+        min-width: 0 !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        padding: 0 15px !important;
+        background: transparent !important;
+    }
+
+    .quantity-wrap b {
+        flex: 0 0 44px !important;
+        width: 44px !important;
+        height: 46px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-left: 1px solid #e0e5eb;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+    }
+
+.grade-details {
+    width: 100%;
+    margin-top: 8px;
+    font-size: 12px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ACTION CELL ------------------------------------------------- */
+.testing-actions-cell {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 188px !important;
+    min-height: 188px !important;
+    margin: 0 !important;
+    padding: 20px !important;
+    background: #fff !important;
+    border: 1px solid #d9dfe7 !important;
+    border-radius: 4px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+}
+
+    .testing-actions-cell .message {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .testing-actions-cell .actions {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 10px !important;
+    }
+
+    .testing-actions-cell button {
+        width: 230px !important;
+        min-width: 230px !important;
+        height: 48px !important;
+        margin: 0 !important;
+        border-radius: 3px !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        cursor: pointer;
+    }
+
+    .testing-actions-cell .validate-button {
+        border: 1px solid #079e9e !important;
+        background: #079e9e !important;
+        color: #fff !important;
+    }
+
+    .testing-actions-cell .secondary-button {
+        border: 1px solid #aeb7c2 !important;
+        background: #f5f6f8 !important;
+        color: #17202c !important;
+    }
+
+/* SUCCESS ----------------------------------------------------- */
+#successPanel {
+    width: 100% !important;
+}
+
+.saved-summary {
+    width: 100%;
+    padding: 20px 24px;
+}
+
+/* RESPONSIVE -------------------------------------------------- */
+@media (max-width: 1100px) {
+    .main-content {
+        padding-left: 22px !important;
+        padding-right: 22px !important;
+    }
+
+    .material-cell {
+        padding-left: 17px !important;
+        padding-right: 17px !important;
+    }
+
+    .testing-content {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+
+    .testing-fields {
+        gap: 14px !important;
+    }
+}
+
+@media (max-width: 800px) {
+    .page-heading {
+        flex-direction: column !important;
+    }
+
+    .material-row-top,
+    .material-row-bottom {
+        grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    }
+
+    .testing-assignment-grid {
+        grid-template-columns: minmax(0,1fr) !important;
+        grid-template-rows: auto !important;
+    }
+
+    .testing-card:nth-child(1),
+    .testing-card:nth-child(2),
+    .testing-card:nth-child(3),
+    .testing-actions-cell {
+        grid-column: 1 !important;
+        grid-row: auto !important;
+    }
+
+    .testing-card,
+    .testing-actions-cell {
+        height: 188px !important;
+        min-height: 188px !important;
+    }
+}
+
+@media (max-width: 560px) {
+    .main-content {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+    }
+
+    .material-row-top,
+    .material-row-bottom,
+    .testing-fields {
+        grid-template-columns: 1fr !important;
+    }
+
+    .testing-card,
+    .testing-actions-cell {
+        height: auto !important;
+        min-height: 188px !important;
+    }
+
+    .testing-fields {
+        gap: 14px !important;
+    }
+}
+/* =========================================================
+   IGQC TESTING - FINAL MATERIAL INFORMATION FIX
+   ========================================================= */
+
+/* Override common-layout .operation-panel grid */
+main.main-content > section.operation-panel:first-of-type {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 0 22px !important;
+    padding: 0 !important;
+    background: #fff !important;
+    border: 1px solid #d5dbe0 !important;
+}
+
+    /* Header */
+    main.main-content > section.operation-panel:first-of-type > .panel-header {
+        display: flex !important;
+        width: 100% !important;
+        min-height: 70px !important;
+        padding: 15px 20px !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+
+/* Remove 01 / 02 / 03 */
+main.main-content .step-number {
+    display: none !important;
+}
+
+/* =========================================================
+   MATERIAL GRID
+   ========================================================= */
+
+main.main-content > section.operation-panel:first-of-type
+.material-grid {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* ROW 1:
+   PO | SO | MATERIAL ID | GRN
+*/
+main.main-content > section.operation-panel:first-of-type
+.material-row-top {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.3fr) minmax(0, 1.5fr) minmax(0, 0.8fr) !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* ROW 2:
+   NAME | UNIT | STATUS | RECEIVED | AVAILABLE | CONSUMED
+*/
+main.main-content > section.operation-panel:first-of-type
+.material-row-bottom {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.7fr) minmax(0, 0.9fr) minmax(0, 0.9fr) minmax(0, 0.9fr) minmax(0, 0.9fr) !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* =========================================================
+   ACTUAL CELL CLASS FROM YOUR HTML
+   ========================================================= */
+
+main.main-content > section.operation-panel:first-of-type
+.igqc-material-cell {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 82px !important;
+    padding: 16px 22px !important;
+    border-right: 1px solid #e0e4e8 !important;
+    border-bottom: 1px solid #e0e4e8 !important;
+    overflow: hidden !important;
+}
+
+/* Last cell in each row */
+main.main-content > section.operation-panel:first-of-type
+.material-row > .igqc-material-cell:last-child {
+    border-right: none !important;
+}
+
+/* Bottom row */
+main.main-content > section.operation-panel:first-of-type
+.material-row-bottom > .igqc-material-cell {
+    border-bottom: none !important;
+}
+
+/* =========================================================
+   LABELS
+   ========================================================= */
+
+main.main-content > section.operation-panel:first-of-type
+.igqc-material-cell .field-label {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 0 7px !important;
+    color: #858e96 !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: .6px !important;
+    white-space: nowrap !important;
+}
+
+/* =========================================================
+   VALUES
+   ========================================================= */
+
+main.main-content > section.operation-panel:first-of-type
+.igqc-material-cell strong {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    color: #30373d !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 1.4 !important;
+    /* NEVER break the ID into individual characters */
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* Explicitly protect long values */
+#po,
+#so,
+#materialId,
+#grn,
+#materialName {
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+}
+
+/* =========================================================
+   TESTING SECTION
+   ========================================================= */
+
+main.main-content > section.operation-panel:nth-of-type(2) {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Testing cards:
+   Chemical | Mechanical
+   Dimensional | Buttons
+*/
+.testing-assignment-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    grid-template-rows: 188px 188px !important;
+    gap: 20px !important;
+    width: 100% !important;
+}
+
+    .testing-assignment-grid > .testing-card:nth-child(1) {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+    }
+
+    .testing-assignment-grid > .testing-card:nth-child(2) {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+    }
+
+    .testing-assignment-grid > .testing-card:nth-child(3) {
+        grid-column: 1 !important;
+        grid-row: 2 !important;
+    }
+
+.testing-actions-cell {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    height: 188px !important;
+    min-height: 188px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-direction: column !important;
+    padding: 20px !important;
+    background: #fff !important;
+    border: 1px solid #d5dbe0 !important;
+    border-radius: 4px !important;
+}

@@ -13,6 +13,9 @@ builder.WebHost.UseUrls("http://0.0.0.0:5046");
 builder.Services.AddSingleton<ExcelMaterialService>();
 builder.Services.AddSingleton<InboundGoodsService>();
 builder.Services.AddSingleton<ConsumptionService>();
+builder.Services.AddSingleton<MaterialApi.Services.IGQCGradeService>();
+builder.Services.AddSingleton<MaterialApi.Services.IGQCTestingService>();
+
 
 var app = builder.Build();
 
@@ -530,6 +533,7 @@ app.MapGet(
             records
         });
     });
+
 // =========================================================
 // QR GENERATOR
 // =========================================================
@@ -671,5 +675,35 @@ app.MapPost(
             );
         }
     });
+app.MapGet("/api/igqc/grades", (MaterialApi.Services.IGQCGradeService service) =>
+{
+    try { return Results.Ok(new { success = true, grades = service.GetAll() }); }
+    catch (Exception ex) { return Results.Problem(ex.ToString(), statusCode: 500); }
+});
+
+app.MapGet("/api/igqc/grades/{testingType}", (string testingType, MaterialApi.Services.IGQCGradeService service) =>
+{
+    try { return Results.Ok(new { success = true, grades = service.GetByTestingType(testingType) }); }
+    catch (Exception ex) { return Results.Problem(ex.ToString(), statusCode: 500); }
+});
+
+app.MapPost("/api/igqc/testing/assign",
+    (IGQCTestingRequest request, MaterialApi.Services.IGQCTestingService service, MaterialApi.Services.IGQCGradeService grades) =>
+    {
+        try
+        {
+            var assignment = service.Save(request, grades);
+            return Results.Ok(new { success = true, message = "Testing assignment saved successfully.", assignment });
+        }
+        catch (ArgumentException ex)
+        {
+            return Results.BadRequest(new { success = false, message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(ex.ToString(), statusCode: 500);
+        }
+    });
+
 
 app.Run();

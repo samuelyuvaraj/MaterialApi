@@ -972,3 +972,45 @@
         font-size: 20px;
     }
 }
+/* =========================================================
+   ASSIGN TESTING
+   ========================================================= */
+
+.testing-ready-message {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 22px 24px;
+    border: 1px solid #dfe3e8;
+    background: #fafbfc;
+}
+
+
+    .testing-ready-message strong {
+        display: block;
+        margin-bottom: 6px;
+        color: #252b32;
+        font-size: 15px;
+    }
+
+
+    .testing-ready-message p {
+        margin: 0;
+        color: #68717d;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+
+@media (max-width: 650px) {
+
+    .testing-ready-message {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+        .testing-ready-message button {
+            width: 100%;
+        }
+}
