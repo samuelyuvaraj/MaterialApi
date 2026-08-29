@@ -15,6 +15,7 @@ builder.Services.AddSingleton<InboundGoodsService>();
 builder.Services.AddSingleton<ConsumptionService>();
 builder.Services.AddSingleton<MaterialApi.Services.IGQCGradeService>();
 builder.Services.AddSingleton<MaterialApi.Services.IGQCTestingService>();
+builder.Services.AddSingleton<MaterialApi.Services.ChemicalLabService>();
 
 
 var app = builder.Build();
@@ -704,6 +705,362 @@ app.MapPost("/api/igqc/testing/assign",
             return Results.Problem(ex.ToString(), statusCode: 500);
         }
     });
+
+
+// =========================================================
+// IGQC TESTING - GET ALL RECORDS
+// =========================================================
+
+app.MapGet(
+    "/api/igqc/testing",
+    (MaterialApi.Services.IGQCTestingService service) =>
+    {
+        try
+        {
+            var records = service.GetAll();
+
+            return Results.Ok(new
+            {
+                success = true,
+                count = records.Count,
+                records
+            });
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(
+                title: "IGQC Testing History Error",
+                detail: ex.ToString(),
+                statusCode: 500);
+        }
+    });
+
+
+// =========================================================
+// IGQC TESTING - SEARCH
+//
+// Searches:
+// PO / SO / Material ID / GRN / Assignment ID
+//
+// Example:
+// /api/igqc/testing/search?q=PO202608210000000001
+// =========================================================
+
+app.MapGet(
+    "/api/igqc/testing/search",
+    (
+        string? q,
+        MaterialApi.Services.IGQCTestingService service) =>
+    {
+        try
+        {
+            var records = service.Search(q);
+
+            return Results.Ok(new
+            {
+                success = true,
+                count = records.Count,
+                search = q ?? "",
+                records
+            });
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(
+                title: "IGQC Testing Search Error",
+                detail: ex.ToString(),
+                statusCode: 500);
+        }
+    });
+
+
+// =========================================================
+// IGQC TESTING - GET BY ASSIGNMENT ID
+//
+// Example:
+// /api/igqc/testing/IGQC-20260828105412532
+// =========================================================
+
+app.MapGet(
+    "/api/igqc/testing/{assignmentId}",
+    (
+        string assignmentId,
+        MaterialApi.Services.IGQCTestingService service) =>
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(assignmentId))
+            {
+                return Results.BadRequest(new
+                {
+                    success = false,
+                    message = "Assignment ID is required."
+                });
+            }
+
+            var record =
+                service.GetByAssignmentId(assignmentId);
+
+            if (record == null)
+            {
+                return Results.NotFound(new
+                {
+                    success = false,
+                    message = "Testing assignment not found."
+                });
+            }
+
+            return Results.Ok(new
+            {
+                success = true,
+                record
+            });
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(
+                title: "IGQC Testing Record Error",
+                detail: ex.ToString(),
+                statusCode: 500);
+        }
+    });
+
+
+// =========================================================
+// IGQC TESTING - QR SCAN
+//
+// QR format:
+// R1|PO|SO|ID|MN|GRN
+//
+// Example:
+// R1|PO202608210000000001|SO202608210000000001|
+// ID202608210001|Titanium|GRN-000001
+// =========================================================
+
+app.MapPost(
+    "/api/igqc/testing/scan",
+    (
+        QRScanRequest request,
+        MaterialApi.Services.IGQCTestingService service) =>
+    {
+        try
+        {
+            if (request == null ||
+                string.IsNullOrWhiteSpace(request.QrData))
+            {
+                return Results.BadRequest(new
+                {
+                    success = false,
+                    message = "QR data is required."
+                });
+            }
+
+            var parts = request.QrData.Split(
+                '|',
+                StringSplitOptions.None);
+
+            if (parts.Length != 6)
+            {
+                return Results.BadRequest(new
+                {
+                    success = false,
+                    message =
+                        "Invalid R1 QR format. Expected: R1|PO|SO|ID|MN|GRN"
+                });
+            }
+
+            var version = parts[0].Trim();
+
+            if (!string.Equals(
+                    version,
+                    "R1",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                return Results.BadRequest(new
+                {
+                    success = false,
+                    message =
+                        $"Unsupported QR version: {version}"
+                });
+            }
+
+            var po = parts[1].Trim();
+            var so = parts[2].Trim();
+            var materialId = parts[3].Trim();
+            var materialName = parts[4].Trim();
+            var grn = parts[5].Trim();
+
+            if (string.IsNullOrWhiteSpace(po) ||
+                string.IsNullOrWhiteSpace(so) ||
+                string.IsNullOrWhiteSpace(materialId) ||
+                string.IsNullOrWhiteSpace(materialName) ||
+                string.IsNullOrWhiteSpace(grn))
+            {
+                return Results.BadRequest(new
+                {
+                    success = false,
+                    message =
+                        "QR contains one or more empty fields."
+                });
+            }
+
+            var records = service.FindByQr(
+                po,
+                so,
+                materialId,
+                materialName,
+                grn);
+
+            return Results.Ok(new
+            {
+                success = true,
+                version,
+
+                qrData = new
+                {
+                    po,
+                    so,
+                    materialId,
+                    materialName,
+                    grn
+                },
+
+                count = records.Count,
+                records
+            });
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(
+                title: "IGQC Testing QR Scan Error",
+                detail: ex.ToString(),
+                statusCode: 500);
+        }
+    });
+
+// =========================================================
+// CHEMICAL LAB
+// =========================================================
+
+app.MapGet(
+    "/api/chemical-lab",
+    (ChemicalLabService service) =>
+    {
+        try
+        {
+            var records = service.GetAll();
+
+            return Results.Ok(new
+            {
+                success = true,
+                count = records.Count,
+                records
+            });
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(
+                title: "Chemical Lab API Error",
+                detail: ex.ToString(),
+                statusCode: 500
+            );
+        }
+    });
+
+
+// =========================================================
+// CHEMICAL LAB - GET BY ASSIGNMENT ID
+// =========================================================
+
+app.MapGet(
+    "/api/chemical-lab/{assignmentId}",
+    (
+        string assignmentId,
+        ChemicalLabService service) =>
+    {
+        try
+        {
+            var record =
+                service.GetByAssignmentId(
+                    assignmentId);
+
+            if (record == null)
+            {
+                return Results.NotFound(new
+                {
+                    success = false,
+                    message =
+                        "Chemical testing assignment not found."
+                });
+            }
+
+            return Results.Ok(new
+            {
+                success = true,
+                record
+            });
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(
+                title: "Chemical Lab API Error",
+                detail: ex.ToString(),
+                statusCode: 500
+            );
+        }
+    });
+
+
+// =========================================================
+// CHEMICAL LAB - ACCEPT
+// =========================================================
+
+app.MapPost(
+    "/api/chemical-lab/{assignmentId}/accept",
+    (
+        string assignmentId,
+        ChemicalLabService service) =>
+    {
+        try
+        {
+            var record =
+                service.Accept(
+                    assignmentId);
+
+            return Results.Ok(new
+            {
+                success = true,
+                message =
+                    "Chemical Lab material accepted successfully.",
+                record
+            });
+        }
+        catch (ArgumentException ex)
+        {
+            return Results.BadRequest(new
+            {
+                success = false,
+                message = ex.Message
+            });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return Results.NotFound(new
+            {
+                success = false,
+                message = ex.Message
+            });
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(
+                title: "Chemical Lab Accept Error",
+                detail: ex.ToString(),
+                statusCode: 500
+            );
+        }
+    });
+
 
 
 app.Run();

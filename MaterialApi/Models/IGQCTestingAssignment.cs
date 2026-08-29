@@ -38,4 +38,10 @@ public class IGQCTestingAssignments
     public string ChemicalExpectedResult { get; set; } = "";
     public string MechanicalExpectedResult { get; set; } = "";
     public string DimensionalExpectedResult { get; set; } = "";
+
+    public string ChemicalStatus { get; set; } = "Pending";
+
+    public string MechanicalStatus { get; set; } = "Pending";
+
+    public string DimensionalStatus { get; set; } = "Pending";
 }

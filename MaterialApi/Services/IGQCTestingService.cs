@@ -42,7 +42,12 @@ public class IGQCTestingService
 
             ChemicalTesting = request.Chemical.Selected,
             MechanicalTesting = request.Mechanical.Selected,
-            DimensionalTesting = request.Dimensional.Selected
+            DimensionalTesting = request.Dimensional.Selected,
+
+            ChemicalStatus = request.Chemical.Selected ? "Pending" : "",
+            MechanicalStatus = request.Mechanical.Selected ? "Pending" : "",
+            DimensionalStatus = request.Dimensional.Selected ? "Pending" : ""
+
         };
 
         if (request.Chemical.Selected)
@@ -251,7 +256,10 @@ public class IGQCTestingService
             "Dimensional Equipment",
             "Chemical Sample Consumed",
             "Mechanical Sample Consumed",
-            "Dimensional Sample Consumed"
+            "Dimensional Sample Consumed",
+            "Chemical Status",
+            "Mechanical Status",
+            "Dimensional Status"
         };
 
         for (var i = 0; i < headers.Length; i++)
@@ -295,7 +303,11 @@ public class IGQCTestingService
 
             a.ChemicalSampleConsumed,
             a.MechanicalSampleConsumed,
-            a.DimensionalSampleConsumed
+            a.DimensionalSampleConsumed,
+
+            a.ChemicalStatus,
+            a.MechanicalStatus,
+            a.DimensionalStatus
         };
 
         for (var i = 0; i < values.Length; i++)
@@ -304,4 +316,183 @@ public class IGQCTestingService
                 values[i]?.ToString() ?? "";
         }
     }
+    
+// =========================================================
+// ADD THESE METHODS INSIDE IGQCTestingService
+// =========================================================
+
+public List<IGQCTestingAssignment> GetAll()
+{
+    lock (FileLock)
+    {
+        if (!File.Exists(_excelPath))
+            return new List<IGQCTestingAssignment>();
+
+        using var workbook = new XLWorkbook(_excelPath);
+
+        var ws = workbook.Worksheets.FirstOrDefault();
+
+        if (ws == null || ws.LastRowUsed() == null)
+            return new List<IGQCTestingAssignment>();
+
+        var records = new List<IGQCTestingAssignment>();
+
+        foreach (var row in ws.RowsUsed().Skip(1))
+        {
+            if (string.IsNullOrWhiteSpace(row.Cell(1).GetString()))
+                continue;
+
+            records.Add(ReadRecord(row));
+        }
+
+        return records;
+    }
+}
+
+public List<IGQCTestingAssignment> Search(string? search)
+{
+    var records = GetAll();
+
+    if (string.IsNullOrWhiteSpace(search))
+        return records;
+
+    var value = search.Trim();
+
+    return records
+        .Where(x =>
+            Contains(x.AssignmentId, value) ||
+            Contains(x.Po, value) ||
+            Contains(x.So, value) ||
+            Contains(x.MaterialId, value) ||
+            Contains(x.Grn, value))
+        .ToList();
+}
+
+public IGQCTestingAssignment? GetByAssignmentId(
+    string assignmentId)
+{
+    if (string.IsNullOrWhiteSpace(assignmentId))
+        return null;
+
+    return GetAll()
+        .FirstOrDefault(x =>
+            string.Equals(
+                x.AssignmentId?.Trim(),
+                assignmentId.Trim(),
+                StringComparison.OrdinalIgnoreCase));
+}
+
+public List<IGQCTestingAssignment> FindByQr(
+    string po,
+    string so,
+    string materialId,
+    string materialName,
+    string grn)
+{
+    return GetAll()
+        .Where(x =>
+            string.Equals(
+                x.Po?.Trim(),
+                po?.Trim(),
+                StringComparison.OrdinalIgnoreCase) &&
+
+            string.Equals(
+                x.So?.Trim(),
+                so?.Trim(),
+                StringComparison.OrdinalIgnoreCase) &&
+
+            string.Equals(
+                x.MaterialId?.Trim(),
+                materialId?.Trim(),
+                StringComparison.OrdinalIgnoreCase) &&
+
+            string.Equals(
+                x.Grn?.Trim(),
+                grn?.Trim(),
+                StringComparison.OrdinalIgnoreCase))
+        .ToList();
+}
+
+private static bool Contains(
+    string? source,
+    string search)
+{
+    return !string.IsNullOrWhiteSpace(source) &&
+           source.Contains(
+               search,
+               StringComparison.OrdinalIgnoreCase);
+}
+
+private static IGQCTestingAssignment ReadRecord(
+    IXLRow row)
+{
+    return new IGQCTestingAssignment
+    {
+        AssignmentId = Cell(row, 1),
+        Date = Cell(row, 2),
+        Time = Cell(row, 3),
+        Po = Cell(row, 4),
+        So = Cell(row, 5),
+        MaterialId = Cell(row, 6),
+        Grn = Cell(row, 7),
+        MaterialName = Cell(row, 8),
+        Unit = Cell(row, 9),
+
+        ChemicalTesting = IsYes(Cell(row, 10)),
+        MechanicalTesting = IsYes(Cell(row, 11)),
+        DimensionalTesting = IsYes(Cell(row, 12)),
+
+        ChemicalGrade = Cell(row, 13),
+        MechanicalGrade = Cell(row, 14),
+        DimensionalGrade = Cell(row, 15),
+
+        ChemicalQuantity = DecimalValue(row, 16),
+        MechanicalQuantity = DecimalValue(row, 17),
+        DimensionalQuantity = DecimalValue(row, 18),
+
+        ChemicalEquipment = Cell(row, 19),
+        MechanicalEquipment = Cell(row, 20),
+        DimensionalEquipment = Cell(row, 21),
+
+        ChemicalSampleConsumed = Cell(row, 22),
+        MechanicalSampleConsumed = Cell(row, 23),
+        DimensionalSampleConsumed = Cell(row, 24),
+
+        // These are the new columns 25-27.
+        ChemicalStatus = Cell(row, 25),
+        MechanicalStatus = Cell(row, 26),
+        DimensionalStatus = Cell(row, 27)
+    };
+}
+
+private static string Cell(
+    IXLRow row,
+    int column)
+{
+    return row.Cell(column)
+        .GetString()
+        .Trim();
+}
+
+private static bool IsYes(string value)
+{
+    return string.Equals(
+        value?.Trim(),
+        "Yes",
+        StringComparison.OrdinalIgnoreCase);
+}
+
+private static decimal? DecimalValue(
+    IXLRow row,
+    int column)
+{
+    var text = row.Cell(column).GetString();
+
+    return decimal.TryParse(
+        text,
+        out var value)
+        ? value
+        : null;
+}
+
 }

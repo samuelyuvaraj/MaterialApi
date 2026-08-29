@@ -63,6 +63,12 @@ public class IGQCTestingAssignment
     public string MechanicalSampleConsumed { get; set; } = "";
     public string DimensionalSampleConsumed { get; set; } = "";
 
+    public string ChemicalStatus { get; set; } = "Pending";
+
+    public string MechanicalStatus { get; set; } = "Pending";
+
+    public string DimensionalStatus { get; set; } = "Pending";
+
     [JsonIgnore]
     public string DateTime => $"{Date} {Time}";
 }

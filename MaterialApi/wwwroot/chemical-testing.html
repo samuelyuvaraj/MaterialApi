@@ -1,0 +1,359 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDL MES - Chemical Lab</title>
+
+    <link rel="stylesheet" href="/css/site.css">
+    <link rel="stylesheet" href="/css/common-layout.css">
+    <link rel="stylesheet" href="/css/chemical-testing.css">
+</head>
+
+<body data-page-title="Chemical Lab">
+
+    <div id="header-container"></div>
+
+    <div class="application">
+
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+
+            <div class="chemical-lab-page">
+
+                <div class="breadcrumb">
+                    <span>Quality</span>
+                    <span class="breadcrumb-arrow">/</span>
+                    <strong>Chemical Lab</strong>
+                </div>
+
+                <div class="page-heading">
+                    <div>
+                        <h1>Chemical Lab</h1>
+                        <p>Review material assigned to Chemical Testing and accept receipt into the laboratory.</p>
+                    </div>
+
+                    <div class="operation-active">
+                        <span class="active-dot"></span>
+                        CHEMICAL LAB
+                    </div>
+                </div>
+
+                <!-- SEARCH -->
+                <section class="cl-panel cl-search-panel">
+
+                    <div class="cl-search-grid">
+
+                        <div class="cl-search-title">
+                            <div class="cl-title">SEARCH RECORD</div>
+                        </div>
+
+                        <div class="cl-step">01</div>
+
+                        <div class="cl-search-controls">
+
+                            <label for="chemicalSearch">SEARCH RECORD</label>
+
+                            <div class="cl-search-row">
+
+                                <div class="cl-input-wrap">
+                                    <span class="cl-search-icon" aria-hidden="true">⌕</span>
+
+                                    <input id="chemicalSearch"
+                                           type="text"
+                                           autocomplete="off"
+                                           spellcheck="false"
+                                           placeholder="PO / SO / Material / GRN / Assignment ID">
+
+                                    <button id="clearSearch"
+                                            class="cl-input-clear hidden"
+                                            type="button"
+                                            aria-label="Clear search">
+                                        ×
+                                    </button>
+                                </div>
+
+                                <button id="searchButton"
+                                        class="cl-primary-button"
+                                        type="button">
+                                    <span>⌕</span>
+                                    SEARCH
+                                </button>
+
+                            </div>
+
+                            <button id="scanButton"
+                                    class="cl-secondary-button cl-scan-button"
+                                    type="button">
+                                <span>▦</span>
+                                SCAN QR
+                            </button>
+
+                            <div class="cl-help">
+                                <span class="cl-help-icon">i</span>
+                                <span>Search for Chemical Testing assignments or scan an R1 material QR.</span>
+                            </div>
+
+                        </div>
+
+                        <div id="searchMessage" class="cl-message hidden"></div>
+
+                    </div>
+                </section>
+
+                <!-- RECORDS -->
+                <section class="cl-panel cl-records-panel">
+
+                    <div class="cl-records-heading">
+
+                        <div>
+                            <div class="cl-title">TESTING RECORDS</div>
+                        </div>
+
+                        <div id="recordCount" class="cl-record-count">0 RECORDS</div>
+
+                    </div>
+
+                    <div class="cl-table-wrap">
+
+                        <table class="cl-table">
+
+                            <colgroup>
+                                <col class="col-assignment">
+                                <col class="col-date">
+                                <col class="col-time">
+                                <col class="col-po">
+                                <col class="col-so">
+                                <col class="col-material">
+                                <col class="col-grn">
+                                <col class="col-grade">
+                                <col class="col-qty">
+                                <col class="col-status">
+                            </colgroup>
+
+                            <thead>
+                                <tr>
+                                    <th>ASSIGNMENT ID</th>
+                                    <th>DATE</th>
+                                    <th>TIME</th>
+                                    <th>PO</th>
+                                    <th>SO</th>
+                                    <th>MATERIAL</th>
+                                    <th>GRN</th>
+                                    <th>GRADE</th>
+                                    <th>QUANTITY</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="recordsBody"></tbody>
+
+                        </table>
+
+                    </div>
+
+                    <div id="emptyState" class="cl-empty hidden">
+                        No Chemical Testing assignments found.
+                    </div>
+
+                </section>
+
+                <!-- DETAILS -->
+                <section id="detailsPanel" class="cl-panel cl-details-panel hidden">
+
+                    <div class="cl-details-heading">
+
+                        <div>
+                            <div class="cl-title">Chemical Testing Assignment</div>
+                        </div>
+
+                        <button id="closeDetails"
+                                class="cl-secondary-button cl-close-button"
+                                type="button">
+                            CLOSE
+                        </button>
+
+                    </div>
+
+                    <div class="cl-details-body">
+
+                        <div class="cl-material-block">
+
+                            <div class="cl-section-label">MATERIAL INFORMATION</div>
+
+                            <div class="cl-info-grid">
+
+                                <div class="cl-info-cell">
+                                    <span>ASSIGNMENT ID</span>
+                                    <strong id="detailAssignmentId">-</strong>
+                                </div>
+
+                                <div class="cl-info-cell">
+                                    <span>DATE</span>
+                                    <strong id="detailDate">-</strong>
+                                </div>
+
+                                <div class="cl-info-cell">
+                                    <span>TIME</span>
+                                    <strong id="detailTime">-</strong>
+                                </div>
+
+                                <div class="cl-info-cell">
+                                    <span>PURCHASE ORDER</span>
+                                    <strong id="detailPo">-</strong>
+                                </div>
+
+                                <div class="cl-info-cell">
+                                    <span>SALES ORDER</span>
+                                    <strong id="detailSo">-</strong>
+                                </div>
+
+                                <div class="cl-info-cell">
+                                    <span>MATERIAL ID</span>
+                                    <strong id="detailMaterialId">-</strong>
+                                </div>
+
+                                <div class="cl-info-cell">
+                                    <span>GRN</span>
+                                    <strong id="detailGrn">-</strong>
+                                </div>
+
+                                <div class="cl-info-cell">
+                                    <span>MATERIAL NAME</span>
+                                    <strong id="detailMaterialName">-</strong>
+                                </div>
+
+                                <div class="cl-info-cell">
+                                    <span>UNIT</span>
+                                    <strong id="detailUnit">-</strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="cl-chemical-block">
+
+                            <div class="cl-section-heading">
+                                <div>
+                                    <div class="cl-chemical-title">CHEMICAL TESTING</div>
+                                    <div class="cl-section-subtitle">Material assigned to Chemical Lab.</div>
+                                </div>
+
+                                <span id="detailStatus"
+                                      class="cl-status-badge pending">
+                                    Pending
+                                </span>
+                            </div>
+
+                            <div class="cl-chemical-grid">
+
+                                <div class="cl-chemical-card">
+                                    <span>CHEMICAL GRADE</span>
+                                    <strong id="detailGrade">-</strong>
+                                </div>
+
+                                <div class="cl-chemical-card">
+                                    <span>QUANTITY</span>
+                                    <strong id="detailQuantity">-</strong>
+                                </div>
+
+                                <div class="cl-chemical-card">
+                                    <span>EQUIPMENT</span>
+                                    <strong id="detailEquipment">-</strong>
+                                </div>
+
+                                <div class="cl-chemical-card">
+                                    <span>SAMPLE CONSUMED</span>
+                                    <strong id="detailSample">-</strong>
+                                </div>
+
+                            </div>
+
+                            <div class="cl-accept-area">
+
+                                <div>
+                                    <div class="cl-accept-title">LAB RECEIPT</div>
+                                    <div id="acceptedInfo" class="cl-accepted-info hidden"></div>
+                                </div>
+
+                                <button id="acceptButton"
+                                        class="cl-accept-button"
+                                        type="button">
+                                    <span>✓</span>
+                                    ACCEPT
+                                </button>
+
+                            </div>
+
+                            <div id="acceptMessage" class="cl-message hidden"></div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <div id="qrModal" class="cl-modal hidden">
+
+        <div class="cl-modal-card">
+
+            <div class="cl-modal-header">
+
+                <div>
+                    <h2>Scan QR Code</h2>
+                    <p>Enter or paste the scanned R1 QR value.</p>
+                </div>
+
+                <button id="closeScan"
+                        class="cl-modal-close"
+                        type="button"
+                        aria-label="Close">
+                    ×
+                </button>
+
+            </div>
+
+            <label for="qrData">MATERIAL QR</label>
+
+            <textarea id="qrData"
+                      autocomplete="off"
+                      placeholder="R1|PO|SO|ID|Material|GRN"></textarea>
+
+            <div class="cl-modal-example">
+                Example: R1|PO202608210000000001|SO202608210000000001|ID202608210001|Titanium|GRN-000001
+            </div>
+
+            <div id="scanMessage" class="cl-message hidden"></div>
+
+            <div class="cl-modal-actions">
+
+                <button id="processScan"
+                        class="cl-primary-button"
+                        type="button">
+                    FIND RECORDS
+                </button>
+
+                <button id="cancelScan"
+                        class="cl-secondary-button"
+                        type="button">
+                    CANCEL
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div id="footer-container"></div>
+
+    <script src="/js/chemical-testing.js"></script>
+    <script src="/js/common-layout.js"></script>
+
+</body>
+</html>

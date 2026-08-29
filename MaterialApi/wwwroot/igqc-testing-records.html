@@ -1,0 +1,285 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BDL MES - IGQC Testing Records</title>
+
+    <link rel="stylesheet" href="/css/site.css">
+    <link rel="stylesheet" href="/css/common-layout.css">
+    <link rel="stylesheet" href="/css/igqc-testing-records.css">
+</head>
+
+<body data-page-title="IGQC Testing Records">
+
+    <!-- COMMON HEADER -->
+    <div id="header-container"></div>
+
+    <div class="application">
+
+        <!-- COMMON SIDEBAR -->
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+
+            <!-- PAGE -->
+            <div class="igqc-records-page">
+
+                <div class="breadcrumb">
+                    <span>Quality</span>
+                    <span class="breadcrumb-arrow">/</span>
+                    <strong>IGQC Testing Records</strong>
+                </div>
+
+                <div class="page-heading">
+                    <div>
+                        <h1>IGQC Testing Records</h1>
+                        <p>View and search assigned material testing records.</p>
+                    </div>
+
+                    <div class="operation-active">
+                        <span class="active-dot"></span>
+                        IGQC TESTING
+                    </div>
+                </div>
+
+                <!-- =====================================================
+                     STEP 01 - SEARCH
+                     ===================================================== -->
+                <section class="records-panel search-panel">
+
+                    <div class="search-layout">
+
+                        <div class="search-title-block">
+                            <div class="panel-title">Search Testing Records</div>
+                            <div class="panel-description">
+                                Search by PO, SO, Material ID,<br>
+                                GRN or Assignment ID.
+                            </div>
+                        </div>
+
+                        <div class="step-number">01</div>
+
+                        <div class="search-content">
+
+                            <div class="search-record-label">
+                                SEARCH RECORD
+                            </div>
+
+                            <div class="search-controls">
+
+                                <div class="search-input-wrap">
+
+                                    <span class="search-icon">⌕</span>
+
+                                    <input id="recordSearch"
+                                           type="text"
+                                           autocomplete="off"
+                                           spellcheck="false"
+                                           placeholder="PO / SO / Material / GRN / Assignment ID">
+
+                                    <button id="clearSearch"
+                                            class="clear-search hidden"
+                                            type="button"
+                                            aria-label="Clear search">
+                                        ×
+                                    </button>
+
+                                </div>
+
+                                <button id="searchButton"
+                                        class="primary-button"
+                                        type="button">
+                                    <span>⌕</span>
+                                    SEARCH
+                                </button>
+
+                            </div>
+
+                            <button id="scanButton"
+                                    class="secondary-button scan-button"
+                                    type="button">
+                                ▦ &nbsp; SCAN QR
+                            </button>
+
+                            <div class="search-instruction">
+                                <span class="info-icon">i</span>
+                                <span>
+                                    Search by any matching PO, SO, Material ID,
+                                    GRN or Assignment ID.
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div id="searchMessage"
+                             class="search-result-message hidden">
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =====================================================
+                     STEP 02 - LATEST RECORDS
+                     ===================================================== -->
+                <section class="records-panel latest-panel">
+
+                    <div class="latest-header">
+
+                        <div class="latest-title-block">
+                            <div class="panel-title">Latest Testing Records</div>
+                        </div>
+
+                        <div id="recordCount" class="record-count">
+                            0 RECORDS
+                        </div>
+
+                    </div>
+
+                    <div class="records-table-wrap">
+
+                        <table class="records-table">
+
+                            <thead>
+                                <tr>
+                                    <th>ASSIGNMENT ID</th>
+                                    <th>DATE</th>
+                                    <th>TIME</th>
+                                    <th>PO</th>
+                                    <th>SO</th>
+                                    <th>MATERIAL</th>
+                                    <th>GRN</th>
+                                    <th>TESTING</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="recordsBody"></tbody>
+
+                        </table>
+
+                    </div>
+
+                    <div id="emptyState" class="empty-state hidden">
+                        No testing records found.
+                    </div>
+
+                </section>
+
+
+                <!-- =====================================================
+                     DETAILS
+                     ===================================================== -->
+                <section id="detailsPanel"
+                         class="records-panel details-panel hidden">
+
+                    <div class="details-header">
+
+                        <div>
+                            <div class="panel-title">
+                                Testing Assignment Details
+                            </div>
+                        </div>
+
+                        <button id="closeDetails"
+                                class="close-button"
+                                type="button">
+                            CLOSE
+                        </button>
+
+                    </div>
+
+                    <div class="details-body">
+
+                        <div id="materialDetails"
+                             class="detail-grid">
+                        </div>
+
+                        <div id="testingDetails"
+                             class="testing-details">
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- QR SCAN MODAL -->
+    <div id="qrModal" class="modal hidden">
+
+        <div class="modal-card">
+
+            <div class="modal-header">
+
+                <div>
+                    <h2>Scan QR Code</h2>
+                    <p>Enter or paste the scanned R1 QR value.</p>
+                </div>
+
+                <button id="closeScan"
+                        class="modal-close"
+                        type="button"
+                        aria-label="Close">
+                    ×
+                </button>
+
+            </div>
+
+            <label class="modal-label" for="qrData">
+                MATERIAL QR
+            </label>
+
+            <textarea id="qrData"
+                      placeholder="R1|PO|SO|ID|Material|GRN"></textarea>
+
+            <div class="scanner-instruction">
+                <span class="info-icon">i</span>
+                <span>
+                    Example:
+                    R1|PO202608210000000001|SO202608210000000001|ID202608210001|Titanium|GRN-000001
+                </span>
+            </div>
+
+            <div id="scanMessage"
+                 class="message hidden">
+            </div>
+
+            <div class="modal-actions">
+
+                <button id="processScan"
+                        class="primary-button"
+                        type="button">
+                    ✓ &nbsp; FIND RECORDS
+                </button>
+
+                <button id="cancelScan"
+                        class="secondary-button"
+                        type="button">
+                    CANCEL
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- COMMON FOOTER -->
+    <div id="footer-container"></div>
+
+    <!-- PAGE JS -->
+    <script src="/js/igqc-testing-records.js"></script>
+
+    <!-- COMMON LAYOUT -->
+    <script src="/js/common-layout.js"></script>
+
+</body>
+</html>

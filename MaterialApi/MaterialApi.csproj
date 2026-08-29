@@ -31,6 +31,9 @@
 		<None Update="Data\IGQC_Data.xlsx">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+		<None Update="Data\Chemical_Lab_Data.xlsx">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 			
 	</ItemGroup>
 
