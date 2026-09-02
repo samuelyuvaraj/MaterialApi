@@ -1,0 +1,896 @@
+﻿/* =========================================================
+   BDL MES - CHEMICAL LAB
+   Page-scoped styles only.
+   Designed to work with site.css + common-layout.css.
+   ========================================================= */
+
+.chemical-lab-page,
+.chemical-lab-page *,
+.cl-modal,
+.cl-modal * {
+    box-sizing: border-box;
+}
+
+.chemical-lab-page {
+    width: 100%;
+    min-width: 0;
+    padding: 0 28px 42px;
+    color: #24344b;
+}
+
+    /* ---------- PAGE HEADER ---------- */
+
+    .chemical-lab-page .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin: 17px 0 10px;
+        color: #69778b;
+        font-size: 13px;
+    }
+
+        .chemical-lab-page .breadcrumb strong {
+            color: #26364d;
+        }
+
+    .chemical-lab-page .breadcrumb-arrow {
+        color: #a8b1bd;
+    }
+
+    .chemical-lab-page .page-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 20px;
+    }
+
+        .chemical-lab-page .page-heading h1 {
+            margin: 0 0 6px;
+            color: #17263d;
+            font-size: 29px;
+            line-height: 1.18;
+        }
+
+        .chemical-lab-page .page-heading p {
+            margin: 0;
+            color: #64748a;
+            font-size: 14px;
+        }
+
+    .chemical-lab-page .operation-active {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        min-height: 36px;
+        padding: 0 14px;
+        border: 1px solid #d8e8e6;
+        background: #f5fbfa;
+        color: #34465c;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .chemical-lab-page .active-dot {
+        width: 8px;
+        height: 8px;
+        flex: 0 0 8px;
+        border-radius: 50%;
+        background: #19a98d;
+    }
+
+/* ---------- PANEL ---------- */
+
+.cl-panel {
+    width: 100%;
+    margin-top: 18px;
+    border: 1px solid #dfe6eb;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(28, 50, 73, .045);
+    overflow: hidden;
+}
+
+.cl-title {
+    color: #17263d;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.cl-description {
+    margin-top: 6px;
+    color: #64748a;
+    font-size: 13px;
+    line-height: 1.35;
+}
+
+/* ---------- SEARCH ---------- */
+
+.cl-search-grid {
+    display: grid;
+    grid-template-columns: 230px 44px minmax(0, 1fr);
+    min-height: 168px;
+    position: relative;
+}
+
+.cl-search-title {
+    align-self: center;
+    padding: 22px 18px;
+}
+
+.cl-step {
+    align-self: center;
+    justify-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 29px;
+    height: 29px;
+    border: 1px solid #d9e1e9;
+    color: #8d9aac;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.cl-search-controls {
+    min-width: 0;
+    padding: 20px 22px 15px 0;
+}
+
+    .cl-search-controls > label {
+        display: block;
+        margin-bottom: 8px;
+        color: #42536a;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .45px;
+    }
+
+.cl-search-row {
+    display: grid;
+    grid-template-columns: minmax(280px, 1fr) 125px;
+    gap: 10px;
+    align-items: center;
+}
+
+.cl-input-wrap {
+    position: relative;
+    min-width: 0;
+}
+
+.cl-search-icon {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    z-index: 2;
+    transform: translateY(-50%);
+    color: #078f91;
+    font-size: 21px;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.cl-input-wrap input {
+    width: 100%;
+    height: 44px;
+    padding: 0 42px 0 39px;
+    border: 1px solid #cfd9e3;
+    border-radius: 4px;
+    outline: none;
+    background: #fff;
+    color: #26344a;
+    font: inherit;
+    font-size: 13px;
+}
+
+    .cl-input-wrap input:focus {
+        border-color: #079c9b;
+        box-shadow: 0 0 0 2px rgba(7, 156, 155, .08);
+    }
+
+    .cl-input-wrap input::placeholder {
+        color: #8996a8;
+    }
+
+.cl-input-clear {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    width: 30px;
+    height: 30px;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: #718096;
+    font-size: 21px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.cl-primary-button,
+.cl-secondary-button,
+.cl-accept-button {
+    min-height: 44px;
+    border-radius: 4px;
+    padding: 0 18px;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .3px;
+    cursor: pointer;
+}
+
+.cl-primary-button {
+    border: 1px solid #078f91;
+    background: #078f91;
+    color: #fff;
+}
+
+    .cl-primary-button:hover {
+        background: #067f81;
+    }
+
+.cl-secondary-button {
+    border: 1px solid #cbd7e1;
+    background: #fff;
+    color: #34465c;
+}
+
+    .cl-secondary-button:hover {
+        background: #f6f9fb;
+    }
+
+.cl-scan-button {
+    width: 126px;
+    margin-top: 10px;
+}
+
+    .cl-scan-button span {
+        margin-right: 7px;
+    }
+
+.cl-help {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 9px;
+    color: #69778a;
+    font-size: 11px;
+    line-height: 1.3;
+}
+
+.cl-help-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    border: 1px solid #aebbc8;
+    border-radius: 50%;
+    color: #718096;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.cl-message {
+    padding: 10px 13px;
+    border: 1px solid #dfe7ec;
+    border-radius: 4px;
+    background: #f7fafb;
+    color: #53627a;
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+    .cl-message.success {
+        border-color: #ccebdd;
+        background: #f0fbf6;
+        color: #18794e;
+    }
+
+    .cl-message.error {
+        border-color: #f0d0d0;
+        background: #fff6f6;
+        color: #b42318;
+    }
+
+.cl-search-grid > #searchMessage {
+    position: absolute;
+    left: 274px;
+    right: 22px;
+    bottom: 10px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ---------- RECORDS ---------- */
+
+.cl-records-panel {
+    margin-top: 20px;
+}
+
+.cl-records-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    min-height: 82px;
+    padding: 18px 20px;
+    border-bottom: 1px solid #e1e7ec;
+}
+
+.cl-record-count {
+    flex: 0 0 auto;
+    color: #64758b;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .4px;
+}
+
+.cl-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.cl-table {
+    width: 100%;
+    min-width: 1240px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+    .cl-table .col-assignment {
+        width: 210px;
+    }
+
+    .cl-table .col-date {
+        width: 105px;
+    }
+
+    .cl-table .col-time {
+        width: 95px;
+    }
+
+    .cl-table .col-po {
+        width: 195px;
+    }
+
+    .cl-table .col-so {
+        width: 195px;
+    }
+
+    .cl-table .col-material {
+        width: 155px;
+    }
+
+    .cl-table .col-grn {
+        width: 110px;
+    }
+
+    .cl-table .col-grade {
+        width: 150px;
+    }
+
+    .cl-table .col-qty {
+        width: 105px;
+    }
+
+    .cl-table .col-status {
+        width: 105px;
+    }
+
+    .cl-table th {
+        height: 54px;
+        padding: 0 14px;
+        border-bottom: 1px solid #dfe6eb;
+        background: #f4f9f9;
+        color: #4e6077;
+        text-align: left;
+        vertical-align: middle;
+        white-space: nowrap;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .3px;
+    }
+
+    .cl-table td {
+        height: 66px;
+        padding: 0 14px;
+        border-bottom: 1px solid #edf1f4;
+        color: #34465c;
+        text-align: left;
+        vertical-align: middle;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 12px;
+    }
+
+    .cl-table tbody tr {
+        cursor: pointer;
+        transition: background .12s ease;
+    }
+
+        .cl-table tbody tr:hover {
+            background: #f8fbfc;
+        }
+
+.cl-assignment-button {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    height: 32px;
+    padding: 0 10px;
+    border: 1px solid #dbe6eb;
+    border-radius: 4px;
+    background: #fff;
+    color: #078b91;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+    .cl-assignment-button:hover {
+        background: #f2fbfa;
+        border-color: #b9d9da;
+    }
+
+.cl-table td:nth-child(8) {
+    color: #078b91;
+    font-weight: 700;
+}
+
+.cl-status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 68px;
+    min-height: 28px;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+    .cl-status-badge.pending {
+        background: #fff4df;
+        color: #9a6500;
+    }
+
+    .cl-status-badge.accepted {
+        background: #eaf8f1;
+        color: #16794c;
+    }
+
+.cl-empty {
+    padding: 38px 20px;
+    text-align: center;
+    color: #7b8798;
+    font-size: 13px;
+}
+
+/* ---------- DETAILS ---------- */
+
+.cl-details-panel {
+    margin-top: 24px;
+}
+
+.cl-details-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 76px;
+    padding: 18px 22px;
+    border-bottom: 1px solid #e1e7ec;
+}
+
+.cl-close-button {
+    min-width: 106px;
+    min-height: 40px;
+}
+
+.cl-details-body {
+    padding: 22px;
+}
+
+.cl-section-label {
+    margin-bottom: 12px;
+    color: #5e6f84;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .45px;
+}
+
+.cl-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border: 1px solid #e0e7ec;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.cl-info-cell {
+    min-width: 0;
+    min-height: 74px;
+    padding: 15px 17px;
+    border-right: 1px solid #e5ebef;
+    border-bottom: 1px solid #e5ebef;
+}
+
+    .cl-info-cell:nth-child(3n) {
+        border-right: 0;
+    }
+
+    .cl-info-cell:nth-last-child(-n + 3) {
+        border-bottom: 0;
+    }
+
+    .cl-info-cell span,
+    .cl-chemical-card span {
+        display: block;
+        margin-bottom: 8px;
+        color: #6b788b;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .35px;
+    }
+
+    .cl-info-cell strong {
+        display: block;
+        min-width: 0;
+        color: #203149;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.35;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+.cl-chemical-block {
+    margin-top: 24px;
+    border: 1px solid #d8e8e7;
+    border-top: 3px solid #079c9b;
+    border-radius: 5px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.cl-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 17px 18px;
+    border-bottom: 1px solid #e5ecef;
+    background: #fbfefe;
+}
+
+.cl-chemical-title {
+    color: #078f91;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.cl-section-subtitle {
+    margin-top: 4px;
+    color: #68788b;
+    font-size: 12px;
+}
+
+.cl-chemical-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.cl-chemical-card {
+    min-width: 0;
+    min-height: 96px;
+    padding: 18px;
+    border-right: 1px solid #e5ecef;
+}
+
+    .cl-chemical-card:last-child {
+        border-right: 0;
+    }
+
+    .cl-chemical-card strong {
+        display: block;
+        color: #1d3148;
+        font-size: 14px;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+    }
+
+.cl-accept-area {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 18px;
+    border-top: 1px solid #e5ecef;
+    background: #f8fbfb;
+}
+
+.cl-accept-title {
+    color: #52637a;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .4px;
+}
+
+.cl-accepted-info {
+    margin-top: 5px;
+    color: #16794c;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.cl-accept-button {
+    min-width: 140px;
+    min-height: 44px;
+    border: 1px solid #15946f;
+    background: #15946f;
+    color: #fff;
+}
+
+    .cl-accept-button:hover {
+        background: #117e5f;
+    }
+
+    .cl-accept-button:disabled {
+        opacity: .65;
+        cursor: not-allowed;
+    }
+
+.cl-chemical-block > .cl-message {
+    margin: 0 18px 18px;
+}
+
+/* ---------- MODAL ---------- */
+
+.cl-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(18, 31, 47, .42);
+}
+
+.cl-modal-card {
+    width: min(620px, 100%);
+    border: 1px solid #dfe6eb;
+    border-radius: 7px;
+    background: #fff;
+    box-shadow: 0 18px 55px rgba(18, 31, 47, .22);
+}
+
+.cl-modal-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 21px 22px 16px;
+    border-bottom: 1px solid #e5ebef;
+}
+
+    .cl-modal-header h2 {
+        margin: 0 0 5px;
+        color: #17263d;
+        font-size: 20px;
+    }
+
+    .cl-modal-header p {
+        margin: 0;
+        color: #69788b;
+        font-size: 13px;
+    }
+
+.cl-modal-close {
+    width: 34px;
+    height: 34px;
+    border: 0;
+    background: transparent;
+    color: #6d7b8d;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.cl-modal-card > label {
+    display: block;
+    margin: 20px 22px 8px;
+    color: #42536a;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .45px;
+}
+
+#qrData {
+    display: block;
+    width: calc(100% - 44px);
+    min-height: 105px;
+    margin: 0 22px;
+    padding: 13px;
+    resize: vertical;
+    border: 1px solid #cfd9e3;
+    border-radius: 4px;
+    outline: none;
+    color: #26344a;
+    font: inherit;
+    font-size: 13px;
+}
+
+    #qrData:focus {
+        border-color: #079c9b;
+        box-shadow: 0 0 0 2px rgba(7, 156, 155, .08);
+    }
+
+.cl-modal-example {
+    margin: 9px 22px 0;
+    color: #758397;
+    font-size: 11px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.cl-modal-card > .cl-message {
+    margin: 14px 22px 0;
+}
+
+.cl-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 18px 22px 21px;
+}
+
+    .cl-modal-actions .cl-primary-button,
+    .cl-modal-actions .cl-secondary-button {
+        min-width: 130px;
+    }
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 1100px) {
+    .cl-search-grid {
+        grid-template-columns: 210px 40px minmax(0, 1fr);
+    }
+
+        .cl-search-grid > #searchMessage {
+            left: 250px;
+        }
+
+    .cl-info-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .cl-info-cell:nth-child(3n) {
+        border-right: 1px solid #e5ebef;
+    }
+
+    .cl-info-cell:nth-child(2n) {
+        border-right: 0;
+    }
+
+    .cl-info-cell:nth-last-child(-n + 3) {
+        border-bottom: 1px solid #e5ebef;
+    }
+
+    .cl-info-cell:last-child {
+        border-bottom: 0;
+    }
+
+    .cl-chemical-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .cl-chemical-card:nth-child(2) {
+        border-right: 0;
+    }
+
+    .cl-chemical-card:nth-child(-n + 2) {
+        border-bottom: 1px solid #e5ecef;
+    }
+}
+
+@media (max-width: 760px) {
+    .chemical-lab-page {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+        .chemical-lab-page .page-heading {
+            flex-direction: column;
+        }
+
+    .cl-search-grid {
+        display: block;
+        min-height: auto;
+    }
+
+    .cl-search-title {
+        padding: 18px;
+    }
+
+    .cl-step {
+        display: none;
+    }
+
+    .cl-search-controls {
+        padding: 0 18px 18px;
+    }
+
+    .cl-search-row {
+        grid-template-columns: 1fr;
+    }
+
+    .cl-scan-button {
+        width: 100%;
+    }
+
+    .cl-search-grid > #searchMessage {
+        position: static;
+        margin: 0 18px 18px;
+    }
+
+    .cl-records-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 16px 18px;
+    }
+
+    .cl-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cl-info-cell,
+    .cl-info-cell:nth-child(2n),
+    .cl-info-cell:nth-child(3n) {
+        border-right: 0;
+        border-bottom: 1px solid #e5ebef;
+    }
+
+        .cl-info-cell:last-child {
+            border-bottom: 0;
+        }
+
+    .cl-chemical-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cl-chemical-card,
+    .cl-chemical-card:nth-child(2) {
+        border-right: 0;
+        border-bottom: 1px solid #e5ecef;
+    }
+
+        .cl-chemical-card:last-child {
+            border-bottom: 0;
+        }
+
+    .cl-accept-area {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .cl-accept-button {
+        width: 100%;
+    }
+
+    .cl-details-heading {
+        align-items: flex-start;
+        gap: 12px;
+        flex-direction: column;
+    }
+
+    .cl-close-button {
+        width: 100%;
+    }
+}

@@ -44,10 +44,75 @@ function getPageTitle() {
 
 function initializeHeader() {
     const title = getPageTitle();
-    const titleEl = document.getElementById("headerPageTitle");
-    if (titleEl) titleEl.textContent = title;
 
+    const titleEl = document.getElementById("headerPageTitle");
+    if (titleEl) {
+        titleEl.textContent = title;
+    }
+
+    // ------------------------------------
+    // Hardcoded module user
+    // ------------------------------------
+    const page = getCurrentPage();
+
+    let username = "Demo User";
+    let avatar = "DU";
+
+    // STORE
+    if (
+        page === "store" ||
+        page === "qr-generator"
+    ) {
+        username = "Store";
+        avatar = "ST";
+    }
+
+    // IGQC
+    else if (
+        page === "consumption" ||
+        page === "igqc-testing-records"
+    ) {
+        username = "IGQC";
+        avatar = "IG";
+    }
+
+    // CHEMICAL
+    else if (
+        page === "chemical-testing" ||
+        page === "chemical-lab-result"
+    ) {
+        username = "Chemical";
+        avatar = "CH";
+    }
+
+    // MECHANICAL
+    else if (
+        page === "mechanical-testing" ||
+        page === "mechanical-lab-result"
+    ) {
+        username = "Mechanical";
+        avatar = "ME";
+    }
+
+    const userName = document.querySelector(
+        "#header-container .user-name"
+    );
+
+    const userAvatar = document.querySelector(
+        "#header-container .user-avatar"
+    );
+
+    if (userName) {
+        userName.textContent = username;
+    }
+
+    if (userAvatar) {
+        userAvatar.textContent = avatar;
+    }
+
+    // Clock
     updateClock();
+
     if (!window.__mesClockStarted) {
         window.__mesClockStarted = true;
         setInterval(updateClock, 1000);

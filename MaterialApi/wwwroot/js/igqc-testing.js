@@ -1,8 +1,8 @@
-/* =========================================================
-   IGQC TESTING
-   Confirm Testing -> POST /api/igqc/testing/assign
-   Existing QR / Consumption / Grade APIs are untouched.
-   ========================================================= */
+/*
+ * BDL MES - IGQC TESTING
+ * Vendor comes from Consumption after Confirm.
+ * All testing grades are loaded from M_TestingGrade.xlsx through API.
+ */
 
 (function () {
     "use strict";
@@ -25,9 +25,11 @@
 
     function numberOrNull(id) {
         const raw = inputValue(id);
+
         if (raw === "") return null;
 
         const n = Number(raw);
+
         return Number.isFinite(n) ? n : null;
     }
 
@@ -37,7 +39,12 @@
         if (!el) return;
 
         el.textContent = message || "";
-        el.classList.remove("hidden", "success", "error");
+
+        el.classList.remove(
+            "hidden",
+            "success",
+            "error"
+        );
 
         if (type) {
             el.classList.add(type);
@@ -53,7 +60,9 @@
         ];
 
         for (const storage of [sessionStorage, localStorage]) {
+
             for (const key of keys) {
+
                 try {
                     const raw = storage.getItem(key);
 
@@ -64,6 +73,7 @@
                     if (parsed) {
                         return parsed;
                     }
+
                 } catch (error) {
                     console.warn(
                         "Unable to read stored material:",
@@ -78,15 +88,21 @@
     }
 
     function normalizeMaterial(data) {
+
         if (!data) return null;
 
-        if (data.record) data = data.record;
-        else if (data.consumptionRecord)
+        if (data.record) {
+            data = data.record;
+        }
+        else if (data.consumptionRecord) {
             data = data.consumptionRecord;
-        else if (data.consumption)
+        }
+        else if (data.consumption) {
             data = data.consumption;
+        }
 
         return {
+
             po:
                 data.po ??
                 data.poNumber ??
@@ -117,6 +133,11 @@
                 data.materialName ??
                 data.mn ??
                 data.MaterialName ??
+                "",
+
+            vendor:
+                data.vendor ??
+                data.Vendor ??
                 "",
 
             unit:
@@ -151,11 +172,15 @@
     }
 
     function populateMaterial(data) {
+
         if (!data) return;
 
         const set = (id, v) => {
+
             const el = getElement(id);
+
             if (el) {
+
                 el.textContent =
                     v === null ||
                         v === undefined ||
@@ -170,48 +195,79 @@
         set("materialId", data.materialId);
         set("grn", data.grn);
         set("materialName", data.materialName);
+        set("vendor", data.vendor);
         set("unit", data.unit);
         set("status", data.status);
         set("received", data.received);
         set("available", data.available);
         set("consumed", data.consumed);
 
-        set("chemicalUom", data.unit || "u");
-        set("mechanicalUom", data.unit || "u");
-        set("dimensionalUom", data.unit || "u");
+        set(
+            "chemicalUom",
+            data.unit || "u"
+        );
+
+        set(
+            "mechanicalUom",
+            data.unit || "u"
+        );
+
+        set(
+            "dimensionalUom",
+            data.unit || "u"
+        );
     }
 
+    /*
+     * LOAD GRADES FROM API
+     *
+     * Source:
+     * M_TestingGrade.xlsx
+     *
+     * API:
+     * /api/igqc/grades/{testingType}
+     *
+     * No grades are hardcoded in JavaScript.
+     */
     async function loadGrades(testingType, selectId) {
         const select = getElement(selectId);
-
         if (!select) return;
 
-        select.innerHTML =
-            '<option value="">Loading grades...</option>';
+        select.innerHTML = '<option value="">Loading grades...</option>';
 
         try {
-            const response = await fetch(
-                "/api/igqc/grades/" +
-                encodeURIComponent(testingType)
-            );
+            // Mechanical uses IGQCMGradeService endpoint
+            const endpoint =
+                testingType === "Mechanical Testing"
+                    ? "/api/igqc/mgrades/" + encodeURIComponent(testingType)
+                    : "/api/igqc/grades/" + encodeURIComponent(testingType);
+
+            const response = await fetch(endpoint, {
+                method: "GET",
+                headers: {
+                    Accept: "application/json"
+                },
+                cache: "no-store"
+            });
 
             const data = await response.json();
 
             if (!response.ok || data.success === false) {
                 throw new Error(
                     data.message ||
-                    "Unable to load testing grades."
+                    `Unable to load ${testingType} grades.`
                 );
             }
 
-            const grades = data.grades || [];
+            const grades = Array.isArray(data.grades)
+                ? data.grades
+                : [];
 
             select.innerHTML =
                 '<option value="">Select testing grade</option>';
 
             grades.forEach(function (grade) {
-                const option =
-                    document.createElement("option");
+                const option = document.createElement("option");
 
                 option.value =
                     grade.gradeId || "";
@@ -221,11 +277,17 @@
                     grade.gradeId ||
                     "";
 
+                // Equipment comes from Excel/API
                 option.dataset.equipment =
                     grade.equipment || "";
 
+                // Sample consumed comes from Excel/API
                 option.dataset.sampleConsumed =
                     grade.sampleConsumed || "";
+
+                // Expected result if available
+                option.dataset.expectedResult =
+                    grade.expectedResult || "";
 
                 select.appendChild(option);
             });
@@ -237,64 +299,119 @@
 
         } catch (error) {
             console.error(
-                "Grade loading error:",
-                testingType,
+                `${testingType} grade loading error:`,
                 error
             );
 
             select.innerHTML =
                 '<option value="">Grade data unavailable</option>';
+
+            showMessage(
+                `Unable to load ${testingType} grades.`,
+                "error"
+            );
         }
     }
 
-    function setupGradeDetails(selectId, detailsId) {
-        const select = getElement(selectId);
-        const details = getElement(detailsId);
+    function setupGradeDetails(
+        selectId,
+        detailsId
+    ) {
 
-        if (!select || !details) return;
+        const select =
+            getElement(selectId);
 
-        select.addEventListener("change", function () {
-            const option =
-                select.options[select.selectedIndex];
+        const details =
+            getElement(detailsId);
 
-            if (!option || !option.value) {
-                details.innerHTML = "";
-                details.classList.add("hidden");
-                return;
+        if (!select || !details) {
+            return;
+        }
+
+        select.addEventListener(
+            "change",
+            function () {
+
+                const option =
+                    select.options[
+                    select.selectedIndex
+                    ];
+
+                if (
+                    !option ||
+                    !option.value
+                ) {
+
+                    details.innerHTML = "";
+
+                    details.classList.add(
+                        "hidden"
+                    );
+
+                    return;
+                }
+
+                const equipment =
+                    option.dataset.equipment || "";
+
+                const sampleConsumed =
+                    option.dataset.sampleConsumed || "";
+
+                const expectedResult =
+                    option.dataset.expectedResult || "";
+
+                const detailsParts = [];
+
+                if (equipment) {
+
+                    detailsParts.push(
+                        "Equipment: " +
+                        equipment
+                    );
+                }
+
+                if (sampleConsumed) {
+
+                    detailsParts.push(
+                        "Sample Consumed: " +
+                        sampleConsumed
+                    );
+                }
+
+                if (expectedResult) {
+
+                    detailsParts.push(
+                        "Expected Result: " +
+                        expectedResult
+                    );
+                }
+
+                details.innerHTML =
+                    detailsParts.join(" | ");
+
+                details.classList.remove(
+                    "hidden"
+                );
             }
-
-            const equipment =
-                option.dataset.equipment || "";
-
-            const sampleConsumed =
-                option.dataset.sampleConsumed || "";
-
-            details.innerHTML =
-                (equipment
-                    ? "Equipment: " + equipment
-                    : "") +
-                (equipment && sampleConsumed
-                    ? " | "
-                    : "") +
-                (sampleConsumed
-                    ? "Sample Consumed: " +
-                    sampleConsumed
-                    : "");
-
-            details.classList.remove("hidden");
-        });
+        );
     }
 
     function getSelection(
         gradeId,
         quantityId
     ) {
+
         const grade =
             inputValue(gradeId);
 
         return {
-            selected: !!grade,
-            gradeId: grade,
+
+            selected:
+                !!grade,
+
+            gradeId:
+                grade,
+
             quantity:
                 numberOrNull(quantityId)
         };
@@ -304,6 +421,7 @@
         selection,
         name
     ) {
+
         if (!selection.selected) {
             return null;
         }
@@ -312,6 +430,7 @@
             selection.quantity === null ||
             selection.quantity <= 0
         ) {
+
             return (
                 "Enter a quantity greater than zero for " +
                 name +
@@ -326,6 +445,7 @@
             Number.isFinite(available) &&
             selection.quantity > available
         ) {
+
             return (
                 name +
                 " quantity cannot exceed available quantity (" +
@@ -340,21 +460,37 @@
     }
 
     function buildRequest() {
+
         return {
-            po: materialData?.po || value("po"),
-            so: materialData?.so || value("so"),
+
+            po:
+                materialData?.po ||
+                value("po"),
+
+            so:
+                materialData?.so ||
+                value("so"),
+
             materialId:
                 materialData?.materialId ||
                 value("materialId"),
+
             grn:
                 materialData?.grn ||
                 value("grn"),
+
             materialName:
                 materialData?.materialName ||
                 value("materialName"),
+
+            vendor:
+                materialData?.vendor ||
+                value("vendor"),
+
             unit:
                 materialData?.unit ||
                 value("unit"),
+
             status:
                 materialData?.status ||
                 value("status"),
@@ -401,14 +537,17 @@
     }
 
     async function confirmTesting() {
+
         const button =
             getElement("confirmTesting");
 
         if (!materialData) {
+
             showMessage(
                 "Material information is not available.",
                 "error"
             );
+
             return;
         }
 
@@ -420,58 +559,79 @@
             !request.mechanical.selected &&
             !request.dimensional.selected
         ) {
+
             showMessage(
                 "Select at least one testing type.",
                 "error"
             );
+
             return;
         }
 
         const errors = [
+
             validateSelection(
                 request.chemical,
                 "Chemical Testing"
             ),
+
             validateSelection(
                 request.mechanical,
                 "Mechanical Testing"
             ),
+
             validateSelection(
                 request.dimensional,
                 "Dimensional Testing"
             )
+
         ].filter(Boolean);
 
         if (errors.length) {
-            showMessage(errors[0], "error");
+
+            showMessage(
+                errors[0],
+                "error"
+            );
+
             return;
         }
 
         if (!button) return;
 
-        const oldText = button.innerHTML;
+        const oldText =
+            button.innerHTML;
 
         button.disabled = true;
-        button.innerHTML = "SAVING...";
+
+        button.innerHTML =
+            "SAVING...";
 
         try {
+
             console.log(
                 "Submitting IGQC testing assignment:",
                 request
             );
 
-            const response = await fetch(
-                "/api/igqc/testing/assign",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-                    body:
-                        JSON.stringify(request)
-                }
-            );
+            const response =
+                await fetch(
+                    "/api/igqc/testing/assign",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+
+                            Accept:
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(request)
+                    }
+                );
 
             const raw =
                 await response.text();
@@ -479,11 +639,14 @@
             let data = {};
 
             try {
+
                 data =
                     raw
                         ? JSON.parse(raw)
                         : {};
+
             } catch {
+
                 throw new Error(
                     "Testing API returned invalid JSON."
                 );
@@ -493,6 +656,7 @@
                 !response.ok ||
                 data.success === false
             ) {
+
                 throw new Error(
                     data.message ||
                     data.detail ||
@@ -510,16 +674,18 @@
                 "success"
             );
 
-            /*
-             * Redirect only after the API confirms
-             * that the Excel row was saved.
-             */
-            setTimeout(function () {
-                window.location.href =
-                    "/consumption.html";
-            }, 700);
+            setTimeout(
+                function () {
+
+                    window.location.href =
+                        "/consumption.html";
+
+                },
+                700
+            );
 
         } catch (error) {
+
             console.error(
                 "Testing assignment save error:",
                 error
@@ -532,23 +698,36 @@
             );
 
             button.disabled = false;
-            button.innerHTML = oldText;
+
+            button.innerHTML =
+                oldText;
         }
     }
 
     function initialize() {
+
         materialData =
             normalizeMaterial(
                 getStoredMaterial()
             );
 
         if (materialData) {
-            populateMaterial(materialData);
+
+            populateMaterial(
+                materialData
+            );
+
         } else {
+
             console.warn(
                 "No material data found."
             );
         }
+
+        /*
+         * ALL THREE testing grades now come
+         * from M_TestingGrade.xlsx through API.
+         */
 
         loadGrades(
             "Chemical Testing",
@@ -580,31 +759,37 @@
             "dimensionalDetails"
         );
 
-        getElement("confirmTesting")
-            ?.addEventListener(
-                "click",
-                confirmTesting
-            );
+        getElement(
+            "confirmTesting"
+        )?.addEventListener(
+            "click",
+            confirmTesting
+        );
 
-        getElement("cancelTesting")
-            ?.addEventListener(
-                "click",
-                function () {
-                    window.location.href =
-                        "/consumption.html";
-                }
-            );
+        getElement(
+            "cancelTesting"
+        )?.addEventListener(
+            "click",
+            function () {
+
+                window.location.href =
+                    "/consumption.html";
+            }
+        );
     }
 
     if (
-        document.readyState ===
-        "loading"
+        document.readyState === "loading"
     ) {
+
         document.addEventListener(
             "DOMContentLoaded",
             initialize
         );
+
     } else {
+
         initialize();
     }
+
 })();

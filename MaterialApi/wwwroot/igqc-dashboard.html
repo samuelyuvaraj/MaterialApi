@@ -1,0 +1,251 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IGQC Dashboard</title>
+
+    <link rel="stylesheet" href="/css/igqc-dashboard.css">
+</head>
+
+<body class="igqc-dashboard-page">
+
+    <div class="igqc-shell">
+
+        <!-- HEADER -->
+        <header class="igqc-header">
+            <div>
+                <div class="igqc-eyebrow">Project: Astra</div>
+                <h1>IGQC Dashboard</h1>
+                <p>Incoming Good Quality Check overview and final inspection status.</p>
+            </div>
+
+            <button id="refreshButton" class="igqc-refresh" type="button">
+                <span>↻</span>
+                Refresh
+            </button>
+        </header>
+
+        <!-- MESSAGE -->
+        <div id="message"
+             class="igqc-message igqc-hidden"
+             role="status">
+        </div>
+
+        <!-- KPI CARDS -->
+        <section class="igqc-kpis" aria-label="IGQC summary">
+
+            <article class="igqc-card">
+                <div class="igqc-card-label">TOTAL IGQC</div>
+                <div id="totalIgqc" class="igqc-card-value">0</div>
+                <div class="igqc-card-note">Unique assignments</div>
+            </article>
+
+            <article class="igqc-card">
+                <div class="igqc-card-label">APPROVED</div>
+                <div id="approvedIgqc" class="igqc-card-value igqc-green-text">0</div>
+                <div class="igqc-card-note">Final approved</div>
+            </article>
+
+            <article class="igqc-card">
+                <div class="igqc-card-label">REJECTED</div>
+                <div id="rejectedIgqc" class="igqc-card-value igqc-red-text">0</div>
+                <div class="igqc-card-note">Final rejected</div>
+            </article>
+
+            <article class="igqc-card">
+                <div class="igqc-card-label">APPROVAL RATE</div>
+                <div id="approvalRate" class="igqc-card-value">0%</div>
+                <div class="igqc-card-note">Approved / decided</div>
+            </article>
+
+        </section>
+
+        <!-- CHARTS -->
+        <section class="igqc-chart-grid">
+
+            <article class="igqc-panel">
+                <div class="igqc-panel-head">
+                    <div>
+                        <h2>IGQC Decision</h2>
+                        <p>Unique assignments by final decision</p>
+                    </div>
+                </div>
+
+                <div class="igqc-decision-content">
+                    <div id="donut"
+                         class="igqc-donut"
+                         aria-label="IGQC decision chart">
+
+                        <div class="igqc-donut-center">
+                            <strong id="donutTotal">0</strong>
+                            <span>Total</span>
+                        </div>
+
+                    </div>
+
+                    <div id="legend" class="igqc-legend"></div>
+                </div>
+            </article>
+
+            <article class="igqc-panel">
+                <div class="igqc-panel-head">
+                    <div>
+                        <h2>Result Status</h2>
+                        <p>Unique assignments by result status</p>
+                    </div>
+                </div>
+
+                <div id="statusChart" class="igqc-bars"></div>
+            </article>
+
+        </section>
+
+        <!-- =================================================
+             VENDOR QUALITY REPORT
+             Existing dashboard sections remain unchanged.
+             ================================================= -->
+        <section class="igqc-panel igqc-vendor-panel">
+
+            <div class="igqc-panel-head igqc-vendor-panel-head">
+                <div>
+                    <div class="igqc-vendor-heading-row">
+                        <h2>Vendor Quality Report</h2>
+                        <span class="igqc-vendor-project">PROJECT: ASTRA</span>
+                    </div>
+
+                    <p>
+                        IGQC assignments grouped by vendor and final decision.
+                    </p>
+                </div>
+
+                <div class="igqc-vendor-total">
+                    <span id="vendorCount">0</span>
+                    <small>VENDORS</small>
+                </div>
+            </div>
+
+            <div class="igqc-vendor-summary">
+
+                <div class="igqc-vendor-summary-card">
+                    <span>INSPECTED</span>
+                    <strong id="vendorInspected">0</strong>
+                </div>
+
+                <div class="igqc-vendor-summary-card">
+                    <span>APPROVED</span>
+                    <strong id="vendorApproved" class="igqc-green-text">0</strong>
+                </div>
+
+                <div class="igqc-vendor-summary-card">
+                    <span>REJECTED</span>
+                    <strong id="vendorRejected" class="igqc-red-text">0</strong>
+                </div>
+
+                <div class="igqc-vendor-summary-card">
+                    <span>QUALITY RATE</span>
+                    <strong id="vendorQualityRate">0%</strong>
+                </div>
+
+            </div>
+
+            <div class="igqc-vendor-table-wrap">
+
+                <table class="igqc-vendor-table">
+                    <thead>
+                        <tr>
+                            <th>VENDOR</th>
+                            <th>INSPECTED</th>
+                            <th>APPROVED</th>
+                            <th>REJECTED</th>
+                            <th>APPROVAL RATE</th>
+                            <th>REJECTION RATE</th>
+                            <th>LAST INSPECTION</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="vendorReportBody"></tbody>
+                </table>
+
+                <div id="vendorReport"
+                     class="igqc-hidden"
+                     aria-hidden="true">
+                </div>
+
+                <div id="vendorEmptyState"
+                     class="igqc-empty igqc-hidden">
+                    No vendor quality data available.
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =================================================
+             RECORD DETAILS
+             ================================================= -->
+        <section class="igqc-panel igqc-record-panel">
+
+            <div class="igqc-panel-head igqc-record-head">
+
+                <div>
+                    <h2>IGQC Record Details</h2>
+                    <p>Latest final inspection records</p>
+                </div>
+
+                <div class="igqc-tools">
+
+                    <input id="recordSearch"
+                           type="search"
+                           autocomplete="off"
+                           placeholder="Search Assignment, PO, SO, Material, Vendor or GRN">
+
+                    <select id="decisionFilter">
+                        <option value="">All Decisions</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="igqc-table-wrap">
+
+                <table class="igqc-table">
+
+                    <thead>
+                        <tr>
+                            <th>ASSIGNMENT ID</th>
+                            <th>DATE</th>
+                            <th>PO</th>
+                            <th>SO</th>
+                            <th>MATERIAL</th>
+                            <th>VENDOR</th>
+                            <th>GRN</th>
+                            <th>RESULT STATUS</th>
+                            <th>IGQC DECISION</th>
+                            <th>DECISION DATE</th>
+                            <th>DECISION TIME</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="recordsBody"></tbody>
+
+                </table>
+
+                <div id="emptyState"
+                     class="igqc-empty igqc-hidden">
+                    No IGQC records found.
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="/js/igqc-dashboard.js"></script>
+
+</body>
+</html>

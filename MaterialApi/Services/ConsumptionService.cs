@@ -256,7 +256,8 @@ public class ConsumptionService
             // H = Available
             // I = Consumed
             // J = Status
-            // K = Last Updated
+            // K = Vendor
+            // L = Time and date
             // ---------------------------------------------
 
             worksheet.Cell(row.RowNumber(), 8).Value =
@@ -380,12 +381,15 @@ public class ConsumptionService
             consumption.ConsumedQuantity;
 
         worksheet.Cell(nextRow, 10).Value =
-            consumption.Status;
+             consumption.Status;
 
         worksheet.Cell(nextRow, 11).Value =
+            consumption.Vendor;
+
+        worksheet.Cell(nextRow, 12).Value =
             consumption.LastUpdated;
 
-        worksheet.Cell(nextRow, 11)
+        worksheet.Cell(nextRow, 12)
             .Style.DateFormat.Format =
             "dd-MMM-yyyy HH:mm:ss";
 
@@ -463,9 +467,14 @@ public class ConsumptionService
                     .GetString()
                     .Trim(),
 
-            LastUpdated =
+                        Vendor =
+                row.Cell(11)
+                    .GetString()
+                    .Trim(),
+
+                        LastUpdated =
                 GetDateValue(
-                    row.Cell(11))
+                    row.Cell(12))
         };
     }
 
@@ -573,6 +582,9 @@ public class ConsumptionService
             "Status";
 
         worksheet.Cell(1, 11).Value =
+            "Vendor";
+
+        worksheet.Cell(1, 12).Value =
             "Last Updated";
 
         // ---------------------------------------------
@@ -580,7 +592,7 @@ public class ConsumptionService
         // ---------------------------------------------
 
         var headerRange =
-            worksheet.Range("A1:K1");
+            worksheet.Range("A1:L1");
 
         headerRange.Style.Font.Bold = true;
 
@@ -606,9 +618,12 @@ public class ConsumptionService
         worksheet.Column(8).Width = 15;
         worksheet.Column(9).Width = 15;
         worksheet.Column(10).Width = 20;
-        worksheet.Column(11).Width = 22;
 
-        worksheet.Column(11)
+        worksheet.Column(11).Width = 25;
+
+        worksheet.Column(12).Width = 22;
+
+        worksheet.Column(12)
             .Style.DateFormat.Format =
             "dd-MMM-yyyy HH:mm:ss";
 

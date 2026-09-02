@@ -1,0 +1,585 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BDL MES - Mechanical Lab Result</title>
+
+    <link rel="stylesheet" href="/css/site.css">
+    <link rel="stylesheet" href="/css/common-layout.css">
+    <link rel="stylesheet" href="/css/chemical-lab-result.css">
+</head>
+
+<body data-page-title="Mechanical Lab Result">
+
+    <!-- HEADER -->
+    <div id="header-container"></div>
+
+    <div class="application">
+
+        <!-- SIDEBAR -->
+        <div id="sidebar-container"></div>
+
+        <!-- MAIN -->
+        <main class="main-content">
+
+            <div class="clr-page">
+
+                <!-- =====================================================
+                     BREADCRUMB
+                     ===================================================== -->
+
+                <div class="breadcrumb">
+                    <span>Quality</span>
+                    <span>/</span>
+                    <strong>Mechanical Lab Result</strong>
+                </div>
+
+
+                <!-- =====================================================
+                     PAGE HEADING
+                     ===================================================== -->
+
+                <div class="page-heading">
+
+                    <div>
+                        <h1>Mechanical Lab Result</h1>
+
+                        <p>
+                            Enter and complete Mechanical laboratory test
+                            results for accepted assignments.
+                        </p>
+                    </div>
+
+                    <div class="operation-active">
+                        <span class="active-dot"></span>
+                        MECHANICAL LAB RESULT
+                    </div>
+
+                </div>
+
+
+                <!-- =====================================================
+                     SEARCH PANEL
+                     ===================================================== -->
+
+                <section class="clr-panel search-panel">
+
+                    <div class="search-layout">
+
+                        <div class="search-copy">
+
+                            <div class="eyebrow">
+                                SEARCH RECORD
+                            </div>
+
+                            <h2>
+                                Accepted Mechanical Assignments
+                            </h2>
+
+                            <p>
+                                Search by PO, SO, Material ID, GRN or
+                                Assignment ID.
+                            </p>
+
+                        </div>
+
+
+                        <div class="search-work">
+
+                            <div class="search-row">
+
+                                <div class="search-input-wrap">
+
+                                    <span class="search-icon">
+                                        ⌕
+                                    </span>
+
+                                    <input id="resultSearch"
+                                           type="text"
+                                           placeholder="PO / SO / Material / GRN / Assignment ID"
+                                           autocomplete="off">
+
+                                    <button id="clearSearch"
+                                            type="button"
+                                            aria-label="Clear">
+                                        ×
+                                    </button>
+
+                                </div>
+
+
+                                <button id="searchButton"
+                                        class="primary-button"
+                                        type="button">
+                                    ⌕ SEARCH
+                                </button>
+
+
+                                <button id="scanButton"
+                                        class="secondary-button"
+                                        type="button">
+                                    ▦ SCAN QR
+                                </button>
+
+                            </div>
+
+
+                            <div class="search-hint">
+                                <span>i</span>
+                                Only accepted Mechanical Lab assignments
+                                are shown.
+                            </div>
+
+                        </div>
+
+
+                        <div class="count-box">
+
+                            <strong id="recordCount">
+                                0
+                            </strong>
+
+                            <span>
+                                RECORDS
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div id="searchMessage"
+                         class="clr-message hidden">
+                    </div>
+
+                </section>
+
+
+                <!-- =====================================================
+                     RECORDS TABLE
+                     ===================================================== -->
+
+                <section class="clr-panel records-panel">
+
+                    <div class="section-heading">
+
+                        <div>
+                            <h2>
+                                Accepted Mechanical Lab Records
+                            </h2>
+                        </div>
+
+                    </div>
+
+
+                    <div class="table-wrap">
+
+                        <table class="clr-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>ASSIGNMENT ID</th>
+                                    <th>PO</th>
+                                    <th>SO</th>
+                                    <th>MATERIAL</th>
+                                    <th>GRN</th>
+                                    <th>GRADE</th>
+                                    <th>QUANTITY</th>
+                                    <th>STATUS</th>
+                                    <th>DATE</th>
+                                    <th>TIME</th>
+                                    <th>ACTION</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="recordsBody">
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <div id="emptyState"
+                         class="empty-state hidden">
+
+                        No accepted Mechanical Lab records found.
+
+                    </div>
+
+                </section>
+
+
+                <!-- =====================================================
+                     DETAILS PANEL
+                     ===================================================== -->
+
+                <section id="detailsPanel"
+                         class="clr-panel details-panel hidden">
+
+
+                    <!-- HEADER -->
+
+                    <div class="section-heading detail-heading">
+
+                        <div>
+
+                            <h2>
+                                Mechanical Testing Assignment Details
+                            </h2>
+
+                        </div>
+
+
+                        <button id="closeDetails"
+                                class="secondary-button"
+                                type="button">
+
+                            CLOSE
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         ASSIGNMENT DETAILS
+                         ================================================= -->
+
+                    <div class="detail-grid">
+
+
+                        <div>
+                            <label>ASSIGNMENT ID</label>
+                            <strong id="detailAssignmentId">-</strong>
+                        </div>
+
+
+                        <div>
+                            <label>DATE</label>
+                            <strong id="detailDate">-</strong>
+                        </div>
+
+
+                        <div>
+                            <label>TIME</label>
+                            <strong id="detailTime">-</strong>
+                        </div>
+
+
+                        <div>
+                            <label>PO</label>
+                            <strong id="detailPo">-</strong>
+                        </div>
+
+
+                        <div>
+                            <label>SO</label>
+                            <strong id="detailSo">-</strong>
+                        </div>
+
+
+                        <div>
+                            <label>MATERIAL ID</label>
+                            <strong id="detailMaterialId">-</strong>
+                        </div>
+
+
+                        <div>
+                            <label>MATERIAL NAME</label>
+                            <strong id="detailMaterialName">-</strong>
+                        </div>
+
+
+                        <div>
+                            <label>VENDOR</label>
+                            <strong id="detailVendor">-</strong>
+                        </div>
+
+
+                        <div>
+                            <label>GRN</label>
+                            <strong id="detailGrn">-</strong>
+                        </div>
+
+
+                        <div>
+                            <label>MECHANICAL GRADE</label>
+                            <strong id="detailGrade">-</strong>
+                        </div>
+
+
+                        <div>
+                            <label>QUANTITY</label>
+                            <strong id="detailQuantity">-</strong>
+                        </div>
+
+
+                        <div>
+                            <label>EQUIPMENT</label>
+                            <strong id="detailEquipment">-</strong>
+                        </div>
+
+
+                        <div>
+                            <label>SAMPLE CONSUMED</label>
+                            <strong id="detailSample">-</strong>
+                        </div>
+
+
+                        <div>
+                            <label>MECHANICAL STATUS</label>
+
+                            <strong id="detailStatus"
+                                    class="status accepted">
+
+                                Accepted
+
+                            </strong>
+                        </div>
+
+
+                        <div>
+                            <label>RESULT STATUS</label>
+
+                            <strong id="detailResultStatus">
+                                Pending
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+                            <label>RESULT ENTRY DATE</label>
+
+                            <strong id="detailEntryDate">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+                            <label>RESULT ENTRY TIME</label>
+
+                            <strong id="detailEntryTime">
+                                -
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         RESULT ENTRY
+                         ================================================= -->
+
+                    <div class="result-section">
+
+
+                        <div class="result-title-row">
+
+                            <div>
+
+                                <h3>
+                                    Mechanical Testing Result
+                                </h3>
+
+                                <p>
+                                    Enter the actual result against the
+                                    expected specification.
+                                </p>
+
+                            </div>
+
+
+                            <button id="addRow"
+                                    class="secondary-button"
+                                    type="button">
+
+                                + ADD ROW
+
+                            </button>
+
+                        </div>
+
+
+                        <!-- RESULT TABLE -->
+
+                        <div class="result-table-wrap">
+
+                            <table class="result-table">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>S.No</th>
+
+                                        <th>
+                                            TEST PARAMETER
+                                        </th>
+
+                                        <th>
+                                            SPECIFICATION / EXPECTED RESULT
+                                        </th>
+
+                                        <th>
+                                            ACTUAL RESULT
+                                        </th>
+
+                                        <th>
+                                            CONFORMANCE
+                                        </th>
+
+                                        <th>
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody id="resultRows">
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <!-- RESULT FOOTER -->
+
+                        <div class="result-footer">
+
+
+                            <div id="overallResult"
+                                 class="overall pending">
+
+                                RESULT NOT COMPLETED
+
+                            </div>
+
+
+                            <button id="completeButton"
+                                    class="primary-button"
+                                    type="button">
+
+                                ✓ COMPLETE RESULT
+
+                            </button>
+
+                        </div>
+
+
+                        <div id="resultMessage"
+                             class="clr-message hidden">
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div id="footer-container"></div>
+
+
+    <!-- =============================================================
+         QR MODAL
+         ============================================================= -->
+
+    <div id="qrModal"
+         class="modal hidden">
+
+        <div class="modal-card">
+
+
+            <div class="modal-header">
+
+                <div>
+
+                    <h2>
+                        Scan QR Code
+                    </h2>
+
+                    <p>
+                        Enter or paste the R1 QR value.
+                    </p>
+
+                </div>
+
+
+                <button id="closeScan"
+                        class="modal-close"
+                        type="button">
+
+                    ×
+
+                </button>
+
+            </div>
+
+
+            <textarea id="qrData"
+                      placeholder="R1|PO|SO|ID|Material|GRN">
+            </textarea>
+
+
+            <div id="scanMessage"
+                 class="clr-message hidden">
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button id="processScan"
+                        class="primary-button"
+                        type="button">
+
+                    FIND RECORDS
+
+                </button>
+
+
+                <button id="cancelScan"
+                        class="secondary-button"
+                        type="button">
+
+                    CANCEL
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =============================================================
+         JAVASCRIPT
+         ============================================================= -->
+
+    <script src="/js/mechanical-lab-result.js"></script>
+   
+    <script src="/js/common-layout.js"></script>
+
+</body>
+</html>

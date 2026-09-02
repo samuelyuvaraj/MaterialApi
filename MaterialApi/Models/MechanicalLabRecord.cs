@@ -1,6 +1,6 @@
 ﻿namespace MaterialApi.Models;
 
-public class ChemicalLabRecord
+public class MechanicalLabRecord
 {
     public string AssignmentId { get; set; } = "";
 
@@ -14,16 +14,14 @@ public class ChemicalLabRecord
     public string MaterialName { get; set; } = "";
     public string Unit { get; set; } = "";
 
-    // Vendor comes from IGQC_Data.xlsx column 28
     public string Vendor { get; set; } = "";
 
-    // Chemical testing only
-    public string ChemicalGrade { get; set; } = "";
-    public decimal? ChemicalQuantity { get; set; }
-    public string ChemicalEquipment { get; set; } = "";
-    public string ChemicalSampleConsumed { get; set; } = "";
+    public string MechanicalGrade { get; set; } = "";
+    public decimal? MechanicalQuantity { get; set; }
+    public string MechanicalEquipment { get; set; } = "";
+    public string MechanicalSampleConsumed { get; set; } = "";
 
-    public string ChemicalStatus { get; set; } = "Pending";
+    public string MechanicalStatus { get; set; } = "Pending";
 
     public string AcceptedDate { get; set; } = "";
     public string AcceptedTime { get; set; } = "";

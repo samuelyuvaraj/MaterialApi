@@ -11,6 +11,7 @@ public class IGQCTestingAssignments
     public string MaterialName { get; set; } = "";
     public string Unit { get; set; } = "";
     public string Status { get; set; } = "";
+    public string Vendor { get; set; } = "";
     public decimal Received { get; set; }
     public decimal Available { get; set; }
     public decimal Consumed { get; set; }

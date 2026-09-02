@@ -1,47 +1,23 @@
 ﻿/* =========================================================
    BDL MES - CHEMICAL LAB
-   =========================================================
-   Chemical Lab reads ONLY Chemical Testing assignments
-   from the IGQC Chemical Lab API.
-
-   Backend endpoints:
-     GET  /api/chemical-lab
-     GET  /api/chemical-lab/{assignmentId}
-     POST /api/chemical-lab/{assignmentId}/accept
+   Vendor support:
+   - API returns Vendor from ChemicalLabRecord
+   - Chemical_Lab_Data.xlsm Vendor is column 17
+   - IGQC_Data.xlsx Vendor is column 28
    ========================================================= */
 
 (() => {
     "use strict";
 
-    // =====================================================
-    // API ENDPOINTS
-    // =====================================================
-
     const API_LIST_URL = "/api/chemical-lab";
-
-    const API_ACCEPT_URL = assignmentId =>
-        `/api/chemical-lab/${encodeURIComponent(assignmentId)}/accept`;
-
-
-    // =====================================================
-    // STATE
-    // =====================================================
+    const API_ACCEPT_URL = id =>
+        `/api/chemical-lab/${encodeURIComponent(id)}/accept`;
 
     let allRecords = [];
     let displayedRecords = [];
     let selectedRecord = null;
 
-
-    // =====================================================
-    // HELPERS
-    // =====================================================
-
     const $ = id => document.getElementById(id);
-
-
-    // =====================================================
-    // INITIALIZE
-    // =====================================================
 
     document.addEventListener("DOMContentLoaded", initialize);
 
@@ -51,195 +27,103 @@
         await loadRecords();
     }
 
-
-    // =====================================================
-    // EVENTS
-    // =====================================================
-
     function bindEvents() {
+        $("searchButton")?.addEventListener("click", runSearch);
 
-        $("searchButton")?.addEventListener(
-            "click",
-            runSearch
-        );
-
-        $("chemicalSearch")?.addEventListener(
-            "keydown",
-            event => {
-                if (event.key === "Enter") {
-                    event.preventDefault();
-                    runSearch();
-                }
+        $("chemicalSearch")?.addEventListener("keydown", e => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                runSearch();
             }
-        );
+        });
 
-        $("chemicalSearch")?.addEventListener(
-            "input",
-            updateClearButton
-        );
+        $("chemicalSearch")?.addEventListener("input", updateClearButton);
+        $("clearSearch")?.addEventListener("click", clearSearch);
 
-        $("clearSearch")?.addEventListener(
-            "click",
-            clearSearch
-        );
+        $("scanButton")?.addEventListener("click", openScanModal);
+        $("closeScan")?.addEventListener("click", closeScanModal);
+        $("cancelScan")?.addEventListener("click", closeScanModal);
+        $("processScan")?.addEventListener("click", processQrScan);
 
-        $("scanButton")?.addEventListener(
-            "click",
-            openScanModal
-        );
+        $("qrModal")?.addEventListener("click", e => {
+            if (e.target === $("qrModal")) closeScanModal();
+        });
 
-        $("closeScan")?.addEventListener(
-            "click",
-            closeScanModal
-        );
-
-        $("cancelScan")?.addEventListener(
-            "click",
-            closeScanModal
-        );
-
-        $("processScan")?.addEventListener(
-            "click",
-            processQrScan
-        );
-
-        $("qrModal")?.addEventListener(
-            "click",
-            event => {
-                if (event.target === $("qrModal")) {
-                    closeScanModal();
-                }
+        $("qrData")?.addEventListener("keydown", e => {
+            if (e.ctrlKey && e.key === "Enter") {
+                e.preventDefault();
+                processQrScan();
             }
-        );
+        });
 
-        $("qrData")?.addEventListener(
-            "keydown",
-            event => {
-                if (event.ctrlKey && event.key === "Enter") {
-                    event.preventDefault();
-                    processQrScan();
-                }
-            }
-        );
-
-        $("closeDetails")?.addEventListener(
-            "click",
-            closeDetails
-        );
-
-        $("acceptButton")?.addEventListener(
-            "click",
-            acceptSelectedRecord
-        );
+        $("closeDetails")?.addEventListener("click", closeDetails);
+        $("acceptButton")?.addEventListener("click", acceptSelectedRecord);
     }
 
-
-    // =====================================================
-    // LOAD CHEMICAL LAB RECORDS
-    // =====================================================
-
     async function loadRecords() {
-
-        setMessage(
-            "searchMessage",
-            "Loading Chemical Lab assignments...",
-            "info"
-        );
+        setMessage("searchMessage", "Loading Chemical Lab assignments...", "info");
 
         try {
-
             const response = await fetch(API_LIST_URL, {
                 method: "GET",
-                headers: {
-                    Accept: "application/json"
-                },
+                headers: { Accept: "application/json" },
                 cache: "no-store"
             });
 
             const data = await readJson(response);
 
             if (!response.ok || data?.success === false) {
-
                 throw new Error(
                     data?.message ||
                     `Unable to load Chemical Lab assignments. HTTP ${response.status}`
                 );
             }
 
-            const source =
-                Array.isArray(data?.records)
-                    ? data.records
-                    : Array.isArray(data?.assignments)
-                        ? data.assignments
-                        : [];
+            const source = Array.isArray(data?.records)
+                ? data.records
+                : Array.isArray(data?.assignments)
+                    ? data.assignments
+                    : [];
 
-            /*
-             * IMPORTANT:
-             * Chemical Lab must show ONLY records having
-             * Chemical Testing information.
-             */
             allRecords = source
                 .filter(isChemicalRecord)
                 .map(normalizeRecord)
                 .sort(sortNewestFirst);
 
             displayedRecords = [...allRecords];
-
             renderRecords(displayedRecords);
-
             hideMessage("searchMessage");
 
-        }
-        catch (error) {
-
-            console.error(
-                "Chemical Lab load error:",
-                error
-            );
-
+            console.log("Chemical Lab API records:", source);
+            console.log("Vendor values received:", allRecords.map(r => ({
+                assignmentId: r.assignmentId,
+                vendor: r.vendor
+            })));
+        } catch (error) {
+            console.error("Chemical Lab load error:", error);
             allRecords = [];
             displayedRecords = [];
-
             renderRecords([]);
 
             setMessage(
                 "searchMessage",
-                error.message ||
-                "Unable to load Chemical Lab assignments.",
+                error.message || "Unable to load Chemical Lab assignments.",
                 "error"
             );
         }
     }
 
-
-    // =====================================================
-    // CHEMICAL RECORD FILTER
-    // =====================================================
-
     function isChemicalRecord(record) {
+        if (!record) return false;
 
-        if (!record) {
-            return false;
-        }
-
-        /*
-         * If backend explicitly says this is Chemical Testing.
-         */
-        if (record.chemicalTesting === true) {
-            return true;
-        }
+        if (record.chemicalTesting === true) return true;
 
         if (
             String(record.chemicalTesting)
                 .trim()
                 .toLowerCase() === "yes"
-        ) {
-            return true;
-        }
+        ) return true;
 
-        /*
-         * Current Chemical Lab API returns these fields.
-         */
         return Boolean(
             record.chemicalGrade ||
             record.chemicalQuantity !== undefined ||
@@ -247,762 +131,294 @@
         );
     }
 
-
-    // =====================================================
-    // NORMALIZE RECORD
-    // =====================================================
-
     function normalizeRecord(record) {
-
         return {
+            assignmentId: value(record.assignmentId),
+            date: value(record.date),
+            time: value(record.time),
 
-            assignmentId:
-                value(record.assignmentId),
+            po: value(record.po ?? record.poNumber),
+            so: value(record.so ?? record.soNumber),
 
-            date:
-                value(record.date),
+            materialId: value(
+                record.materialId ??
+                record.materialIdentifier
+            ),
 
-            time:
-                value(record.time),
+            grn: value(record.grn ?? record.receiptId),
+            materialName: value(record.materialName),
 
-            po:
-                value(
-                    record.po ??
-                    record.poNumber
-                ),
+            unit: value(
+                record.unit ??
+                record.uom ??
+                record.unitOfMeasure
+            ),
 
-            so:
-                value(
-                    record.so ??
-                    record.soNumber
-                ),
+            // VENDOR - API property is "vendor"
+            // Chemical_Lab_Data.xlsm source column = 17.
+            vendor: value(
+                record.vendor ??
+                record.Vendor
+            ),
 
-            materialId:
-                value(
-                    record.materialId ??
-                    record.materialIdentifier
-                ),
-
-            grn:
-                value(
-                    record.grn ??
-                    record.receiptId
-                ),
-
-            materialName:
-                value(
-                    record.materialName
-                ),
-
-            unit:
-                value(
-                    record.unit ??
-                    record.uom ??
-                    record.unitOfMeasure
-                ),
-
-            // -----------------------------
-            // Chemical Testing ONLY
-            // -----------------------------
-
-            chemicalGrade:
-                value(record.chemicalGrade),
-
-            chemicalQuantity:
-                record.chemicalQuantity,
-
-            chemicalEquipment:
-                value(record.chemicalEquipment),
-
-            chemicalSampleConsumed:
-                value(record.chemicalSampleConsumed),
+            chemicalGrade: value(record.chemicalGrade),
+            chemicalQuantity: record.chemicalQuantity,
+            chemicalEquipment: value(record.chemicalEquipment),
+            chemicalSampleConsumed: value(record.chemicalSampleConsumed),
 
             chemicalStatus:
-                value(record.chemicalStatus) ||
-                "Pending",
+                value(record.chemicalStatus) || "Pending",
 
-            acceptedDate:
-                value(record.acceptedDate),
-
-            acceptedTime:
-                value(record.acceptedTime)
+            acceptedDate: value(record.acceptedDate),
+            acceptedTime: value(record.acceptedTime)
         };
     }
 
-
-    // =====================================================
-    // SORT
-    // =====================================================
-
     function sortNewestFirst(a, b) {
-
-        const left =
-            `${a.date} ${a.time}`;
-
-        const right =
-            `${b.date} ${b.time}`;
-
-        return right.localeCompare(left);
+        return `${b.date} ${b.time}`.localeCompare(
+            `${a.date} ${a.time}`
+        );
     }
 
-
-    // =====================================================
-    // SEARCH
-    // =====================================================
-
     function runSearch() {
+        const query = normalize($("chemicalSearch")?.value);
 
-        const query =
-            normalize(
-                $("chemicalSearch")?.value
-            );
-
-        /*
-         * Empty search = show everything.
-         */
         if (!query) {
-
-            displayedRecords =
-                [...allRecords];
-
-            renderRecords(
-                displayedRecords
-            );
-
+            displayedRecords = [...allRecords];
+            renderRecords(displayedRecords);
             hideMessage("searchMessage");
             closeDetails();
             updateClearButton();
-
             return;
         }
 
+        displayedRecords = allRecords.filter(record => [
+            record.assignmentId,
+            record.po,
+            record.so,
+            record.materialId,
+            record.grn,
+            record.materialName,
+            record.vendor,
+            record.chemicalGrade,
+            record.chemicalEquipment
+        ].some(field => normalize(field).includes(query)));
 
-        displayedRecords =
-            allRecords.filter(record => {
-
-                const searchableValues = [
-
-                    record.assignmentId,
-                    record.po,
-                    record.so,
-                    record.materialId,
-                    record.grn,
-                    record.materialName,
-                    record.chemicalGrade,
-                    record.chemicalEquipment
-
-                ];
-
-                return searchableValues.some(
-                    field =>
-                        normalize(field)
-                            .includes(query)
-                );
-            });
-
-
-        renderRecords(
-            displayedRecords
-        );
-
+        renderRecords(displayedRecords);
         closeDetails();
 
-
-        if (displayedRecords.length > 0) {
-
-            setMessage(
-                "searchMessage",
-                `${displayedRecords.length} Chemical Lab record(s) found.`,
-                "success"
-            );
-
-        }
-        else {
-
-            setMessage(
-                "searchMessage",
-                "No Chemical Lab records match the search value.",
-                "error"
-            );
-        }
-
+        setMessage(
+            "searchMessage",
+            displayedRecords.length
+                ? `${displayedRecords.length} Chemical Lab record(s) found.`
+                : "No Chemical Lab records match the search value.",
+            displayedRecords.length ? "success" : "error"
+        );
 
         updateClearButton();
     }
-
-
-    // =====================================================
-    // CLEAR SEARCH
-    // =====================================================
 
     function clearSearch() {
-
-        const input =
-            $("chemicalSearch");
-
+        const input = $("chemicalSearch");
         if (input) {
             input.value = "";
-        }
-
-
-        displayedRecords =
-            [...allRecords];
-
-
-        renderRecords(
-            displayedRecords
-        );
-
-        hideMessage("searchMessage");
-
-        closeDetails();
-
-        updateClearButton();
-
-        /*
-         * Do not force focus if the browser/UI
-         * has another active element.
-         */
-        if (input) {
             input.focus();
         }
+
+        displayedRecords = [...allRecords];
+        renderRecords(displayedRecords);
+        hideMessage("searchMessage");
+        closeDetails();
+        updateClearButton();
     }
-
-
-    // =====================================================
-    // CLEAR BUTTON VISIBILITY
-    // =====================================================
 
     function updateClearButton() {
+        const input = $("chemicalSearch");
+        const button = $("clearSearch");
 
-        const input =
-            $("chemicalSearch");
+        if (!input || !button) return;
 
-        const button =
-            $("clearSearch");
-
-        if (!input || !button) {
-            return;
-        }
-
-        button.classList.toggle(
-            "hidden",
-            input.value.trim() === ""
-        );
+        button.classList.toggle("hidden", input.value.trim() === "");
     }
 
-
-    // =====================================================
-    // RENDER TABLE
-    // =====================================================
-
     function renderRecords(records) {
-
-        const body =
-            $("recordsBody");
-
-        const count =
-            $("recordCount");
-
-        const empty =
-            $("emptyState");
-
-
-        if (!body) {
-            return;
-        }
-
+        const body = $("recordsBody");
+        if (!body) return;
 
         body.innerHTML = "";
 
-
+        const count = $("recordCount");
         if (count) {
-
             count.textContent =
                 `${records.length} RECORD${records.length === 1 ? "" : "S"}`;
         }
 
+        $("emptyState")?.classList.toggle(
+            "hidden",
+            records.length > 0
+        );
 
-        if (empty) {
+        records.forEach(record => {
+            const row = document.createElement("tr");
 
-            empty.classList.toggle(
-                "hidden",
-                records.length > 0
-            );
-        }
+            const assignmentCell = document.createElement("td");
+            const assignmentButton = document.createElement("button");
 
+            assignmentButton.type = "button";
+            assignmentButton.className = "cl-assignment-button";
+            assignmentButton.textContent = record.assignmentId || "-";
 
-        for (const record of records) {
+            assignmentButton.addEventListener("click", e => {
+                e.stopPropagation();
+                showDetails(record);
+            });
 
-            const row =
-                document.createElement("tr");
+            assignmentCell.appendChild(assignmentButton);
+            row.appendChild(assignmentCell);
 
+            row.appendChild(textCell(record.date));
+            row.appendChild(textCell(record.time));
+            row.appendChild(textCell(record.po));
+            row.appendChild(textCell(record.so));
+            row.appendChild(textCell(record.materialId, record.materialName));
+            row.appendChild(textCell(record.grn));
+            row.appendChild(textCell(record.chemicalGrade));
+            row.appendChild(textCell(
+                formatQuantity(record.chemicalQuantity, record.unit)
+            ));
 
-            // -----------------------------------------
-            // Assignment ID
-            // -----------------------------------------
-
-            const assignmentCell =
-                document.createElement("td");
-
-            const assignmentButton =
-                document.createElement("button");
-
-            assignmentButton.type =
-                "button";
-
-            assignmentButton.className =
-                "cl-assignment-button";
-
-            assignmentButton.textContent =
-                record.assignmentId || "-";
-
-
-            assignmentButton.addEventListener(
-                "click",
-                event => {
-
-                    event.stopPropagation();
-
-                    showDetails(record);
-                }
-            );
-
-
-            assignmentCell.appendChild(
-                assignmentButton
-            );
-
-            row.appendChild(
-                assignmentCell
-            );
-
-
-            // -----------------------------------------
-            // Standard fields
-            // -----------------------------------------
-
-            row.appendChild(
-                textCell(record.date)
-            );
-
-            row.appendChild(
-                textCell(record.time)
-            );
-
-            row.appendChild(
-                textCell(record.po)
-            );
-
-            row.appendChild(
-                textCell(record.so)
-            );
-
-            row.appendChild(
-                textCell(
-                    record.materialId,
-                    record.materialName
-                )
-            );
-
-            row.appendChild(
-                textCell(record.grn)
-            );
-
-
-            // -----------------------------------------
-            // Chemical Grade
-            // -----------------------------------------
-
-            row.appendChild(
-                textCell(
-                    record.chemicalGrade
-                )
-            );
-
-
-            // -----------------------------------------
-            // Quantity
-            // -----------------------------------------
-
-            row.appendChild(
-                textCell(
-                    formatQuantity(
-                        record.chemicalQuantity,
-                        record.unit
-                    )
-                )
-            );
-
-
-            // -----------------------------------------
-            // Status
-            // -----------------------------------------
-
-            const statusCell =
-                document.createElement("td");
-
-            const status =
-                document.createElement("span");
-
+            const statusCell = document.createElement("td");
+            const status = document.createElement("span");
 
             status.className =
                 `cl-status-badge ${statusClass(record.chemicalStatus)}`;
+            status.textContent = record.chemicalStatus || "Pending";
 
-            status.textContent =
-                record.chemicalStatus ||
-                "Pending";
+            statusCell.appendChild(status);
+            row.appendChild(statusCell);
 
-
-            statusCell.appendChild(
-                status
-            );
-
-            row.appendChild(
-                statusCell
-            );
-
-
-            // -----------------------------------------
-            // Row click
-            // -----------------------------------------
-
-            row.addEventListener(
-                "click",
-                () => showDetails(record)
-            );
-
-
+            row.addEventListener("click", () => showDetails(record));
             body.appendChild(row);
-        }
-    }
-
-
-    // =====================================================
-    // TABLE CELL
-    // =====================================================
-
-    function textCell(value, title = "") {
-
-        const cell =
-            document.createElement("td");
-
-        cell.textContent =
-            display(value);
-
-
-        if (title) {
-            cell.title = title;
-        }
-
-
-        return cell;
-    }
-
-
-    // =====================================================
-    // SHOW DETAILS
-    // =====================================================
-
-    function showDetails(record) {
-
-        selectedRecord =
-            record;
-
-
-        // -----------------------------------------
-        // Common IGQC information
-        // -----------------------------------------
-
-        setText(
-            "detailAssignmentId",
-            record.assignmentId
-        );
-
-        setText(
-            "detailDate",
-            record.date
-        );
-
-        setText(
-            "detailTime",
-            record.time
-        );
-
-        setText(
-            "detailPo",
-            record.po
-        );
-
-        setText(
-            "detailSo",
-            record.so
-        );
-
-        setText(
-            "detailMaterialId",
-            record.materialId
-        );
-
-        setText(
-            "detailGrn",
-            record.grn
-        );
-
-        setText(
-            "detailMaterialName",
-            record.materialName
-        );
-
-        setText(
-            "detailUnit",
-            record.unit
-        );
-
-
-        // -----------------------------------------
-        // Chemical Testing information ONLY
-        // -----------------------------------------
-
-        setText(
-            "detailGrade",
-            record.chemicalGrade
-        );
-
-        setText(
-            "detailQuantity",
-            formatQuantity(
-                record.chemicalQuantity,
-                record.unit
-            )
-        );
-
-        setText(
-            "detailEquipment",
-            record.chemicalEquipment
-        );
-
-        setText(
-            "detailSample",
-            record.chemicalSampleConsumed
-        );
-
-
-        // -----------------------------------------
-        // Status
-        // -----------------------------------------
-
-        const status =
-            $("detailStatus");
-
-        if (status) {
-
-            status.textContent =
-                record.chemicalStatus ||
-                "Pending";
-
-            status.className =
-                `cl-status-badge ${statusClass(record.chemicalStatus)}`;
-        }
-
-
-        // -----------------------------------------
-        // Accept button
-        // -----------------------------------------
-
-        const acceptButton =
-            $("acceptButton");
-
-        const acceptedInfo =
-            $("acceptedInfo");
-
-
-        const accepted =
-            normalize(
-                record.chemicalStatus
-            ) === "accepted";
-
-
-        if (acceptButton) {
-
-            acceptButton.disabled =
-                accepted;
-
-            acceptButton.innerHTML =
-                accepted
-                    ? "<span>✓</span> ACCEPTED"
-                    : "<span>✓</span> ACCEPT";
-        }
-
-
-        // -----------------------------------------
-        // Acceptance timestamp
-        // -----------------------------------------
-
-        if (
-            accepted &&
-            (
-                record.acceptedDate ||
-                record.acceptedTime
-            )
-        ) {
-
-            if (acceptedInfo) {
-
-                acceptedInfo.textContent =
-                    `Accepted: ${display(record.acceptedDate)} ${display(record.acceptedTime)}`;
-
-                acceptedInfo.classList.remove(
-                    "hidden"
-                );
-            }
-
-        }
-        else {
-
-            if (acceptedInfo) {
-
-                acceptedInfo.textContent =
-                    "";
-
-                acceptedInfo.classList.add(
-                    "hidden"
-                );
-            }
-        }
-
-
-        hideMessage(
-            "acceptMessage"
-        );
-
-
-        $("detailsPanel")
-            ?.classList.remove("hidden");
-
-
-        requestAnimationFrame(() => {
-
-            $("detailsPanel")
-                ?.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
         });
     }
 
-
-    // =====================================================
-    // CLOSE DETAILS
-    // =====================================================
-
-    function closeDetails() {
-
-        selectedRecord =
-            null;
-
-        $("detailsPanel")
-            ?.classList.add("hidden");
-
-        hideMessage(
-            "acceptMessage"
-        );
+    function textCell(v, title = "") {
+        const cell = document.createElement("td");
+        cell.textContent = display(v);
+        if (title) cell.title = title;
+        return cell;
     }
 
+    function showDetails(record) {
+        selectedRecord = record;
 
-    // =====================================================
-    // ACCEPT CHEMICAL LAB ASSIGNMENT
-    // =====================================================
+        setText("detailAssignmentId", record.assignmentId);
+        setText("detailDate", record.date);
+        setText("detailTime", record.time);
+        setText("detailPo", record.po);
+        setText("detailSo", record.so);
+        setText("detailMaterialId", record.materialId);
+        setText("detailGrn", record.grn);
+        setText("detailMaterialName", record.materialName);
+        setText("detailUnit", record.unit);
+
+        // VENDOR is displayed from the API response.
+        setText("detailVendor", record.vendor);
+
+        setText("detailGrade", record.chemicalGrade);
+        setText(
+            "detailQuantity",
+            formatQuantity(record.chemicalQuantity, record.unit)
+        );
+        setText("detailEquipment", record.chemicalEquipment);
+        setText("detailSample", record.chemicalSampleConsumed);
+
+        const status = $("detailStatus");
+        if (status) {
+            status.textContent = record.chemicalStatus || "Pending";
+            status.className =
+                `cl-status-badge ${statusClass(record.chemicalStatus)}`;
+        }
+
+        const acceptButton = $("acceptButton");
+        const acceptedInfo = $("acceptedInfo");
+
+        const accepted =
+            normalize(record.chemicalStatus) === "accepted";
+
+        if (acceptButton) {
+            acceptButton.disabled = accepted;
+            acceptButton.innerHTML = accepted
+                ? "<span>✓</span> ACCEPTED"
+                : "<span>✓</span> ACCEPT";
+        }
+
+        if (accepted && (record.acceptedDate || record.acceptedTime)) {
+            if (acceptedInfo) {
+                acceptedInfo.textContent =
+                    `Accepted: ${display(record.acceptedDate)} ${display(record.acceptedTime)}`;
+                acceptedInfo.classList.remove("hidden");
+            }
+        } else {
+            acceptedInfo?.classList.add("hidden");
+        }
+
+        hideMessage("acceptMessage");
+
+        $("detailsPanel")?.classList.remove("hidden");
+
+        requestAnimationFrame(() => {
+            $("detailsPanel")?.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        });
+    }
+
+    function closeDetails() {
+        selectedRecord = null;
+        $("detailsPanel")?.classList.add("hidden");
+        hideMessage("acceptMessage");
+    }
 
     async function acceptSelectedRecord() {
-
         if (!selectedRecord?.assignmentId) {
-
             setMessage(
                 "acceptMessage",
                 "Select a Chemical Lab assignment first.",
                 "error"
             );
-
             return;
         }
 
-
-        if (
-            normalize(
-                selectedRecord.chemicalStatus
-            ) === "accepted"
-        ) {
+        if (normalize(selectedRecord.chemicalStatus) === "accepted") {
             return;
         }
 
+        const button = $("acceptButton");
+        if (!button) return;
 
-        const button =
-            $("acceptButton");
-
-
-        if (!button) {
-            return;
-        }
-
-
-        button.disabled =
-            true;
-
-        button.innerHTML =
-            "<span>…</span> ACCEPTING...";
-
+        button.disabled = true;
+        button.innerHTML = "<span>…</span> ACCEPTING...";
 
         try {
+            const response = await fetch(
+                API_ACCEPT_URL(selectedRecord.assignmentId),
+                {
+                    method: "POST",
+                    headers: { Accept: "application/json" },
+                    cache: "no-store"
+                }
+            );
 
-            /*
-             * IMPORTANT:
-             *
-             * Backend endpoint:
-             *
-             * POST
-             * /api/chemical-lab/{assignmentId}/accept
-             *
-             * No JSON body is required.
-             */
+            const data = await readJson(response);
 
-            const response =
-                await fetch(
-                    API_ACCEPT_URL(
-                        selectedRecord.assignmentId
-                    ),
-                    {
-                        method: "POST",
-
-                        headers: {
-                            Accept:
-                                "application/json"
-                        },
-
-                        cache: "no-store"
-                    }
-                );
-
-
-            const data =
-                await readJson(response);
-
-
-            if (
-                !response.ok ||
-                data?.success === false
-            ) {
-
+            if (!response.ok || data?.success === false) {
                 throw new Error(
                     data?.message ||
                     `Chemical Lab acceptance failed. HTTP ${response.status}`
                 );
             }
-
-
-            // -----------------------------------------
-            // Backend returns updated record
-            // -----------------------------------------
 
             const updated =
                 data?.record ||
@@ -1015,11 +431,10 @@
                 selectedRecord.chemicalStatus = "Accepted";
             }
 
-            // Always synchronize BOTH arrays
-            const assignmentId = normalize(selectedRecord.assignmentId);
+            const id = normalize(selectedRecord.assignmentId);
 
             const allIndex = allRecords.findIndex(
-                x => normalize(x.assignmentId) === assignmentId
+                x => normalize(x.assignmentId) === id
             );
 
             if (allIndex >= 0) {
@@ -1027,24 +442,15 @@
             }
 
             const displayedIndex = displayedRecords.findIndex(
-                x => normalize(x.assignmentId) === assignmentId
+                x => normalize(x.assignmentId) === id
             );
 
             if (displayedIndex >= 0) {
                 displayedRecords[displayedIndex] = selectedRecord;
             }
 
-            // Re-render using the updated displayed record
             renderRecords(displayedRecords);
             showDetails(selectedRecord);
-
-
-            
-
-
-            // -----------------------------------------
-            // Success message
-            // -----------------------------------------
 
             setMessage(
                 "acceptMessage",
@@ -1052,21 +458,11 @@
                 "Chemical Lab material accepted successfully.",
                 "success"
             );
-        }
-        catch (error) {
+        } catch (error) {
+            console.error("Chemical Lab accept error:", error);
 
-            console.error(
-                "Chemical Lab accept error:",
-                error
-            );
-
-
-            button.disabled =
-                false;
-
-            button.innerHTML =
-                "<span>✓</span> ACCEPT";
-
+            button.disabled = false;
+            button.innerHTML = "<span>✓</span> ACCEPT";
 
             setMessage(
                 "acceptMessage",
@@ -1077,164 +473,80 @@
         }
     }
 
-
-    // =====================================================
-    // QR SCAN
-    // =====================================================
-
     function openScanModal() {
+        $("qrModal")?.classList.remove("hidden");
 
-        $("qrModal")
-            ?.classList.remove("hidden");
-
-
-        const input =
-            $("qrData");
-
-
+        const input = $("qrData");
         if (input) {
-
             input.value = "";
-
-            setTimeout(
-                () => input.focus(),
-                50
-            );
+            setTimeout(() => input.focus(), 50);
         }
 
-
-        hideMessage(
-            "scanMessage"
-        );
+        hideMessage("scanMessage");
     }
-
 
     function closeScanModal() {
-
-        $("qrModal")
-            ?.classList.add("hidden");
-
-        hideMessage(
-            "scanMessage"
-        );
+        $("qrModal")?.classList.add("hidden");
+        hideMessage("scanMessage");
     }
 
-
     function processQrScan() {
-
-        const raw =
-            $("qrData")
-                ?.value
-                .trim() ||
-            "";
-
+        const raw = $("qrData")?.value?.trim() || "";
 
         if (!raw) {
-
             setMessage(
                 "scanMessage",
                 "Enter or scan an R1 QR value.",
                 "error"
             );
-
             return;
         }
 
-
-        const parts =
-            raw
-                .split("|")
-                .map(
-                    part => part.trim()
-                );
-
+        const parts = raw.split("|").map(x => x.trim());
 
         if (
             parts.length !== 6 ||
             parts[0].toUpperCase() !== "R1"
         ) {
-
             setMessage(
                 "scanMessage",
                 "Invalid R1 QR format. Expected: R1|PO|SO|ID|Material|GRN",
                 "error"
             );
-
             return;
         }
 
+        const [, po, so, materialId, materialName, grn] = parts;
 
-        const [
-            ,
-            po,
-            so,
-            materialId,
-            materialName,
-            grn
-        ] = parts;
-
-
-        const matches =
-            allRecords.filter(
-                record =>
-                    normalize(record.po) ===
-                    normalize(po) &&
-
-                    normalize(record.so) ===
-                    normalize(so) &&
-
-                    normalize(record.materialId) ===
-                    normalize(materialId) &&
-
-                    normalize(record.grn) ===
-                    normalize(grn)
-            );
-
+        const matches = allRecords.filter(record =>
+            normalize(record.po) === normalize(po) &&
+            normalize(record.so) === normalize(so) &&
+            normalize(record.materialId) === normalize(materialId) &&
+            normalize(record.grn) === normalize(grn)
+        );
 
         closeScanModal();
 
-
         if (!matches.length) {
-
             displayedRecords = [];
-
             renderRecords([]);
-
             closeDetails();
-
 
             setMessage(
                 "searchMessage",
                 "No Chemical Testing assignment was found for the scanned material.",
                 "error"
             );
-
             return;
         }
 
+        displayedRecords = matches;
 
-        displayedRecords =
-            matches;
+        const search = $("chemicalSearch");
+        if (search) search.value = materialId;
 
-
-        const search =
-            $("chemicalSearch");
-
-
-        if (search) {
-
-            search.value =
-                materialId;
-        }
-
-
-        renderRecords(
-            displayedRecords
-        );
-
-
+        renderRecords(displayedRecords);
         updateClearButton();
-
 
         setMessage(
             "searchMessage",
@@ -1242,212 +554,77 @@
             "success"
         );
 
-
         closeDetails();
     }
 
-
-    // =====================================================
-    // JSON READER
-    // =====================================================
-
     async function readJson(response) {
-
-        const raw =
-            await response.text();
-
-
-        if (!raw) {
-            return {};
-        }
-
+        const raw = await response.text();
+        if (!raw) return {};
 
         try {
-
             return JSON.parse(raw);
-
-        }
-        catch {
-
+        } catch {
             throw new Error(
                 "The Chemical Lab API returned invalid JSON."
             );
         }
     }
 
-
-    // =====================================================
-    // UI HELPERS
-    // =====================================================
-
-    function setText(id, value) {
-
-        const element =
-            $(id);
-
-
-        if (element) {
-
-            element.textContent =
-                display(value);
-        }
+    function setText(id, v) {
+        const element = $(id);
+        if (element) element.textContent = display(v);
     }
 
+    function setMessage(id, message, type) {
+        const element = $(id);
+        if (!element) return;
 
-    function setMessage(
-        id,
-        message,
-        type
-    ) {
-
-        const element =
-            $(id);
-
-
-        if (!element) {
-            return;
-        }
-
-
-        element.textContent =
-            message || "";
-
-
-        element.className =
-            `cl-message ${type || "info"}`;
-
-
-        element.classList.remove(
-            "hidden"
-        );
+        element.textContent = message || "";
+        element.className = `cl-message ${type || "info"}`;
+        element.classList.remove("hidden");
     }
-
 
     function hideMessage(id) {
-
-        $(id)
-            ?.classList.add("hidden");
+        $(id)?.classList.add("hidden");
     }
 
-
-    // =====================================================
-    // STATUS
-    // =====================================================
-
     function statusClass(status) {
-
-        return normalize(status) ===
-            "accepted"
-
+        return normalize(status) === "accepted"
             ? "accepted"
             : "pending";
     }
 
-
-    // =====================================================
-    // QUANTITY
-    // =====================================================
-
-    function formatQuantity(
-        quantity,
-        unit
-    ) {
-
+    function formatQuantity(quantity, unit) {
         if (
             quantity === null ||
             quantity === undefined ||
             quantity === ""
-        ) {
-
-            return "-";
-        }
-
+        ) return "-";
 
         return unit
             ? `${quantity} ${unit}`
             : String(quantity);
     }
 
-
-    // =====================================================
-    // DISPLAY
-    // =====================================================
-
-    function display(value) {
-
+    function display(v) {
         return (
-            value === null ||
-            value === undefined ||
-            value === ""
-        )
-            ? "-"
-            : String(value);
+            v === null ||
+            v === undefined ||
+            v === ""
+        ) ? "-" : String(v);
     }
 
-
-    function value(value) {
-
+    function value(v) {
         return (
-            value === null ||
-            value === undefined
-        )
-            ? ""
-            : String(value).trim();
+            v === null ||
+            v === undefined
+        ) ? "" : String(v).trim();
     }
 
-
-    function normalize(value) {
-
+    function normalize(v) {
         return (
-            value === null ||
-            value === undefined
-        )
-            ? ""
-            : String(value)
-                .trim()
-                .toLowerCase();
+            v === null ||
+            v === undefined
+        ) ? "" : String(v).trim().toLowerCase();
     }
-
-
-    // =====================================================
-    // FALLBACK DATE/TIME
-    // =====================================================
-
-    function getTodayDate() {
-
-        const now =
-            new Date();
-
-        return [
-            now.getFullYear(),
-            String(
-                now.getMonth() + 1
-            ).padStart(2, "0"),
-            String(
-                now.getDate()
-            ).padStart(2, "0")
-        ].join("-");
-    }
-
-
-    function getCurrentTime() {
-
-        const now =
-            new Date();
-
-        return [
-            String(
-                now.getHours()
-            ).padStart(2, "0"),
-
-            String(
-                now.getMinutes()
-            ).padStart(2, "0"),
-
-            String(
-                now.getSeconds()
-            ).padStart(2, "0")
-        ].join(":");
-    }
-
 })();

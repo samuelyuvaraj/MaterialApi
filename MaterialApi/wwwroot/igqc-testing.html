@@ -4,276 +4,120 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BDL MES - Assign Testing</title>
-
     <link rel="stylesheet" href="/css/site.css">
     <link rel="stylesheet" href="/css/common-layout.css">
     <link rel="stylesheet" href="/css/igqc-testings.css">
 </head>
-
 <body data-page-title="Assign Testing">
-
     <div id="header-container"></div>
-
     <div class="application">
-
         <div id="sidebar-container"></div>
-
         <main class="main-content igqc-testing-page">
 
-            <div class="breadcrumb">
-                <span>Quality</span>
-                <span class="breadcrumb-arrow">/</span>
-                <strong>Assign Testing</strong>
-            </div>
+            <div class="breadcrumb"><span>Quality</span><span class="breadcrumb-arrow">/</span><strong>Assign Testing</strong></div>
 
             <div class="page-heading">
-                <div>
-                    <h1>Assign Testing</h1>
-                    <p>Assign one or more testing types to the identified material.</p>
-                </div>
-
-                <div class="operation-active">
-                    <span class="active-dot"></span>
-                    IGQC TESTING
-                </div>
+                <div><h1>Assign Testing</h1><p>Assign one or more testing types to the identified material.</p></div>
+                <div class="operation-active"><span class="active-dot"></span>IGQC TESTING</div>
             </div>
 
-            <!-- MATERIAL INFORMATION -->
             <section class="operation-panel igqc-material-panel">
-
                 <div class="panel-header">
                     <div>
                         <div class="panel-title">Material Information</div>
-                        <div class="panel-description">
-                            Material data received from IGQC / Consumption.
-                        </div>
+                        <div class="panel-description">Material data received from IGQC / Consumption.</div>
                     </div>
+                    <div class="project-label" style="font-weight:700; letter-spacing:.04em;">Project: Astra</div>
                 </div>
 
                 <div class="igqc-material-grid">
-
                     <div class="igqc-material-row igqc-material-row-top">
-
-                        <div class="igqc-material-cell">
-                            <div class="field-label">PURCHASE ORDER</div>
-                            <strong id="po">-</strong>
-                        </div>
-
-                        <div class="igqc-material-cell">
-                            <div class="field-label">SALES ORDER</div>
-                            <strong id="so">-</strong>
-                        </div>
-
-                        <div class="igqc-material-cell">
-                            <div class="field-label">MATERIAL IDENTIFIER</div>
-                            <strong id="materialId">-</strong>
-                        </div>
-
-                        <div class="igqc-material-cell">
-                            <div class="field-label">GRN</div>
-                            <strong id="grn">-</strong>
-                        </div>
-
+                        <div class="igqc-material-cell"><div class="field-label">PURCHASE ORDER</div><strong id="po">-</strong></div>
+                        <div class="igqc-material-cell"><div class="field-label">SALES ORDER</div><strong id="so">-</strong></div>
+                        <div class="igqc-material-cell"><div class="field-label">MATERIAL IDENTIFIER</div><strong id="materialId">-</strong></div>
+                        <div class="igqc-material-cell"><div class="field-label">GRN</div><strong id="grn">-</strong></div>
                     </div>
 
                     <div class="igqc-material-row igqc-material-row-bottom">
-
-                        <div class="igqc-material-cell">
-                            <div class="field-label">MATERIAL NAME</div>
-                            <strong id="materialName">-</strong>
-                        </div>
-
-                        <div class="igqc-material-cell">
-                            <div class="field-label">UNIT</div>
-                            <strong id="unit">-</strong>
-                        </div>
-
-                        <div class="igqc-material-cell">
-                            <div class="field-label">STATUS</div>
-                            <strong id="status">-</strong>
-                        </div>
-
-                        <div class="igqc-material-cell">
-                            <div class="field-label">RECEIVED</div>
-                            <strong id="received">-</strong>
-                        </div>
-
-                        <div class="igqc-material-cell">
-                            <div class="field-label">AVAILABLE</div>
-                            <strong id="available">-</strong>
-                        </div>
-
-                        <div class="igqc-material-cell">
-                            <div class="field-label">CONSUMED</div>
-                            <strong id="consumed">-</strong>
-                        </div>
-
+                        <div class="igqc-material-cell"><div class="field-label">MATERIAL NAME</div><strong id="materialName">-</strong></div>
+                        <div class="igqc-material-cell"><div class="field-label">VENDOR-</div><strong id="vendor">-</strong></div>
+                        <div class="igqc-material-cell"><div class="field-label">UNIT</div><strong id="unit">-</strong></div>
+                        <div class="igqc-material-cell"><div class="field-label">STATUS</div><strong id="status">-</strong></div>
+                        <div class="igqc-material-cell"><div class="field-label">RECEIVED</div><strong id="received">-</strong></div>
+                        <div class="igqc-material-cell"><div class="field-label">AVAILABLE</div><strong id="available">-</strong></div>
+                        <div class="igqc-material-cell"><div class="field-label">CONSUMED</div><strong id="consumed">-</strong></div>
                     </div>
-
                 </div>
             </section>
 
-            <!-- TESTING ASSIGNMENT -->
             <section class="igqc-testing-assignment">
-
-                <div class="igqc-section-heading">
-                    <h2>Testing Assignment</h2>
-                    <p>Select the required testing types, grade and quantity.</p>
-                </div>
+                <div class="igqc-section-heading"><h2>Testing Assignment</h2><p>Select the required testing types, grade and quantity.</p></div>
 
                 <div class="igqc-testing-grid">
 
-                    <!-- CHEMICAL -->
                     <div class="testing-card chemical-card">
-
                         <div class="testing-content">
                             <h2>Chemical Testing</h2>
-
                             <div class="testing-fields">
-
-                                <label>
-                                    <span>TESTING GRADE</span>
-                                    <select id="chemicalGrade">
-                                        <option value="">Select testing grade</option>
-                                    </select>
-                                </label>
-
-                                <label>
-                                    <span>QUANTITY TO SEND</span>
-                                    <div class="quantity-wrap">
-                                        <input
-                                            id="chemicalQuantity"
-                                            type="number"
-                                            min="0"
-                                            step="0.01"
-                                            placeholder="Enter quantity">
-                                        <b id="chemicalUom">u</b>
-                                    </div>
-                                </label>
-
+                                <label><span>TESTING GRADE</span><select id="chemicalGrade"><option value="">Select testing grade</option></select></label>
+                                <label><span>QUANTITY TO SEND</span><div class="quantity-wrap"><input id="chemicalQuantity" type="number" min="0" step="0.01" placeholder="Enter quantity"><b id="chemicalUom">u</b></div></label>
                             </div>
-
                             <div id="chemicalDetails" class="grade-details hidden"></div>
                         </div>
-
                     </div>
 
-                    <!-- MECHANICAL -->
                     <div class="testing-card mechanical-card">
-
                         <div class="testing-content">
                             <h2>Mechanical Testing</h2>
-
                             <div class="testing-fields">
-
                                 <label>
                                     <span>TESTING GRADE</span>
                                     <select id="mechanicalGrade">
                                         <option value="">Select testing grade</option>
+                                        <option value="600 Tensile test">600 Tensile test</option>
+                                        <option value="50 Tensile Test">50 Tensile Test</option>
+                                        <option value="Rubber Test">Rubber Test</option>
+                                        <option value="Hardeness Test">Hardeness Test</option>
+                                        <option value="Xray">Xray</option>
+                                        <option value="Rockellwell">Rockellwell</option>
                                     </select>
                                 </label>
-
-                                <label>
-                                    <span>QUANTITY TO SEND</span>
-                                    <div class="quantity-wrap">
-                                        <input
-                                            id="mechanicalQuantity"
-                                            type="number"
-                                            min="0"
-                                            step="0.01"
-                                            placeholder="Enter quantity">
-                                        <b id="mechanicalUom">u</b>
-                                    </div>
-                                </label>
-
+                                <label><span>QUANTITY TO SEND</span><div class="quantity-wrap"><input id="mechanicalQuantity" type="number" min="0" step="0.01" placeholder="Enter quantity"><b id="mechanicalUom">u</b></div></label>
                             </div>
-
                             <div id="mechanicalDetails" class="grade-details hidden"></div>
                         </div>
-
                     </div>
 
-                    <!-- DIMENSIONAL -->
                     <div class="testing-card dimensional-card">
-
                         <div class="testing-content">
                             <h2>Dimensional Testing</h2>
-
                             <div class="testing-fields">
-
-                                <label>
-                                    <span>TESTING GRADE</span>
-                                    <select id="dimensionalGrade">
-                                        <option value="">Select testing grade</option>
-                                    </select>
-                                </label>
-
-                                <label>
-                                    <span>QUANTITY TO SEND</span>
-                                    <div class="quantity-wrap">
-                                        <input
-                                            id="dimensionalQuantity"
-                                            type="number"
-                                            min="0"
-                                            step="0.01"
-                                            placeholder="Enter quantity">
-                                        <b id="dimensionalUom">u</b>
-                                    </div>
-                                </label>
-
+                                <label><span>TESTING GRADE</span><select id="dimensionalGrade"><option value="">Select testing grade</option></select></label>
+                                <label><span>QUANTITY TO SEND</span><div class="quantity-wrap"><input id="dimensionalQuantity" type="number" min="0" step="0.01" placeholder="Enter quantity"><b id="dimensionalUom">u</b></div></label>
                             </div>
-
                             <div id="dimensionalDetails" class="grade-details hidden"></div>
                         </div>
-
                     </div>
 
-                    <!-- ACTIONS -->
                     <div class="igqc-testing-actions">
-
                         <div id="testingMessage" class="message hidden"></div>
-
-                        <button id="confirmTesting"
-                                class="validate-button"
-                                type="button">
-                            <span class="validate-icon">✓</span>
-                            CONFIRM TESTING
-                        </button>
-
-                        <button id="cancelTesting"
-                                class="secondary-button"
-                                type="button">
-                            CANCEL
-                        </button>
-
+                        <button id="confirmTesting" class="validate-button" type="button"><span class="validate-icon">✓</span> CONFIRM TESTING</button>
+                        <button id="cancelTesting" class="secondary-button" type="button">CANCEL</button>
                     </div>
 
                 </div>
             </section>
 
-            <!-- SUCCESS -->
             <section id="successPanel" class="operation-panel hidden">
-
-                <div class="panel-header">
-                    <div>
-                        <div class="panel-title">Testing Assignment Saved</div>
-                        <div class="panel-description">
-                            One record was created containing all selected testing information.
-                        </div>
-                    </div>
-                </div>
-
+                <div class="panel-header"><div><div class="panel-title">Testing Assignment Saved</div><div class="panel-description">One record was created containing all selected testing information.</div></div></div>
                 <div id="savedSummary" class="saved-summary"></div>
-
             </section>
 
         </main>
     </div>
-
     <div id="footer-container"></div>
-
     <script src="/js/igqc-testing.js"></script>
+   
     <script src="/js/common-layout.js"></script>
-
 </body>
 </html>

@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>MES | Login</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+    <main class="login-page">
+        <section class="login-shell">
+            <div class="brand-panel">
+                <div class="brand-logo">BDL</div>
+                <div class="mes">IGQC</div>
+                <div class="system">ASTRA</div>
+                <div class="ready"><span></span>SYSTEM READY</div>
+            </div>
+            <div class="form-panel">
+                <div class="eyebrow">Astra</div>
+                <h1>LOGIN IN</h1>
+                <p>Enter your module credentials to continue.</p>
+                <form id="loginForm">
+                    <label for="username">Username</label>
+                    <input id="username" type="text" placeholder="Enter username" autocomplete="username" required>
+                    <label for="password">Password</label>
+                    <input id="password" type="password" placeholder="Enter password" autocomplete="current-password" required>
+                    <button id="loginButton" type="submit">LOGIN <b>→</b></button>
+                    <div id="loginMessage" class="message"></div>
+                </form>
+                <div class="footer">MES Opcenter &nbsp;•&nbsp; Authorized Module Access</div>
+            </div>
+        </section>
+    </main>
+    <script src="/js/login.js"></script>
+</body>
+</html>

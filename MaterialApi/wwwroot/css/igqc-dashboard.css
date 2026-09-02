@@ -1,0 +1,681 @@
+﻿/* =========================================================
+   BDL MES - IGQC OFFLINE DASHBOARD
+   Existing dashboard CSS retained.
+   Vendor Quality Report styles added at the end.
+   ========================================================= */
+
+.igqc-dashboard-page,
+.igqc-dashboard-page * {
+    box-sizing: border-box;
+}
+
+.igqc-dashboard-page {
+    margin: 0;
+    padding: 0;
+    background: #f3f6fa;
+    color: #172033;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+    .igqc-dashboard-page button,
+    .igqc-dashboard-page input,
+    .igqc-dashboard-page select {
+        font: inherit;
+    }
+
+.igqc-shell {
+    width: min(1540px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 30px 0 42px;
+}
+
+.igqc-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 22px;
+}
+
+.igqc-eyebrow {
+    margin-bottom: 5px;
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .14em;
+}
+
+.igqc-header h1 {
+    margin: 0;
+    color: #172033;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+.igqc-header p {
+    margin: 8px 0 0;
+    color: #697386;
+    font-size: 14px;
+}
+
+.igqc-refresh {
+    min-width: 108px;
+    height: 40px;
+    border: 1px solid #d7dee8;
+    border-radius: 8px;
+    background: #fff;
+    color: #243247;
+    cursor: pointer;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(20, 32, 56, .05);
+}
+
+    .igqc-refresh:hover {
+        background: #f8fafc;
+    }
+
+    .igqc-refresh span {
+        margin-right: 5px;
+        font-size: 16px;
+    }
+
+.igqc-message {
+    margin-bottom: 16px;
+    padding: 11px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+    .igqc-message.igqc-info {
+        background: #eaf2ff;
+        color: #2457b8;
+    }
+
+    .igqc-message.igqc-error {
+        background: #fff0f0;
+        color: #c62828;
+    }
+
+    .igqc-message.igqc-success {
+        background: #eaf8ef;
+        color: #16783a;
+    }
+
+.igqc-hidden {
+    display: none !important;
+}
+
+.igqc-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.igqc-card,
+.igqc-panel {
+    border: 1px solid #e0e6ee;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 4px 16px rgba(20, 32, 56, .055);
+}
+
+.igqc-card {
+    min-height: 128px;
+    padding: 20px 22px;
+}
+
+.igqc-card-label {
+    color: #697386;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .08em;
+}
+
+.igqc-card-value {
+    margin-top: 9px;
+    color: #172033;
+    font-size: 32px;
+    font-weight: 750;
+    line-height: 1;
+}
+
+.igqc-green-text {
+    color: #169447;
+}
+
+.igqc-red-text {
+    color: #d93636;
+}
+
+.igqc-card-note {
+    margin-top: 10px;
+    color: #7a8494;
+    font-size: 12px;
+}
+
+.igqc-chart-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.igqc-panel {
+    overflow: hidden;
+}
+
+.igqc-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 70px;
+    padding: 17px 20px;
+    border-bottom: 1px solid #e5e9ef;
+}
+
+    .igqc-panel-head h2 {
+        margin: 0;
+        color: #1d2a3e;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .igqc-panel-head p {
+        margin: 4px 0 0;
+        color: #7a8494;
+        font-size: 12px;
+    }
+
+.igqc-decision-content {
+    min-height: 270px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 58px;
+    padding: 30px;
+}
+
+.igqc-donut {
+    width: 178px;
+    height: 178px;
+    flex: 0 0 178px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: conic-gradient(#e8edf3 0 100%);
+    position: relative;
+}
+
+    .igqc-donut::after {
+        content: "";
+        position: absolute;
+        inset: 31px;
+        border-radius: 50%;
+        background: #fff;
+    }
+
+.igqc-donut-center {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+    .igqc-donut-center strong {
+        display: block;
+        color: #172033;
+        font-size: 29px;
+        line-height: 1;
+    }
+
+    .igqc-donut-center span {
+        display: block;
+        margin-top: 5px;
+        color: #7a8494;
+        font-size: 12px;
+    }
+
+.igqc-legend {
+    min-width: 170px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.igqc-legend-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #344054;
+    font-size: 13px;
+}
+
+.igqc-legend-dot {
+    width: 10px;
+    height: 10px;
+    flex: 0 0 10px;
+    border-radius: 50%;
+}
+
+.igqc-legend-value {
+    margin-left: auto;
+    font-weight: 750;
+}
+
+.igqc-bars {
+    min-height: 270px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 18px;
+    padding: 30px;
+}
+
+.igqc-bar-row {
+    display: grid;
+    grid-template-columns: 175px minmax(80px, 1fr) 40px;
+    align-items: center;
+    gap: 12px;
+}
+
+.igqc-bar-label {
+    overflow: hidden;
+    color: #344054;
+    font-size: 12px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.igqc-bar-track {
+    height: 22px;
+    overflow: hidden;
+    border-radius: 5px;
+    background: #edf1f5;
+}
+
+.igqc-bar-fill {
+    height: 100%;
+    min-width: 3px;
+    border-radius: 5px;
+    background: #2878dc;
+}
+
+.igqc-bar-value {
+    color: #344054;
+    font-size: 12px;
+    font-weight: 750;
+    text-align: right;
+}
+
+.igqc-record-panel {
+    margin-top: 16px;
+}
+
+.igqc-record-head {
+    align-items: flex-end;
+}
+
+.igqc-tools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .igqc-tools input,
+    .igqc-tools select {
+        height: 38px;
+        border: 1px solid #d8dfe8;
+        border-radius: 7px;
+        outline: none;
+        background: #fff;
+        color: #263449;
+    }
+
+    .igqc-tools input {
+        width: 300px;
+        padding: 0 11px;
+    }
+
+    .igqc-tools select {
+        min-width: 135px;
+        padding: 0 9px;
+    }
+
+        .igqc-tools input:focus,
+        .igqc-tools select:focus {
+            border-color: #6d9de8;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, .08);
+        }
+
+.igqc-table-wrap {
+    overflow-x: auto;
+}
+
+.igqc-table {
+    width: 100%;
+    min-width: 1120px;
+    border-collapse: collapse;
+}
+
+    .igqc-table th,
+    .igqc-table td {
+        padding: 13px 15px;
+        border-bottom: 1px solid #e7ebf0;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .igqc-table th {
+        background: #f8fafc;
+        color: #667085;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .065em;
+    }
+
+    .igqc-table td {
+        color: #263449;
+        font-size: 12px;
+    }
+
+    .igqc-table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+.igqc-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 25px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.igqc-badge-approved,
+.igqc-badge-completed {
+    background: #eaf8ef;
+    color: #16813c;
+}
+
+.igqc-badge-rejected {
+    background: #fff0f0;
+    color: #c92d2d;
+}
+
+.igqc-badge-other {
+    background: #fff7e8;
+    color: #b76a00;
+}
+
+.igqc-badge-pending {
+    background: #eef1f5;
+    color: #667085;
+}
+
+.igqc-empty {
+    padding: 40px 20px;
+    color: #7a8494;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* =========================================================
+   VENDOR QUALITY REPORT
+   ADDITIVE UI ONLY
+   ========================================================= */
+
+.igqc-vendor-panel {
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.igqc-vendor-panel-head {
+    min-height: 76px;
+}
+
+.igqc-vendor-heading-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.igqc-vendor-project {
+    display: inline-flex;
+    align-items: center;
+    min-height: 21px;
+    padding: 3px 8px;
+    border: 1px solid #dbe5f2;
+    border-radius: 999px;
+    background: #f5f8fc;
+    color: #55708f;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .08em;
+}
+
+.igqc-vendor-total {
+    min-width: 72px;
+    padding: 8px 11px;
+    border: 1px solid #dfe5ec;
+    border-radius: 8px;
+    background: #f8fafc;
+    text-align: center;
+}
+
+    .igqc-vendor-total span {
+        display: block;
+        color: #172033;
+        font-size: 20px;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .igqc-vendor-total small {
+        display: block;
+        margin-top: 4px;
+        color: #7a8494;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: .08em;
+    }
+
+.igqc-vendor-summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-bottom: 1px solid #e5e9ef;
+}
+
+.igqc-vendor-summary-card {
+    min-height: 86px;
+    padding: 16px 20px;
+    border-right: 1px solid #e5e9ef;
+}
+
+    .igqc-vendor-summary-card:last-child {
+        border-right: 0;
+    }
+
+    .igqc-vendor-summary-card span {
+        display: block;
+        color: #7a8494;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .07em;
+    }
+
+    .igqc-vendor-summary-card strong {
+        display: block;
+        margin-top: 7px;
+        color: #172033;
+        font-size: 24px;
+        line-height: 1;
+    }
+
+.igqc-vendor-table-wrap {
+    overflow-x: auto;
+}
+
+.igqc-vendor-table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+}
+
+    .igqc-vendor-table th,
+    .igqc-vendor-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e7ebf0;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .igqc-vendor-table th {
+        background: #f8fafc;
+        color: #667085;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .065em;
+    }
+
+    .igqc-vendor-table td {
+        color: #263449;
+        font-size: 12px;
+    }
+
+    .igqc-vendor-table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+.igqc-vendor-name {
+    color: #172033;
+    font-weight: 750;
+}
+
+.igqc-vendor-number {
+    font-weight: 700;
+}
+
+.igqc-vendor-badge {
+    display: inline-flex;
+    min-width: 32px;
+    justify-content: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.igqc-vendor-badge-approved {
+    background: #eaf8ef;
+    color: #16813c;
+}
+
+.igqc-vendor-badge-rejected {
+    background: #fff0f0;
+    color: #c92d2d;
+}
+
+.igqc-vendor-rate {
+    font-weight: 800;
+}
+
+.igqc-vendor-rate-good {
+    color: #16813c;
+}
+
+.igqc-vendor-rate-warning {
+    color: #b76a00;
+}
+
+.igqc-vendor-rate-bad {
+    color: #c92d2d;
+}
+
+.igqc-vendor-last {
+    color: #667085;
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 1100px) {
+    .igqc-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .igqc-chart-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .igqc-vendor-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .igqc-vendor-summary-card:nth-child(2) {
+        border-right: 0;
+    }
+
+    .igqc-vendor-summary-card:nth-child(-n+2) {
+        border-bottom: 1px solid #e5e9ef;
+    }
+}
+
+@media (max-width: 720px) {
+    .igqc-shell {
+        width: calc(100% - 24px);
+        padding-top: 18px;
+    }
+
+    .igqc-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .igqc-kpis {
+        grid-template-columns: 1fr;
+    }
+
+    .igqc-decision-content {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .igqc-record-head {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .igqc-tools {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+        .igqc-tools input,
+        .igqc-tools select {
+            width: 100%;
+        }
+
+    .igqc-vendor-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .igqc-vendor-summary-card,
+    .igqc-vendor-summary-card:nth-child(2) {
+        border-right: 0;
+        border-bottom: 1px solid #e5e9ef;
+    }
+
+        .igqc-vendor-summary-card:last-child {
+            border-bottom: 0;
+        }
+
+    .igqc-vendor-panel-head {
+        align-items: flex-start;
+    }
+}

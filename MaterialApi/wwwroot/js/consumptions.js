@@ -60,6 +60,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const infoMaterialName =
         document.getElementById("infoMaterialName");
+    const infoVendor =
+        document.getElementById("infoVendor");
 
     const infoUom =
         document.getElementById("infoUom");
@@ -215,6 +217,7 @@ document.addEventListener("DOMContentLoaded", function () {
         setText(infoMaterialId, "-");
         setText(infoGrn, "-");
         setText(infoMaterialName, "-");
+        setText(infoVendor, "-");
 
         setText(infoUom, "-");
         setText(infoStatus, "-");
@@ -362,12 +365,13 @@ document.addEventListener("DOMContentLoaded", function () {
             infoMaterialName,
             data.mn
         );
+        
 
         /*
          * These values come from Consumption.xlsx
          * only after CONFIRM.
          */
-
+        setText(infoVendor, "-");
         setText(infoUom, "-");
         setText(infoStatus, "-");
 
@@ -423,6 +427,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 "materialName",
                 "MaterialName"
             );
+        const vendor =
+            getRecordValue(
+                record,
+                "vendor",
+                "Vendor"
+            );
 
         const uom =
             getRecordValue(
@@ -474,6 +484,10 @@ document.addEventListener("DOMContentLoaded", function () {
         setText(
             infoMaterialName,
             materialName
+        );
+        setText(
+            infoVendor,
+            vendor
         );
 
         setText(
@@ -1091,6 +1105,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     currentConsumptionRecord,
                     "materialName",
                     "MaterialName"
+                ),
+            vendor:
+                getRecordValue(
+                    currentConsumptionRecord,
+                    "vendor",
+                    "Vendor"
                 ),
 
             unitOfMeasure:

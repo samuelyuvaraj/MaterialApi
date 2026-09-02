@@ -21,6 +21,8 @@ public class Consumption
 
     public decimal ConsumedQuantity { get; set; }
 
+    public string Vendor { get; set; } = "";
+
     public string Status { get; set; } = "Available";
 
     public DateTime LastUpdated { get; set; }

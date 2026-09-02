@@ -3,14 +3,14 @@ using MaterialApi.Models;
 
 namespace MaterialApi.Services;
 
-public class ChemicalLabService
+public class MechanicalLabService
 {
     private readonly string _igqcExcelPath;
-    private readonly string _chemicalLabExcelPath;
+    private readonly string _mechanicalLabExcelPath;
 
     private static readonly object FileLock = new();
 
-    public ChemicalLabService()
+    public MechanicalLabService()
     {
         _igqcExcelPath = Path.Combine(
             AppContext.BaseDirectory,
@@ -18,20 +18,20 @@ public class ChemicalLabService
             "IGQC_Data.xlsx"
         );
 
-        _chemicalLabExcelPath = Path.Combine(
+        _mechanicalLabExcelPath = Path.Combine(
             AppContext.BaseDirectory,
             "Data",
-            "Chemical_Lab_Data.xlsm"
+            "Mechanical_Lab_Data.xlsm"
         );
     }
 
     // =========================================================
-    // GET ALL CHEMICAL LAB RECORDS
+    // GET ALL MECHANICAL LAB RECORDS
     // =========================================================
 
-    public List<ChemicalLabRecord> GetAll()
+    public List<MechanicalLabRecord> GetAll()
     {
-        var result = new List<ChemicalLabRecord>();
+        var result = new List<MechanicalLabRecord>();
 
         if (!File.Exists(_igqcExcelPath))
             return result;
@@ -50,15 +50,14 @@ public class ChemicalLabService
 
         for (int row = 2; row <= lastRow; row++)
         {
-            // IGQC_Data.xlsx
-            // Chemical Testing = column 10
-            var chemicalTesting =
-                ws.Cell(row, 10)
+            // Column 11 = Mechanical Testing
+            var mechanicalTesting =
+                ws.Cell(row, 11)
                   .GetString()
                   .Trim();
 
             if (!string.Equals(
-                    chemicalTesting,
+                    mechanicalTesting,
                     "Yes",
                     StringComparison.OrdinalIgnoreCase))
             {
@@ -66,13 +65,10 @@ public class ChemicalLabService
             }
 
             var record =
-                ReadChemicalRecord(ws, row);
+                ReadMechanicalRecord(ws, row);
 
-            // If assignment was already accepted,
-            // return saved Chemical Lab information.
             var savedRecord =
-                GetSavedRecord(
-                    record.AssignmentId);
+                GetSavedRecord(record.AssignmentId);
 
             if (savedRecord != null)
             {
@@ -89,10 +85,10 @@ public class ChemicalLabService
 
 
     // =========================================================
-    // GET ONE CHEMICAL LAB RECORD
+    // GET BY ASSIGNMENT ID
     // =========================================================
 
-    public ChemicalLabRecord? GetByAssignmentId(
+    public MechanicalLabRecord? GetByAssignmentId(
         string assignmentId)
     {
         if (string.IsNullOrWhiteSpace(assignmentId))
@@ -108,106 +104,154 @@ public class ChemicalLabService
 
 
     // =========================================================
-    // ACCEPT CHEMICAL LAB RECORD
+    // ACCEPT MECHANICAL LAB RECORD
     // =========================================================
 
-    public ChemicalLabRecord Accept(
-        string assignmentId)
+    // =========================================================
+    // ACCEPT MECHANICAL LAB RECORD
+    //
+    // Updates BOTH:
+    //
+    // 1. Mechanical_Lab_Data.xlsm
+    //    Mechanical Status
+    //    Accepted Date
+    //    Accepted Time
+    //
+    // 2. IGQC_Data.xlsx
+    //    Mechanical Status = Accepted
+    //    Column 26
+    // =========================================================
+
+    public MechanicalLabRecord Accept(string assignmentId)
     {
         if (string.IsNullOrWhiteSpace(assignmentId))
-        {
-            throw new ArgumentException(
-                "Assignment ID is required.");
-        }
+            throw new ArgumentException("Assignment ID is required.");
 
         lock (FileLock)
         {
-            var existing =
-                GetByAssignmentId(
+            // =====================================================
+            // 1. FIND ASSIGNMENT FROM IGQC_Data.xlsx
+            // =====================================================
+
+            if (!File.Exists(_igqcExcelPath))
+                throw new FileNotFoundException(
+                    "IGQC_Data.xlsx was not found.",
+                    _igqcExcelPath);
+
+            MechanicalLabRecord record;
+
+            using (var igqcWorkbook = new XLWorkbook(_igqcExcelPath))
+            {
+                var ws = igqcWorkbook.Worksheets.FirstOrDefault();
+
+                if (ws == null)
+                    throw new InvalidOperationException(
+                        "IGQC_Data.xlsx worksheet was not found.");
+
+                var rowNumber = FindAssignmentRow(
+                    ws,
                     assignmentId);
 
-            if (existing == null)
-            {
-                throw new KeyNotFoundException(
-                    $"Chemical testing assignment '{assignmentId}' was not found.");
+                if (rowNumber == 0)
+                    throw new KeyNotFoundException(
+                        $"Assignment '{assignmentId}' was not found in IGQC_Data.xlsx.");
+
+                // Read mechanical data directly from IGQC
+                record = ReadMechanicalRecord(
+                    ws,
+                    rowNumber);
+
+                // =================================================
+                // ALREADY ACCEPTED
+                // =================================================
+
+                if (string.Equals(
+                        record.MechanicalStatus,
+                        "Accepted",
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    // Get accepted information from Mechanical Excel
+                    var saved = GetSavedRecord(assignmentId);
+
+                    return saved ?? record;
+                }
+
+                // =================================================
+                // ACCEPT NOW
+                // =================================================
+
+                var now = DateTime.Now;
+
+                record.MechanicalStatus = "Accepted";
+                record.AcceptedDate = now.ToString("yyyy-MM-dd");
+                record.AcceptedTime = now.ToString("HH:mm:ss");
+
+                // -------------------------------------------------
+                // IMPORTANT:
+                // IGQC_Data.xlsx
+                //
+                // Mechanical Status = column 26
+                // -------------------------------------------------
+
+                ws.Cell(rowNumber, 26).Value = "Accepted";
+
+                igqcWorkbook.SaveAs(_igqcExcelPath);
             }
 
-            // Already accepted
-            if (string.Equals(
-                    existing.ChemicalStatus,
-                    "Accepted",
-                    StringComparison.OrdinalIgnoreCase))
-            {
-                return existing;
-            }
 
-            var now =
-                DateTime.Now;
-
-            existing.ChemicalStatus =
-                "Accepted";
-
-            existing.AcceptedDate =
-                now.ToString("yyyy-MM-dd");
-
-            existing.AcceptedTime =
-                now.ToString("HH:mm:ss");
+            // =====================================================
+            // 2. SAVE / UPDATE Mechanical_Lab_Data.xlsm
+            // =====================================================
 
             Directory.CreateDirectory(
-                Path.GetDirectoryName(
-                    _chemicalLabExcelPath)!
-            );
+                Path.GetDirectoryName(_mechanicalLabExcelPath)!);
 
-            using var workbook =
-                File.Exists(
-                    _chemicalLabExcelPath)
-                    ? new XLWorkbook(
-                        _chemicalLabExcelPath)
-                    : new XLWorkbook();
-
-            var ws =
-                workbook.Worksheets.FirstOrDefault()
-                ?? workbook.AddWorksheet(
-                    "Chemical Lab");
-
-            EnsureHeaders(ws);
-
-            var existingRow =
-                FindAssignmentRow(
-                    ws,
-                    existing.AssignmentId);
-
-            if (existingRow > 0)
+            using (var mechanicalWorkbook =
+                   File.Exists(_mechanicalLabExcelPath)
+                       ? new XLWorkbook(_mechanicalLabExcelPath)
+                       : new XLWorkbook())
             {
-                Write(
-                    ws,
-                    existingRow,
-                    existing);
-            }
-            else
-            {
-                var nextRow =
-                    ws.LastRowUsed()?.RowNumber()
-                    + 1 ?? 2;
+                var mechanicalWs =
+                    mechanicalWorkbook.Worksheets
+                        .FirstOrDefault(x => x.Name == "Mechanical")
+                    ?? mechanicalWorkbook.Worksheets.Add("Mechanical");
+
+                EnsureHeaders(mechanicalWs);
+
+                var mechanicalRow =
+                    FindAssignmentRow(
+                        mechanicalWs,
+                        assignmentId);
+
+                if (mechanicalRow == 0)
+                {
+                    mechanicalRow =
+                        (mechanicalWs.LastRowUsed()?.RowNumber() ?? 1) + 1;
+                }
 
                 Write(
-                    ws,
-                    nextRow,
-                    existing);
+                    mechanicalWs,
+                    mechanicalRow,
+                    record);
+
+                mechanicalWorkbook.SaveAs(
+                    _mechanicalLabExcelPath);
             }
 
-            workbook.SaveAs(
-                _chemicalLabExcelPath);
 
-            return existing;
+            // =====================================================
+            // 3. RETURN UPDATED RECORD
+            // =====================================================
+
+            return record;
         }
     }
 
 
     // =========================================================
-    // READ IGQC RECORD
+    // READ IGQC DATA
     //
-    // IGQC_Data.xlsx layout:
+    // IGQC_Data.xlsx
     //
     // 1  Assignment ID
     // 2  Date
@@ -239,11 +283,11 @@ public class ChemicalLabService
     // 28 Vendor
     // =========================================================
 
-    private static ChemicalLabRecord ReadChemicalRecord(
+    private static MechanicalLabRecord ReadMechanicalRecord(
         IXLWorksheet ws,
         int row)
     {
-        return new ChemicalLabRecord
+        return new MechanicalLabRecord
         {
             AssignmentId =
                 Cell(ws, row, 1),
@@ -272,32 +316,38 @@ public class ChemicalLabService
             Unit =
                 Cell(ws, row, 9),
 
-            // NEW
+            // Vendor = IGQC column 28
             Vendor =
                 Cell(ws, row, 28),
 
-            ChemicalGrade =
-                Cell(ws, row, 13),
+            // Mechanical = IGQC column 14
+            MechanicalGrade =
+                Cell(ws, row, 14),
 
-            ChemicalQuantity =
-                DecimalCell(ws, row, 16),
+            // Mechanical Quantity = IGQC column 17
+            MechanicalQuantity =
+                DecimalCell(ws, row, 17),
 
-            ChemicalEquipment =
-                Cell(ws, row, 19),
+            // Mechanical Equipment = IGQC column 20
+            MechanicalEquipment =
+                Cell(ws, row, 20),
 
-            ChemicalSampleConsumed =
-                Cell(ws, row, 22),
+            // Mechanical Sample Consumed = IGQC column 23
+            MechanicalSampleConsumed =
+                Cell(ws, row, 23),
 
-            ChemicalStatus =
-                Cell(ws, row, 25)
+            // Mechanical Status = IGQC column 26
+            MechanicalStatus =
+                Cell(ws, row, 26)
         };
     }
 
 
     // =========================================================
-    // READ SAVED CHEMICAL LAB RECORD
+    // READ SAVED MECHANICAL RECORD
     //
-    // Chemical_Lab_Data.xlsm layout:
+    // Mechanical_Lab_Data.xlsm
+    // Sheet: Mechanical
     //
     // 1  Assignment ID
     // 2  Date
@@ -309,30 +359,32 @@ public class ChemicalLabService
     // 8  Material Name
     // 9  Unit
     // 10 Vendor
-    // 11 Chemical Grade
-    // 12 Chemical Quantity
-    // 13 Chemical Equipment
-    // 14 Chemical Sample Consumed
-    // 15 Chemical Status
+    // 11 Mechanical Grade
+    // 12 Mechanical Quantity
+    // 13 Mechanical Equipment
+    // 14 Mechanical Sample Consumed
+    // 15 Mechanical Status
     // 16 Accepted Date
     // 17 Accepted Time
     // =========================================================
 
-    private ChemicalLabRecord? GetSavedRecord(
+    private MechanicalLabRecord? GetSavedRecord(
         string assignmentId)
     {
         if (!File.Exists(
-                _chemicalLabExcelPath))
+                _mechanicalLabExcelPath))
         {
             return null;
         }
 
         using var workbook =
             new XLWorkbook(
-                _chemicalLabExcelPath);
+                _mechanicalLabExcelPath);
 
         var ws =
-            workbook.Worksheets.FirstOrDefault();
+            workbook.Worksheets
+                .FirstOrDefault(
+                    x => x.Name == "Mechanical");
 
         if (ws == null)
             return null;
@@ -357,7 +409,7 @@ public class ChemicalLabService
                 continue;
             }
 
-            return new ChemicalLabRecord
+            return new MechanicalLabRecord
             {
                 AssignmentId =
                     Cell(ws, row, 1),
@@ -386,23 +438,22 @@ public class ChemicalLabService
                 Unit =
                     Cell(ws, row, 9),
 
-                // NEW
                 Vendor =
                     Cell(ws, row, 10),
 
-                ChemicalGrade =
+                MechanicalGrade =
                     Cell(ws, row, 11),
 
-                ChemicalQuantity =
+                MechanicalQuantity =
                     DecimalCell(ws, row, 12),
 
-                ChemicalEquipment =
+                MechanicalEquipment =
                     Cell(ws, row, 13),
 
-                ChemicalSampleConsumed =
+                MechanicalSampleConsumed =
                     Cell(ws, row, 14),
 
-                ChemicalStatus =
+                MechanicalStatus =
                     Cell(ws, row, 15),
 
                 AcceptedDate =
@@ -435,15 +486,12 @@ public class ChemicalLabService
             "GRN",
             "Material Name",
             "Unit",
-
-            // NEW
             "Vendor",
-
-            "Chemical Grade",
-            "Chemical Quantity",
-            "Chemical Equipment",
-            "Chemical Sample Consumed",
-            "Chemical Status",
+            "Mechanical Grade",
+            "Mechanical Quantity",
+            "Mechanical Equipment",
+            "Mechanical Sample Consumed",
+            "Mechanical Status",
             "Accepted Date",
             "Accepted Time"
         };
@@ -453,23 +501,20 @@ public class ChemicalLabService
             i < headers.Length;
             i++)
         {
-            ws.Cell(
-                1,
-                i + 1)
-              .Value =
+            ws.Cell(1, i + 1).Value =
                 headers[i];
         }
     }
 
 
     // =========================================================
-    // WRITE CHEMICAL LAB EXCEL ROW
+    // WRITE
     // =========================================================
 
     private static void Write(
         IXLWorksheet ws,
         int row,
-        ChemicalLabRecord record)
+        MechanicalLabRecord record)
     {
         var values =
             new object?[]
@@ -477,23 +522,18 @@ public class ChemicalLabService
                 record.AssignmentId,
                 record.Date,
                 record.Time,
-
                 record.Po,
                 record.So,
                 record.MaterialId,
                 record.Grn,
                 record.MaterialName,
                 record.Unit,
-
-                // NEW
                 record.Vendor,
-
-                record.ChemicalGrade,
-                record.ChemicalQuantity,
-                record.ChemicalEquipment,
-                record.ChemicalSampleConsumed,
-                record.ChemicalStatus,
-
+                record.MechanicalGrade,
+                record.MechanicalQuantity,
+                record.MechanicalEquipment,
+                record.MechanicalSampleConsumed,
+                record.MechanicalStatus,
                 record.AcceptedDate,
                 record.AcceptedTime
             };
@@ -513,7 +553,7 @@ public class ChemicalLabService
 
 
     // =========================================================
-    // FIND ASSIGNMENT ROW
+    // FIND ASSIGNMENT
     // =========================================================
 
     private static int FindAssignmentRow(
